@@ -2,6 +2,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <sys/socket.h>
+#include <unistd.h>
 
 int	main(int ac, char **av)
 {
@@ -13,6 +15,9 @@ int	main(int ac, char **av)
 		std::string password = av[2]; // The connection password, the IRC client needs it to connect to server
 		std::cout << "Port: " << port << std::endl;
 		std::cout << "Password: " << password << std::endl;
+		int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+		std::cout << server_fd << std::endl;
+		close(server_fd);
 	}
 	catch (const std::exception &e)
 	{
