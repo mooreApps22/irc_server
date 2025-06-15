@@ -11,9 +11,11 @@ class Server
 		int					_epoll_fd;
 
 		void	setup();
+		void	register_fd(int fd);
+		void	accept_connection();
+		void	use_fd(int fd);
 		void	clean_up();
-		void	accept_connections();
-		void	check_events();
+		// void	check_events();
 
     public:
         Server();
