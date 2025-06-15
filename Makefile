@@ -9,13 +9,12 @@ NORMAL = \033[0m
 NAME = ircserv
 CPP = c++
 FLAGS = -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3
+
 INC_DIR = ./inc
-HEADERS = $(INC_DIR)/data.hpp \
-				$(INC_DIR)/data.hpp
+HEADERS = $(wildcard $(INC_DIR)/*.hpp)
 			
 SRC_DIR = ./src
-SRCS = $(SRC_DIR)/main.cpp \
-			$(SRC_DIR)/Server.cpp
+SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 			
 OBJ_DIR = ./obj
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
