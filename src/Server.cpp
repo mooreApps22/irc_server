@@ -77,11 +77,15 @@ void	Server::setup(void)
 	
 	if (listen(_server_fd, BACKLOG) == -1)
 		throw std::runtime_error("Listen failed");
-	std::cout << "Server listening on port... " << std::endl;
 	
 	_epoll_fd = epoll_create1(0);
 	if (_epoll_fd == -1)
-		throw std::runtime_error("The epoller could not be created.");
+		throw std::runtime_error("The eevent poll could not be created.");
+
+	if (register_fd(_server_fd) == -1)
+		throw std::runtime_error("The listener could not be registered to the event poll.");
+	std::cout << "Server listening on port... " << std::endl;
+	
 }
 
 void	Server::run(void)
@@ -90,7 +94,6 @@ void	Server::run(void)
 	int n_events;
 
 	setup();
-	register_fd(_server_fd);
 
 	while (!sig::stop)	
 	{
@@ -108,13 +111,12 @@ void	Server::run(void)
 	}
 }
 
-void	Server::register_fd(int fd)
+int	Server::register_fd(int fd)
 {
 	struct epoll_event ev;
 	ev.events = EPOLLIN;
 	ev.data.fd = fd;
-	if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, fd, &ev) == -1)
-		std::cerr << "Could not add fd " << fd << " to the epoll." << std::endl;
+	return epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, fd, &ev);
 }
 
 void	Server::accept_connection()
@@ -133,38 +135,57 @@ void	Server::accept_connection()
 	{
 		std::cout << "Client connected! fd: " << client_fd << std::endl;
 		send(client_fd, "Connection stablished!\n", 23, 0);
-		register_fd(client_fd);
+		if (register_fd(client_fd) == -1)
+		{
+			send(client_fd, "ERROR :processing your request, please try again!\r\n", 51, 0);
+			close(client_fd);
+		}
+		else
+			_incoming[client_fd] = false;		
 	}
 }
 
 void	Server::use_fd(int fd)
 {
 	char	buffer[BUFFER_SIZE];
+	std::string str;
 	int		bytes_read;
 
-	bytes_read = recv(fd, buffer, sizeof(buffer) -1, MSG_DONTWAIT | MSG_PEEK);
+	bytes_read = recv(fd, buffer, sizeof(buffer) -1, MSG_PEEK);
 	buffer[bytes_read] = '\0';
 	if (bytes_read > 0)
 	{			
-		std::string	peek_str = buffer;
-		size_t		crlf = peek_str.find(CRLF);
+		str = buffer;
+		size_t		crlf = str.find(CRLF);
 
 		if (crlf != std::string::npos)
 		{
-			bytes_read = recv(fd, buffer, crlf + 2, MSG_DONTWAIT); // No flag means that recv is blocking, however we know that there is data to read!!!
-				buffer[bytes_read] = '\0';
-				std::cout << "Received from fd" << fd << ": " << buffer;
+			bytes_read = recv(fd, buffer, crlf + 2, 0); // No flag means that recv is blocking, however we know that there is data to read!!!
+			buffer[bytes_read] = '\0';
+			str = buffer;
+			execute(str, fd);
+			// std::cout << "Received from fd" << fd << ": " << str;
 		}
 	}
-	else if (bytes_read == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
-		std::cout << "Nothing to read just yet!" << std::endl;
+	// else if (bytes_read == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+	// 	std::cout << "Nothing to read just yet!" << std::endl;
 	else
 	{
 		std::cerr << "Read failed or client disconnected" << std::endl;
 		close (fd);
 	}
-}				
+}
 
+void	Server::execute(std::string& command, int fd)
+{
+	std::cout << "Execute from fd" << fd << ": " << command;
+	if (command.find("NICK") == 0)
+	{
+		if (_incoming[fd] == false)
+			send(fd, "ERR_PASSWDMISMATCH :Password incorrect!\r\n", 41, 0);
+			
+	}
+}
 
 void	Server::clean_up(void)
 {
