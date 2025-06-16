@@ -8,15 +8,6 @@
 #include <sys/epoll.h>
 #include <unistd.h>
 
-// #include <stdexcept>
-// #include <string>
-// #include <sys/socket.h>
-// #include <arpa/inet.h>
-// #include <netinet/in.h>
-// 
-// #include <stdio.h>
-// #include <cstdlib>
-
 #define BACKLOG		10
 #define BUFFER_SIZE	1024
 #define MAX_EVENTS	10
@@ -53,7 +44,7 @@ Server::~Server()
 	clean_up();
 }
 
-void	Server::setup(void)
+void Server::setup(void)
 {
 	struct addrinfo hints;
 	struct addrinfo *res;
@@ -85,10 +76,9 @@ void	Server::setup(void)
 	if (register_fd(_server_fd) == -1)
 		throw std::runtime_error("The listener could not be registered to the event poll.");
 	std::cout << "Server listening on port... " << std::endl;
-	
 }
 
-void	Server::run(void)
+void Server::run(void)
 {
 	struct epoll_event	events[MAX_EVENTS];
 	int					n_events;
@@ -109,7 +99,7 @@ void	Server::run(void)
 			else
 			{	
 				message = get_message(events[i].data.fd);
-				reply_message(message, events[i].data.fd);
+				// reply_message(message, events[i].data.fd);
 			}
 		}
 	}
@@ -123,7 +113,7 @@ int	Server::register_fd(int fd)
 	return epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, fd, &ev);
 }
 
-void	Server::accept_connection()
+void Server::accept_connection()
 {
 	struct sockaddr_storage	client_addr;
 	socklen_t				client_len = sizeof(client_addr);
@@ -145,8 +135,20 @@ void	Server::accept_connection()
 			close(client_fd);
 		}
 		else
-			_incoming[client_fd] = new User();		
+			add_new_user(client_fd);
 	}
+}
+
+void Server::add_new_user(int fd)
+{
+	_users[fd] = new User();	
+}
+
+void Server::delete_user(int fd)
+{
+		close(fd);
+		delete _users[fd];
+		_users.erase(fd);
 }
 
 std::string	Server::get_message(int fd)
@@ -174,6 +176,7 @@ std::string	Server::get_message(int fd)
 	else
 	{
 		std::cerr << "Read failed or client disconnected" << std::endl;
+		
 		close (fd);
 	}
 	return str;
@@ -184,15 +187,11 @@ void	Server::reply_message(std::string& message, int fd)
 	std::cout << "Execute from fd" << fd << ": " << message;
 	if (message.find("NICK") == 0)
 	{
-		if (!_incoming[fd]->is_registered())
+		if (!_users[fd]->is_registered())
 		{
 			send_reply(":localhost 464  :Password incorrect", fd);
 			send_reply("ERROR", fd);
-			close(fd);
-			delete _incoming[fd];
-			_incoming.erase(fd);
-			// TODO: do this
-			// delete map entry
+			delete_user(fd);
 		}
 	}
 }

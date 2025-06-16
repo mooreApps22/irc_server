@@ -11,13 +11,15 @@ class Server
 		const std::string		_password;
 		int						_server_fd;
 		int						_epoll_fd;
-		std::map<int, User*>	_incoming;
+		std::map<int, User*>	_users;
 
 		void		setup();
 		int			register_fd(int fd);
 		void		accept_connection();
+		void		add_new_user(int fd);
+		void		delete_user(int fd);
 		std::string	get_message(int fd);
-		void		execute_commad();		
+		// void		execute_commad();
 		void		reply_message(std::string& message, int fd);
 		void		send_reply(const std::string& reply, int fd);
 		void		clean_up();
