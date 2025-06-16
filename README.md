@@ -46,14 +46,14 @@
 			BUT this uses more system resources
 			IF you try read/recv or write/send w/o poll, you'll be FAILED.
 
-- [x] Several IRC clients exist. You have to choose one as a **reference** and the reference client will be used during the evaluation:
-  - HexCHat*
-  - WeeChat*
-  - Polari(GNOME)
-  - Konversation
-  - irssi*
-  - netcat(nc)*
-  - telnet
+- Several IRC clients exist. You have to choose one as a **reference** and the reference client will be used during the evaluation:
+  - [ ] HexCHat*
+  - [ ] WeeChat*
+  - [ ] Polari(GNOME)
+  - [ ] Konversation
+  - [x] irssi*
+  - [ ] netcat(nc)*
+  - [ ] telnet
 
 - [x] The reference client must be able to connect to your server w/o error
 - [x] Use the TCP/IP protocol (v4 or v6)
