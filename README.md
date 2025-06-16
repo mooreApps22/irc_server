@@ -55,7 +55,7 @@
   - netcat(nc)*
   - telnet
 
-- [ ] The reference client must be able to connect to your server w/o error
+- [x] The reference client must be able to connect to your server w/o error
 - [x] Use the TCP/IP protocol (v4 or v6)
 - Your server has to be similar to using an official IRC server, but you only have to implement:
   - [ ] Must be able to authenticate
@@ -95,7 +95,7 @@
   - [ ] Unicode and special characters
   - [ ] Invalid command spam
   - [ ] Reuse of nicknames
-  - [ ] Signal Interruptions
+  - [x] Signal Interruptions
   
 		Testing sending ctrl+D to send the command in several parts:
 			nc -C 127.0.0.1 6667
