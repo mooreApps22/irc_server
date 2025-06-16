@@ -5,14 +5,17 @@
 class User
 {
     private:
-		const std::string	_nickname;	
-		bool				_password;
+		std::string	_nickname;	
+		bool		_registered;
 
     public:
         User();
         ~User();
-		
-		void	run(void);
+
+		void				set_nickname(const std::string& nickname);
+		const std::string&	get_nickname();
+		bool				is_registered();
+
 };
 
 #endif
