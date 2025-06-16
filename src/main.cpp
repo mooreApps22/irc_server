@@ -15,7 +15,7 @@
 // #include <cstdlib>
 
 /*
-	Server Terminal: ./ircserv 6667 password
+	Server Terminal: ./ircserv -C 6667 password
 	
 	Client Terminal: nc 127.0.0.1 6667
 */

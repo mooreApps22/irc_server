@@ -21,8 +21,7 @@ bool Parser::is_partial(std::string& message)
 
 int Parser::get_message_length(std::string& message)
 {
-	(void) message;
-	return 0;
+	return message.find(CRLF) + 2;
 }
 
 bool Parser::parse_message(std::string& message)

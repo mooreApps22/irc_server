@@ -17,7 +17,7 @@ class User
 		const std::string&	get_nickname();
 		bool				is_registered();
 		void				buffer(std::string& message);
-		std::string 		get_buffer();
+		std::string 		get_partial_message();
 };
 
 #endif

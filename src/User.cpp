@@ -19,9 +19,11 @@ void User::buffer(std::string& message)
 	_partial_message.append(message);
 }
 
-std::string User::get_buffer()
+std::string User::get_partial_message()
 {
-	return _partial_message;
+	std::string temp = _partial_message;
+	_partial_message.clear();
+	return temp;
 }
 
 bool User::is_registered()

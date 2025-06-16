@@ -98,6 +98,8 @@ void Server::run(void)
 			else
 			{	
 				message = get_message(events[i].data.fd);
+				if (!message.empty())
+					std::cout << "Message: " << message;
 				// reply_message(message, events[i].data.fd);
 			}
 		}
@@ -152,33 +154,27 @@ void Server::delete_user(int fd)
 
 std::string	Server::get_message(int fd)
 {
+	User*		user;
 	std::string	message;
 	int			length;
 
+	user = _users[fd];
 	message = peek(fd);
 		
-	if (message.length() > 0)
+	if (!message.empty())
 	{			
 		if (_parser.is_partial(message))
 		{
 			message = receive(fd, message.length());
-			_users[fd]->buffer(message);
+			user->buffer(message);
+			message.clear();
 		}
 		else
 		{
 			length = _parser.get_message_length(message);
-			std::cout << "message lngth: " << length << std::endl;
-
-			// message = "";
-
-			// std::cout << "User has: " << _users[fd]->get_buffer().length() << std::endl;
-
-			// std::cout << "Complete!!!" << std::endl;
-			// check if partial message!!!
-			// get length and read it!!
-
+			message = user->get_partial_message();
+			message.append(receive(fd, length));
 		}
-
 	}
 	// else if (bytes_read == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
 	// 	std::cout << "Nothing to read just yet!" << std::endl;
@@ -187,7 +183,7 @@ std::string	Server::get_message(int fd)
 		std::cerr << "Read failed or client disconnected" << std::endl;
 		delete_user(fd);
 	}
-	return "str";
+	return message;
 }
 
 std::string Server::peek(int fd)
