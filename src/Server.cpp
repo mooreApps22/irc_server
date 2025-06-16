@@ -90,8 +90,9 @@ void	Server::setup(void)
 
 void	Server::run(void)
 {
-	struct epoll_event events[MAX_EVENTS];
-	int n_events;
+	struct epoll_event	events[MAX_EVENTS];
+	int					n_events;
+	std::string			message;
 
 	setup();
 
@@ -106,7 +107,10 @@ void	Server::run(void)
 			if (events[i].data.fd == _server_fd)
 				accept_connection();
 			else
-				use_fd(events[i].data.fd);
+			{	
+				message = get_message(events[i].data.fd);
+				reply_message(message, events[i].data.fd);
+			}
 		}
 	}
 }
@@ -141,15 +145,15 @@ void	Server::accept_connection()
 			close(client_fd);
 		}
 		else
-			_incoming[client_fd] = false;		
+			_incoming[client_fd] = new User();		
 	}
 }
 
-void	Server::use_fd(int fd)
+std::string	Server::get_message(int fd)
 {
-	char	buffer[BUFFER_SIZE];
-	std::string str;
-	int		bytes_read;
+	char		buffer[BUFFER_SIZE];
+	std::string str("");
+	int			bytes_read;
 
 	bytes_read = recv(fd, buffer, sizeof(buffer) -1, MSG_PEEK);
 	buffer[bytes_read] = '\0';
@@ -163,8 +167,6 @@ void	Server::use_fd(int fd)
 			bytes_read = recv(fd, buffer, crlf + 2, 0); // No flag means that recv is blocking, however we know that there is data to read!!!
 			buffer[bytes_read] = '\0';
 			str = buffer;
-			execute(str, fd);
-			// std::cout << "Received from fd" << fd << ": " << str;
 		}
 	}
 	// else if (bytes_read == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
@@ -174,17 +176,31 @@ void	Server::use_fd(int fd)
 		std::cerr << "Read failed or client disconnected" << std::endl;
 		close (fd);
 	}
+	return str;
 }
 
-void	Server::execute(std::string& command, int fd)
+void	Server::reply_message(std::string& message, int fd)
 {
-	std::cout << "Execute from fd" << fd << ": " << command;
-	if (command.find("NICK") == 0)
+	std::cout << "Execute from fd" << fd << ": " << message;
+	if (message.find("NICK") == 0)
 	{
-		if (_incoming[fd] == false)
-			send(fd, "ERR_PASSWDMISMATCH :Password incorrect!\r\n", 41, 0);
-			
+		if (!_incoming[fd]->is_registered())
+		{
+			send_reply(":localhost 464  :Password incorrect", fd);
+			send_reply("ERROR", fd);
+			close(fd);
+			delete _incoming[fd];
+			_incoming.erase(fd);
+			// TODO: do this
+			// delete map entry
+		}
 	}
+}
+
+void	Server::send_reply(const std::string& reply, int fd)
+{
+	send(fd, reply.c_str(), reply.length(), 0);
+	send(fd, CRLF, 2, 0);
 }
 
 void	Server::clean_up(void)
