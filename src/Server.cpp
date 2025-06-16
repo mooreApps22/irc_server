@@ -11,7 +11,6 @@
 #define BACKLOG		10
 #define BUFFER_SIZE	1024
 #define MAX_EVENTS	10
-#define CRLF		"\r\n"
 
 Server::Server(const std::string& port, const std::string& password)
 	:	_port(port),
@@ -153,33 +152,64 @@ void Server::delete_user(int fd)
 
 std::string	Server::get_message(int fd)
 {
-	char		buffer[BUFFER_SIZE];
-	std::string str("");
-	int			bytes_read;
+	std::string	message;
+	int			length;
 
-	bytes_read = recv(fd, buffer, sizeof(buffer) -1, MSG_PEEK);
-	buffer[bytes_read] = '\0';
-	if (bytes_read > 0)
+	message = peek(fd);
+		
+	if (message.length() > 0)
 	{			
-		str = buffer;
-		size_t		crlf = str.find(CRLF);
-
-		if (crlf != std::string::npos)
+		if (_parser.is_partial(message))
 		{
-			bytes_read = recv(fd, buffer, crlf + 2, 0); // No flag means that recv is blocking, however we know that there is data to read!!!
-			buffer[bytes_read] = '\0';
-			str = buffer;
+			message = receive(fd, message.length());
+			_users[fd]->buffer(message);
 		}
+		else
+		{
+			length = _parser.get_message_length(message);
+			std::cout << "message lngth: " << length << std::endl;
+
+			// message = "";
+
+			// std::cout << "User has: " << _users[fd]->get_buffer().length() << std::endl;
+
+			// std::cout << "Complete!!!" << std::endl;
+			// check if partial message!!!
+			// get length and read it!!
+
+		}
+
 	}
 	// else if (bytes_read == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
 	// 	std::cout << "Nothing to read just yet!" << std::endl;
 	else
 	{
 		std::cerr << "Read failed or client disconnected" << std::endl;
-		
-		close (fd);
+		delete_user(fd);
 	}
-	return str;
+	return "str";
+}
+
+std::string Server::peek(int fd)
+{
+	char	buffer[BUFFER_SIZE];
+	int		bytes_read;
+
+	bytes_read = recv(fd, buffer, sizeof(buffer) - 1, MSG_PEEK);
+	buffer[bytes_read] = '\0';
+
+	return buffer;
+}
+
+std::string Server::receive(int fd, int length)
+{
+	char	buffer[length + 1];
+	int		bytes_read;
+
+	bytes_read = recv(fd, buffer, length, 0);
+	buffer[bytes_read] = '\0';
+
+	return buffer;
 }
 
 void	Server::reply_message(std::string& message, int fd)
