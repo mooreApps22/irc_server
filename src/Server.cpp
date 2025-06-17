@@ -99,7 +99,10 @@ void Server::run(void)
 			{	
 				message = get_message(events[i].data.fd);
 				if (!message.empty())
-					_parser.parse_message(message);
+					if( _parser.parse_message(message))
+						// execute whatever the client wants -> check command if command has to be hand
+					else
+						// send a message tellimg the fucker to write better
 				// reply_message(message, events[i].data.fd);
 			}
 		}
