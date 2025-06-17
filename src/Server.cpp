@@ -1,5 +1,5 @@
-#include "../inc/Server.hpp"
-#include "../inc/Logger.hpp"
+#include "Server.hpp"
+#include "Logger.hpp"
 #include "signal.hpp"
 #include <iostream>
 #include <netdb.h>
@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <sys/epoll.h>
 #include <unistd.h>
+#include <string>
 
 #define BACKLOG		10
 #define BUFFER_SIZE	1024
@@ -20,30 +21,13 @@ Server::Server(const std::string& port, const std::string& password)
 		_client_fd(-1),
 		_epoll_fd(-1)
 {
-	//std::cout << "Server Constructor called." << std::endl;
 	Logger::log(INFO, "Server Constructor called.");
 	sig::set_signals();
 	_ch = new CommandHandler(*this, _parser);
 }
 
-Server::Server(const Server& other)
-	:	_port(other._port),
-		_password(other._password)
-{
-	std::cout << "Server Copy Constructor called." << std::endl;
-	*this = other;
-}
-
-Server& Server::operator=(const Server& other)
-{
-	std::cout << "Server Copy Assignment Opperator called." << std::endl;
-	(void)other;
-	return (*this);
-}
-
 Server::~Server()
 {
-	//std::cout << "Server Destructor called." << std::endl;
 	Logger::log(INFO, "Server Destructor called.");
 	clean_up();
 	delete _ch;
@@ -54,7 +38,6 @@ void Server::setup(void)
 	struct addrinfo hints;
 	struct addrinfo *res;
 
-//	std::cout << "Server Setup called." << std::endl;
 	Logger::log(INFO, "Server Setup called.");
 
 	memset(&hints, 0, sizeof hints);
@@ -145,6 +128,7 @@ void Server::accept_connection()
 	else
 	{
 		std::cout << "Client connected! fd: " << _client_fd << std::endl;
+		Logger::log(INFO, "Client connected! fd", _client_fd);
 		send(_client_fd, "Connection stablished!\n", 23, 0);
 		if (register_fd(_client_fd) == -1)
 		{
@@ -196,7 +180,8 @@ std::string	Server::get_message()
 	// 	std::cout << "Nothing to read just yet!" << std::endl;
 	else
 	{
-		std::cerr << "Read failed or client disconnected" << std::endl;
+		Logger::log(INFO, "Client disconnected!", _client_fd);
+		// std::cerr << "Client disconnected! fd:" << _client_fd << std::endl;
 		delete_user();
 	}
 	return message;

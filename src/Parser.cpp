@@ -1,16 +1,17 @@
 #include "Parser.hpp"
+#include "Logger.hpp"
 #include <iostream>
 
 Parser::Parser()
 	:	_prefix(""),
 		_command("")
 {
-	std::cout << "Parser Constructor called." << std::endl;
+	Logger::log(INFO, "Parser Constructor called.");
 }
 
 Parser::~Parser()
 {
-	std::cout << "Parser Destructor called." << std::endl;
+	Logger::log(INFO, "Parser Destructor called.");
 }
 
 bool Parser::is_partial(std::string& message)
@@ -33,7 +34,8 @@ bool Parser::parse_message(std::string& message)
 	_params.empty();
 	_trailing.empty();
 	
-	_end = message.end(); // Delete
+	Logger::log(DEBUG, "Parsing", message);
+	// _end = message.end(); // Delete
 	return is_message();
 }
 
@@ -41,9 +43,6 @@ bool Parser::parse_message(std::string& message)
 bool Parser::is_message()
 {
 	std::string::iterator begin = _it;
-
-	std::cout << "Parsing: "; // Delete
-	print();
 
 	if (is_colon())
 	{
@@ -95,8 +94,7 @@ bool Parser::is_command()
 	{
 		std::string command(begin, _it);
 		_command = command;
-		std::cout << "\tCommand: \'" << _command << "\'" << std::endl;
-
+		Logger::log(DEBUG, "Command", _command);
 		return true;
 	}
 	
@@ -107,8 +105,7 @@ bool Parser::is_command()
 	{
 		std::string command(begin, _it++);
 		_command = command;
-		std::cout << "\tCommand: \'" << _command << "\'" << std::endl;
-
+		Logger::log(DEBUG, "Command", _command);
 		if (_command.length() == 3)
 		{
 			return true;
@@ -196,8 +193,7 @@ bool Parser::is_middle()
 	}
 	std::string param(begin, _it);
 	_params.push_back(param);
-	std::cout << "\tParam: \'" << param << "\'" << std::endl;
-
+	Logger::log(DEBUG, "Param", param);
 	return true;
 }
 
@@ -281,22 +277,12 @@ bool Parser::is_trailing()
 
 	std::string trailing(begin, _it);
 	_trailing = trailing;
-	std::cout << "\tTrailing: \'" << _trailing << "\'" << std::endl;
+	Logger::log(DEBUG, "Trailing", _trailing);
 	return true;
 }
 
 std::string&	Parser::get_command(void)
 {
 	return (_command);
-}
-
-// To be deleted, only used for debugging
-void Parser::print()
-{
-	std::cout << '\'';
-	for (std::string::iterator it = _it; it < _end - 2; it++)
-		std::cout << *it;
-	std::cout << '\'';
-	std::cout << std::endl;
 }
 

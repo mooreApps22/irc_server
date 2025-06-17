@@ -1,4 +1,4 @@
-#include "../inc/Logger.hpp"
+#include "Logger.hpp"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -47,6 +47,13 @@ void	Logger::log(LogLevel level, const std::string& message)
 {
 	std::ostream& stream = _instance._fileStream ;
 	stream << "[" << _levelToString(level) << "] " << message << std::endl;
+
+}
+
+void	Logger::log(LogLevel level, const std::string& message, int var)
+{
+	std::ostream& stream = _instance._fileStream ;
+	stream << "[" << _levelToString(level) << "] " << message << " (" << var << ")" << std::endl;
 
 }
 

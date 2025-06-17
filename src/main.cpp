@@ -1,6 +1,6 @@
 // #include "../inc/data.hpp"
-#include "../inc/Server.hpp"
-#include "../inc/Logger.hpp"
+#include "Server.hpp"
+#include "Logger.hpp"
 #include <iostream>
 // #include <stdexcept>
 // #include <string>

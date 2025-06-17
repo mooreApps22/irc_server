@@ -1,5 +1,5 @@
-#include "../inc/CommandHandler.hpp"
-#include "../inc/Logger.hpp"
+#include "CommandHandler.hpp"
+#include "Logger.hpp"
 #include <vector>
 #include <string>
 

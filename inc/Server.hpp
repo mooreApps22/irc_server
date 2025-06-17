@@ -35,10 +35,7 @@ class Server
 		void		clean_up();
 
     public:
-        Server();
         Server(const std::string& port, const std::string& password);
-        Server(const Server& other);
-        Server& operator=(const Server& other);
         ~Server();
 		
 		void	run(void);

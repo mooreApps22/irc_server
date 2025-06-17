@@ -1,4 +1,5 @@
 #include "User.hpp"
+#include "Logger.hpp"
 #include <iostream>
 
 User::User()
@@ -6,12 +7,12 @@ User::User()
 		_registered(false),
 		_partial_message("")
 {
-	std::cout << "User Constructor called." << std::endl;
+	Logger::log(INFO, "User Constructor called.");
 }
 
 User::~User()
 {
-	std::cout << "User Desstructor called." << std::endl;
+	Logger::log(INFO, "User Desstructor called.");
 }
 
 void User::buffer(std::string& message)
