@@ -29,7 +29,6 @@ class Server
 		std::string peek();
 		std::string receive(int length);
 
-		// void		execute_commad();
 		void		reply_message(std::string& message);
 		void		send_reply(const std::string& reply);
 		void		clean_up();
@@ -40,7 +39,6 @@ class Server
         Server(const Server& other);
         Server& operator=(const Server& other);
         ~Server();
-		
 		void	run(void);
 };
 

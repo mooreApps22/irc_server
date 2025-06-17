@@ -224,20 +224,6 @@ std::string Server::receive(int length)
 	return buffer;
 }
 
-void	Server::reply_message(std::string& message)
-{
-	std::cout << "Execute from fd" << _client_fd << ": " << message;
-	if (message.find("NICK") == 0)
-	{
-		if (!_users[_client_fd]->is_registered())
-		{
-			send_reply(":localhost 464  :Password incorrect");
-			send_reply("ERROR");
-			delete_user();
-		}
-	}
-}
-
 void	Server::send_reply(const std::string& reply)
 {
 	send(_client_fd, reply.c_str(), reply.length(), 0);
