@@ -44,6 +44,6 @@ void	Logger::closer()
 void	Logger::log(LogLevel level, const std::string& message)
 {
 	std::ostream& stream = _instance._fileStream ;
-	stream << "Logger[" << _levelToString(level) << "] " << message << std::endl;
+	stream << "[" << _levelToString(level) << "] " << message << std::endl;
 
 }

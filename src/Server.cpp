@@ -1,4 +1,5 @@
 #include "../inc/Server.hpp"
+#include "../inc/Logger.hpp"
 #include "signal.hpp"
 #include <iostream>
 #include <netdb.h>
@@ -18,7 +19,8 @@ Server::Server(const std::string& port, const std::string& password)
 		_server_fd(-1),
 		_epoll_fd(-1)
 {
-	std::cout << "Server Constructor called." << std::endl;
+	//std::cout << "Server Constructor called." << std::endl;
+	Logger::log(INFO, "Server Constructor called.");
 	sig::set_signals();
 }
 
@@ -39,7 +41,8 @@ Server& Server::operator=(const Server& other)
 
 Server::~Server()
 {
-	std::cout << "Server Destructor called." << std::endl;
+	//std::cout << "Server Destructor called." << std::endl;
+	Logger::log(INFO, "Server Destructor called.");
 	clean_up();
 }
 
@@ -48,7 +51,8 @@ void Server::setup(void)
 	struct addrinfo hints;
 	struct addrinfo *res;
 
-	std::cout << "Server Setup called." << std::endl;
+//	std::cout << "Server Setup called." << std::endl;
+	Logger::log(INFO, "Server Setup called.");
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
@@ -57,23 +61,28 @@ void Server::setup(void)
 
 	getaddrinfo(NULL, _port.c_str(), &hints, &res);
 
+	Logger::log(INFO, "TCP/IP data stored.");
 	_server_fd = socket(res->ai_family, res->ai_socktype | SOCK_NONBLOCK, res->ai_protocol);
 	if (_server_fd == -1)
 		throw std::runtime_error("Socket creation failed");
+	Logger::log(INFO, "_server_fd assigned.");
 
 	if (bind(_server_fd, res->ai_addr, res->ai_addrlen) == -1)
 		throw std::runtime_error("Bind failed");
+	Logger::log(INFO, "_server_fd bind()ed to port.");
 	freeaddrinfo(res);
 	
 	if (listen(_server_fd, BACKLOG) == -1)
 		throw std::runtime_error("Listen failed");
+	Logger::log(INFO, "Server is listening to port.");
 	
 	_epoll_fd = epoll_create1(0);
 	if (_epoll_fd == -1)
 		throw std::runtime_error("The eevent poll could not be created.");
-
+	Logger::log(INFO, "Event poll created.");
 	if (register_fd(_server_fd) == -1)
 		throw std::runtime_error("The listener could not be registered to the event poll.");
+	Logger::log(INFO, "Listener registered to the event poll.");
 	std::cout << "Server listening on port... " << std::endl;
 }
 

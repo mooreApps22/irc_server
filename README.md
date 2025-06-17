@@ -76,6 +76,11 @@
       - [ ] * o: Give/take channel operator privilege
       - [ ] * l: Set/remove the user limit to channel
 
+	  NOTE:
+		Channel Operator (aka chop) Powers
+			KICK, MODE, INVITE, TOPIC
+			
+
 ### Test Example:
 
 - Verfiy every possible error and issue:
