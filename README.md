@@ -79,12 +79,9 @@
 ### Test Example:
 
 - Verfiy every possible error and issue:
-  - [ ] receiving partial data
+  - [x] receiving partial data
   - [ ] low bandwidth
-  - [ ] buffer incomplete data before parsing
-  - [ ] slow client(delayed send)
-  - [ ] Malformed/invalid messages
-  - [ ] missing parameters
+  - [x] buffer incomplete data
   - [ ] wrong number of arguments
   - [ ] channel issues
   - [ ] handle appropriate numeric error code (RFC-compliant)
