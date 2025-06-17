@@ -17,6 +17,7 @@ Server::Server(const std::string& port, const std::string& password)
 	:	_port(port),
 		_password(password),
 		_server_fd(-1),
+		_client_fd(-1),
 		_epoll_fd(-1)
 {
 	//std::cout << "Server Constructor called." << std::endl;
@@ -108,7 +109,8 @@ void Server::run(void)
 				accept_connection();
 			else
 			{	
-				message = get_message(events[i].data.fd);
+				_client_fd = events[i].data.fd;
+				message = get_message();
 				if (!message.empty())
 				{
 					if (_parser.parse_message(message))
@@ -116,7 +118,6 @@ void Server::run(void)
 					else
 						Logger::log(INFO, "Command Syntax Error.");	
 				}
-				// reply_message(message, events[i].data.fd);
 			}
 		}
 	}
@@ -134,54 +135,53 @@ void Server::accept_connection()
 {
 	struct sockaddr_storage	client_addr;
 	socklen_t				client_len = sizeof(client_addr);
-	int 					client_fd = -1;
 
-	client_fd = accept(_server_fd, (struct sockaddr*)&client_addr, &client_len);
-	if (client_fd == -1)
+	_client_fd = accept(_server_fd, (struct sockaddr*)&client_addr, &client_len);
+	if (_client_fd == -1)
 	{
 		if (errno != EAGAIN && errno != EWOULDBLOCK)
 			throw std::runtime_error("Accept failed");
 	}
 	else
 	{
-		std::cout << "Client connected! fd: " << client_fd << std::endl;
-		send(client_fd, "Connection stablished!\n", 23, 0);
-		if (register_fd(client_fd) == -1)
+		std::cout << "Client connected! fd: " << _client_fd << std::endl;
+		send(_client_fd, "Connection stablished!\n", 23, 0);
+		if (register_fd(_client_fd) == -1)
 		{
-			send(client_fd, "ERROR :processing your request, please try again!\r\n", 51, 0);
-			close(client_fd);
+			send(_client_fd, "ERROR :processing your request, please try again!\r\n", 51, 0);
+			close(_client_fd);
 		}
 		else
-			add_new_user(client_fd);
+			add_new_user();
 	}
 }
 
-void Server::add_new_user(int fd)
+void Server::add_new_user()
 {
-	_users[fd] = new User();	
+	_users[_client_fd] = new User();	
 }
 
-void Server::delete_user(int fd)
+void Server::delete_user()
 {
-		close(fd);
-		delete _users[fd];
-		_users.erase(fd);
+		close(_client_fd);
+		delete _users[_client_fd];
+		_users.erase(_client_fd);
 }
 
-std::string	Server::get_message(int fd)
+std::string	Server::get_message()
 {
 	User*		user;
 	std::string	message;
 	int			length;
 
-	user = _users[fd];
-	message = peek(fd);
+	user = _users[_client_fd];
+	message = peek();
 		
 	if (!message.empty())
 	{			
 		if (_parser.is_partial(message))
 		{
-			message = receive(fd, message.length());
+			message = receive(message.length());
 			user->buffer(message);
 			message.clear();
 		}
@@ -189,7 +189,7 @@ std::string	Server::get_message(int fd)
 		{
 			length = _parser.get_message_length(message);
 			message = user->get_partial_message();
-			message.append(receive(fd, length));
+			message.append(receive(length));
 		}
 	}
 	// else if (bytes_read == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
@@ -197,51 +197,51 @@ std::string	Server::get_message(int fd)
 	else
 	{
 		std::cerr << "Read failed or client disconnected" << std::endl;
-		delete_user(fd);
+		delete_user();
 	}
 	return message;
 }
 
-std::string Server::peek(int fd)
+std::string Server::peek()
 {
 	char	buffer[BUFFER_SIZE];
 	int		bytes_read;
 
-	bytes_read = recv(fd, buffer, sizeof(buffer) - 1, MSG_PEEK);
+	bytes_read = recv(_client_fd, buffer, sizeof(buffer) - 1, MSG_PEEK);
 	buffer[bytes_read] = '\0';
 
 	return buffer;
 }
 
-std::string Server::receive(int fd, int length)
+std::string Server::receive(int length)
 {
 	char	buffer[length + 1];
 	int		bytes_read;
 
-	bytes_read = recv(fd, buffer, length, 0);
+	bytes_read = recv(_client_fd, buffer, length, 0);
 	buffer[bytes_read] = '\0';
 
 	return buffer;
 }
 
-void	Server::reply_message(std::string& message, int fd)
+void	Server::reply_message(std::string& message)
 {
-	std::cout << "Execute from fd" << fd << ": " << message;
+	std::cout << "Execute from fd" << _client_fd << ": " << message;
 	if (message.find("NICK") == 0)
 	{
-		if (!_users[fd]->is_registered())
+		if (!_users[_client_fd]->is_registered())
 		{
-			send_reply(":localhost 464  :Password incorrect", fd);
-			send_reply("ERROR", fd);
-			delete_user(fd);
+			send_reply(":localhost 464  :Password incorrect");
+			send_reply("ERROR");
+			delete_user();
 		}
 	}
 }
 
-void	Server::send_reply(const std::string& reply, int fd)
+void	Server::send_reply(const std::string& reply)
 {
-	send(fd, reply.c_str(), reply.length(), 0);
-	send(fd, CRLF, 2, 0);
+	send(_client_fd, reply.c_str(), reply.length(), 0);
+	send(_client_fd, CRLF, 2, 0);
 }
 
 void	Server::clean_up(void)
