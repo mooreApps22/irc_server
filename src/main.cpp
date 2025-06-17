@@ -20,13 +20,18 @@
 
 int	main(int ac, char **av)
 {
+	Logger::log(INFO, "ircserv has been compiled.");
 	try	
 	{
 		if (ac != 3)
 			throw std::runtime_error("Usage: ./ircserv <port> <password>");
+
+		Logger::log(INFO, "ircserv arguments validated.");
 		Server server(av[1], av[2]);
 
+		Logger::log(INFO, "server.setup called.");
 		server.setup();
+		Logger::log(INFO, "server.run called.");
 		server.run();
 	}
 	catch (const std::exception &e)

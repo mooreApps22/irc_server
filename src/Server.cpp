@@ -1,4 +1,5 @@
 #include "../inc/Server.hpp"
+#include "../inc/Logger.hpp"
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -50,7 +51,7 @@ void	Server::setup(void)
 {
 	int port_num = atoi(_port.c_str());
 
-	std::cout << "Server Setup called." << std::endl;
+	Logger::log(INFO, "Server Setup called.");
 	_server_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_server_fd < 0)
 		throw std::runtime_error("Socket creation failed");

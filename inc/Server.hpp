@@ -3,6 +3,7 @@
 # include <iostream>
 # include <string>
 # include <netinet/in.h>
+# include <Logger.hpp>
 
 class Server
 {
@@ -12,6 +13,7 @@ class Server
 		const std::string		_port;	
 		const std::string		_password;	
 		struct sockaddr_in		_server_addr;
+//		Logger					_logger;
     public:
         Server();
         Server(const std::string& port, const std::string& password);
