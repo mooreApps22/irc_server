@@ -99,7 +99,7 @@ void Server::run(void)
 			{	
 				message = get_message(events[i].data.fd);
 				if (!message.empty())
-					std::cout << "Message: " << message;
+					_parser.parse_message(message);
 				// reply_message(message, events[i].data.fd);
 			}
 		}
