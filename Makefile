@@ -65,4 +65,7 @@ colors:
 valgrind:
 	valgrind --leak-check=full --show-leak-kinds=all ./$(NAME)
 
+gdb:
+	@gdb --args ./$(NAME) 6667 password
+
 .PHONY: all clean fclean re
