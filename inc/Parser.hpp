@@ -33,10 +33,10 @@ class Parser
         Parser();
         ~Parser();
 
-		bool	is_partial(std::string& message);
-		int		get_message_length(std::string& message);
-		bool	parse_message(std::string& message);
-
+		bool			is_partial(std::string& message);
+		int				get_message_length(std::string& message);
+		bool			parse_message(std::string& message);
+		std::string&	get_command(void);
 
 		std::string::iterator	_end; // Delete
 		void	print(); // Delete

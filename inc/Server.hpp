@@ -2,8 +2,11 @@
 # define SERVER_HPP
 #include "User.hpp"
 #include "Parser.hpp"
+#include "CommandHandler.hpp"
 # include <string>
 #include <map>
+
+class CommandHandler;
 
 class Server
 {
@@ -14,6 +17,7 @@ class Server
 		int						_epoll_fd;
 		std::map<int, User*>	_users;
 		Parser					_parser;
+		CommandHandler*			_ch;
 
 		void		setup();
 		int			register_fd(int fd);

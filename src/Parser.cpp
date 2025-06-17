@@ -285,6 +285,11 @@ bool Parser::is_trailing()
 	return true;
 }
 
+std::string&	Parser::get_command(void)
+{
+	return (_command);
+}
+
 // To be deleted, only used for debugging
 void Parser::print()
 {

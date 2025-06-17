@@ -22,6 +22,7 @@ Server::Server(const std::string& port, const std::string& password)
 	//std::cout << "Server Constructor called." << std::endl;
 	Logger::log(INFO, "Server Constructor called.");
 	sig::set_signals();
+	_ch = new CommandHandler(*this, _parser);
 }
 
 Server::Server(const Server& other)
@@ -44,6 +45,7 @@ Server::~Server()
 	//std::cout << "Server Destructor called." << std::endl;
 	Logger::log(INFO, "Server Destructor called.");
 	clean_up();
+	delete _ch;
 }
 
 void Server::setup(void)
@@ -108,7 +110,12 @@ void Server::run(void)
 			{	
 				message = get_message(events[i].data.fd);
 				if (!message.empty())
-					_parser.parse_message(message);
+				{
+					if (_parser.parse_message(message))
+						_ch->execute();	
+					else
+						Logger::log(INFO, "Command Syntax Error.");	
+				}
 				// reply_message(message, events[i].data.fd);
 			}
 		}

@@ -49,3 +49,10 @@ void	Logger::log(LogLevel level, const std::string& message)
 	stream << "[" << _levelToString(level) << "] " << message << std::endl;
 
 }
+
+void	Logger::log(LogLevel level, const std::string& message, std::string var)
+{
+	std::ostream& stream = _instance._fileStream ;
+	stream << "[" << _levelToString(level) << "] " << message << " (" << var << ")" << std::endl;
+
+}
