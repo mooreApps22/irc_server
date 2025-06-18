@@ -32,78 +32,74 @@ CommandHandler::~CommandHandler()
 */
 
 
-void	CommandHandler::execute(parsed_message parsed_message)
+void	CommandHandler::execute(parsed_message& parsed_message)
 {
 	const std::string command = parsed_message.command;
 	commands::iterator it = _commands.find(command);
 	if (it != _commands.end())
 	{
-		(this->*(it->second))();
+		(this->*(it->second))(parsed_message);
 	}
 	else
 		Logger::log(INFO, "Unknown Command.", command);
 }
 
-void	CommandHandler::_passFp()
+void	CommandHandler::_passFp(parsed_message& parsed_message)
 {
-	Logger::log(INFO, "PASS received.");
-	_srvAPI.send_reply("You've sent a PASS request!");
+	Logger::log(INFO, parsed_message.command + " received.");
+	_srvAPI.send_reply("You've sent a" + parsed_message.command + "request!");
 }
 
-void	CommandHandler::_nickFp()
+void	CommandHandler::_nickFp(parsed_message& parsed_message)
 {
-	
-	Logger::log(INFO, "NICK  received.");
-	_srvAPI.send_reply("You've sent a NICK request!");
-
+	Logger::log(INFO, parsed_message.command + " received.");
+	_srvAPI.send_reply("You've sent a" + parsed_message.command + "request!");
 }
 
-void	CommandHandler::_userFp()
+void	CommandHandler::_userFp(parsed_message& parsed_message)
 {
-	
-	Logger::log(INFO, "USER  received.");
-	_srvAPI.send_reply("You've sent a USER request!");
-
+	Logger::log(INFO, parsed_message.command + " received.");
+	_srvAPI.send_reply("You've sent a" + parsed_message.command + "request!");
 }
 
-void	CommandHandler::_realFp()
+void	CommandHandler::_realFp(parsed_message& parsed_message)
 {
-	Logger::log(INFO, ".");
-	
+	Logger::log(INFO, parsed_message.command + " received.");
+	_srvAPI.send_reply("You've sent a" + parsed_message.command + "request!");
 }
 
-void	CommandHandler::_joinFp()
+void	CommandHandler::_joinFp(parsed_message& parsed_message)
 {
-	
-	Logger::log(INFO, ".");
+	Logger::log(INFO, parsed_message.command + " received.");
+	_srvAPI.send_reply("You've sent a" + parsed_message.command + "request!");
 }
 
-void	CommandHandler::_privMsgFp()
+void	CommandHandler::_privMsgFp(parsed_message& parsed_message)
 {
-	
-	Logger::log(INFO, ".");
-	
+	Logger::log(INFO, parsed_message.command + " received.");
+	_srvAPI.send_reply("You've sent a" + parsed_message.command + "request!");
 }
 
-void	CommandHandler::_kickFp()
+void	CommandHandler::_kickFp(parsed_message& parsed_message)
 {
-	Logger::log(INFO, ".");
+	Logger::log(INFO, parsed_message.command + " received.");
+	_srvAPI.send_reply("You've sent a" + parsed_message.command + "request!");
 }
 
-void	CommandHandler::_inviteFp()
+void	CommandHandler::_inviteFp(parsed_message& parsed_message)
 {
-	Logger::log(INFO, ".");
-	
+	Logger::log(INFO, parsed_message.command + " received.");
+	_srvAPI.send_reply("You've sent a" + parsed_message.command + "request!");
 }
 
-void	CommandHandler::_modeFp()
+void	CommandHandler::_modeFp(parsed_message& parsed_message)
 {
-	Logger::log(INFO, ".");
-	
+	Logger::log(INFO, parsed_message.command + " received.");
+	_srvAPI.send_reply("You've sent a" + parsed_message.command + "request!");
 }
 
-void	CommandHandler::_topicFp()
+void	CommandHandler::_topicFp(parsed_message& parsed_message)
 {
-	Logger::log(INFO, ".");
-	
+	Logger::log(INFO, parsed_message.command + " received.");
+	_srvAPI.send_reply("You've sent a" + parsed_message.command + "request!");
 }
