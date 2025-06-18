@@ -3,8 +3,6 @@
 #include <iostream>
 
 Parser::Parser()
-	:	_prefix(""),
-		_command("")
 {
 	Logger::log(INFO, "Parser Constructor called.");
 }
@@ -24,29 +22,23 @@ int Parser::get_message_length(std::string& message)
 	return message.find(CRLF) + 2;
 }
 
-bool Parser::parse_message(std::string& message)
+bool Parser::parse_message(std::string& message, parsed_message& parsed_message)
 {
 	std::string::iterator begin = message.begin();
 	_it = begin;
 
-	_prefix.empty();
-	_command.empty();
-	_params.empty();
-	_trailing.empty();
-	
 	Logger::log(DEBUG, "Parsing", message);
-	// _end = message.end(); // Delete
-	return is_message();
+	return is_message(parsed_message);
 }
 
 // message    =  [ ":" prefix SPACE ] command [ params ] crlf
-bool Parser::is_message()
+bool Parser::is_message(parsed_message& parsed_message)
 {
 	std::string::iterator begin = _it;
 
 	if (is_colon())
 	{
-		if (!is_prefix())
+		if (!is_prefix(parsed_message))
 		 	return false;
 		if (!is_space())
 			return false;
@@ -54,11 +46,11 @@ bool Parser::is_message()
 	else
 		_it = begin;
 
-	if (!is_command())
+	if (!is_command(parsed_message))
 		return false;
 	
 	begin = _it;
-	if (!is_params())
+	if (!is_params(parsed_message))
 		_it = begin;
 	
 	if (!is_crlf())
@@ -72,8 +64,9 @@ bool Parser::is_colon()
 }
 
 // prefix     =  servername / ( nickname [ [ "!" user ] "@" host ] )
-bool Parser::is_prefix()
+bool Parser::is_prefix(parsed_message& parsed_message)
 {
+	(void) parsed_message;
 	return false;
 }
 
@@ -84,7 +77,7 @@ bool Parser::is_space()
 }
 
 // command    =  1*letter / 3digit ; 1 or more letter OR eactly 3 digit
-bool Parser::is_command()
+bool Parser::is_command(parsed_message& parsed_message)
 {
 	std::string::iterator begin = _it;
 
@@ -93,8 +86,8 @@ bool Parser::is_command()
 	if (_it > begin)
 	{
 		std::string command(begin, _it);
-		_command = command;
-		Logger::log(DEBUG, "Command", _command);
+		parsed_message.command = command;
+		Logger::log(DEBUG, "Command", parsed_message.command);
 		return true;
 	}
 	
@@ -104,9 +97,9 @@ bool Parser::is_command()
 	if (_it > begin)
 	{
 		std::string command(begin, _it++);
-		_command = command;
-		Logger::log(DEBUG, "Command", _command);
-		if (_command.length() == 3)
+		parsed_message.command = command;
+		Logger::log(DEBUG, "Command", parsed_message.command);
+		if (parsed_message.command.length() == 3)
 		{
 			return true;
 		}
@@ -118,14 +111,12 @@ bool Parser::is_command()
 
 // params     =  *14( SPACE middle ) [ SPACE ":" trailing ]
 //            =/ 14( SPACE middle ) [ SPACE [ ":" ] trailing ]
-bool Parser::is_params()
+bool Parser::is_params(parsed_message& parsed_message)
 {
 	std::string::iterator begin;
 	std::string::iterator backtrack;
 	int i;
 	
-	_params.clear();
-
 	for(i = 0; i < 14; i++)
 	{
 		begin = _it;
@@ -134,7 +125,7 @@ bool Parser::is_params()
 			_it = begin;
 			break;
 		}
-		if (!is_middle())
+		if (!is_middle(parsed_message))
 		{
 			_it = begin;
 			break;
@@ -147,7 +138,7 @@ bool Parser::is_params()
 		_it = begin;
 		return true;
 	}
-	if (_params.size() < 14)
+	if (parsed_message.params.size() < 14)
 	{
 		if (!is_colon())
 		{
@@ -163,14 +154,14 @@ bool Parser::is_params()
 	}
 
 	backtrack = _it;
-	if (!is_trailing())
+	if (!is_trailing(parsed_message))
 		_it = begin;
 
 	return true;
 }
 
 // middle     =  nospcrlfcl *( ":" / nospcrlfcl )
-bool Parser::is_middle()
+bool Parser::is_middle(parsed_message& parsed_message)
 {
 	std::string::iterator begin = _it;
 	std::string::iterator checkpoint;
@@ -192,7 +183,7 @@ bool Parser::is_middle()
 		}
 	}
 	std::string param(begin, _it);
-	_params.push_back(param);
+	parsed_message.params.push_back(param);
 	Logger::log(DEBUG, "Param", param);
 	return true;
 }
@@ -252,7 +243,7 @@ bool Parser::is_nickname()
 }
 
 // trailing   =  *( ":" / " " / nospcrlfcl ) ; 0 or more
-bool Parser::is_trailing()
+bool Parser::is_trailing(parsed_message& parsed_message)
 {
 	std::string::iterator begin = _it;
 	std::string::iterator backtrack;
@@ -276,13 +267,8 @@ bool Parser::is_trailing()
 	}
 
 	std::string trailing(begin, _it);
-	_trailing = trailing;
-	Logger::log(DEBUG, "Trailing", _trailing);
+	parsed_message.trailing = trailing;
+	Logger::log(DEBUG, "Trailing", parsed_message.trailing);
 	return true;
-}
-
-std::string&	Parser::get_command(void)
-{
-	return (_command);
 }
 

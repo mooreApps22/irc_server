@@ -4,12 +4,21 @@
 #include <string>
 
 
-CommandHandler::CommandHandler(Server& server, Parser& parser)
-	:	_server(server), 
-		_parser(parser)
+CommandHandler::CommandHandler(IServerAPI& srvAPI)
+	:	_srvAPI(srvAPI)
 {
 	Logger::log(INFO, "CommandHandler constructed.");
-	(void)_server;
+
+	_commands["INVITE"]		= &CommandHandler::_inviteFp;
+	_commands["JOIN"]		= &CommandHandler::_joinFp;
+	_commands["KICK"]		= &CommandHandler::_kickFp;
+	_commands["MODE"]		= &CommandHandler::_modeFp;
+	_commands["NICK"]		= &CommandHandler::_nickFp;
+	_commands["PASS"]		= &CommandHandler::_passFp;
+	_commands["PRIVMSG"]	= &CommandHandler::_privMsgFp;
+	_commands["REAL"] 		= &CommandHandler::_realFp;
+	_commands["TOPIC"] 		= &CommandHandler::_topicFp;
+	_commands["USER"] 		= &CommandHandler::_userFp;
 }
 
 CommandHandler::~CommandHandler()
@@ -21,44 +30,40 @@ CommandHandler::~CommandHandler()
 	  int myints[] = {16,2,77,29};
 	  std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
 */
-void	CommandHandler::execute(void)
+
+
+void	CommandHandler::execute(parsed_message parsed_message)
 {
-	std::string my_commands[] = {"PASS", "NICK", "USER", "REAL", "JOIN", "PRIVMSG", "KICK", "INVITE", "TOPIC", "MODE"};
-		
-	std::vector<std::string> commands(my_commands, my_commands + sizeof(my_commands) / sizeof(std::string));
-  	void (CommandHandler::*fptr[])() = {&CommandHandler::_passFp, &CommandHandler::_nickFp, &CommandHandler::_userFp, &CommandHandler::_realFp, &CommandHandler::_joinFp, &CommandHandler::_privMsgFp,
-										&CommandHandler::_kickFp, &CommandHandler::_inviteFp, &CommandHandler::_topicFp, &CommandHandler::_modeFp};
-	
-	for (std::vector<std::string>::iterator it = commands.begin(); it < commands.end(); it++)
+	const std::string command = parsed_message.command;
+	commands::iterator it = _commands.find(command);
+	if (it != _commands.end())
 	{
-		if (*it == _parser.get_command())
-		{
-			(this->*fptr[it - commands.begin()])();
-			break ;
-		}
-		else if (it == commands.end() - 1)
-		{
-			Logger::log(INFO, "Unknown Command.", _parser.get_command());
-		}
+		(this->*(it->second))();
 	}
+	else
+		Logger::log(INFO, "Unknown Command.", command);
 }
 
 void	CommandHandler::_passFp()
 {
 	Logger::log(INFO, "PASS received.");
-	
+	_srvAPI.send_reply("You've sent a PASS request!");
 }
 
 void	CommandHandler::_nickFp()
 {
 	
 	Logger::log(INFO, "NICK  received.");
+	_srvAPI.send_reply("You've sent a NICK request!");
+
 }
 
 void	CommandHandler::_userFp()
 {
 	
 	Logger::log(INFO, "USER  received.");
+	_srvAPI.send_reply("You've sent a USER request!");
+
 }
 
 void	CommandHandler::_realFp()

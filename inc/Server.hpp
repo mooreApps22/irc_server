@@ -1,14 +1,13 @@
-#ifndef SERVER_HPP
-# define SERVER_HPP
+#pragma once
+#include "IServerAPI.hpp"
 #include "User.hpp"
 #include "Parser.hpp"
 #include "CommandHandler.hpp"
 # include <string>
 #include <map>
 
-class CommandHandler;
 
-class Server
+class Server: public IServerAPI
 {
     private:
 		const std::string		_port;
@@ -18,7 +17,7 @@ class Server
 		int						_epoll_fd;
 		std::map<int, User*>	_users;
 		Parser					_parser;
-		CommandHandler*			_ch;
+		CommandHandler			_ch;
 
 		void		setup();
 		int			register_fd(int fd);
@@ -29,16 +28,14 @@ class Server
 		std::string peek();
 		std::string receive(int length);
 
-		// void		execute_commad();
 		void		reply_message(std::string& message);
-		void		send_reply(const std::string& reply);
 		void		clean_up();
 
     public:
         Server(const std::string& port, const std::string& password);
         ~Server();
-		
 		void	run(void);
-};
 
-#endif
+		// API methods
+		void		send_reply(const std::string& reply);
+};
