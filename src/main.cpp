@@ -2,18 +2,9 @@
 #include "Server.hpp"
 #include "Logger.hpp"
 #include <iostream>
-// #include <stdexcept>
-// #include <string>
-// #include <sys/socket.h>
-// #include <unistd.h>
-// #include <arpa/inet.h>
-// #include <netinet/in.h>
-// #include <cstring>
-// #include <netdb.h>
-// #include <errno.h>
-// #include <stdio.h>
-// #include <csignal>
-// #include <cstdlib>
+#include <stdexcept>
+#include <string>
+
 
 /*
 	Server Terminal: ./ircserv -C 6667 password

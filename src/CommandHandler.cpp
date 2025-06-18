@@ -4,9 +4,7 @@
 #include <string>
 
 
-CommandHandler::CommandHandler(Server& server, Parser& parser)
-	:	_server(server), 
-		_parser(parser)
+CommandHandler::CommandHandler()
 {
 	Logger::log(INFO, "CommandHandler constructed.");
 
@@ -20,7 +18,6 @@ CommandHandler::CommandHandler(Server& server, Parser& parser)
 	_commands["REAL"] 		= &CommandHandler::_realFp;
 	_commands["TOPIC"] 		= &CommandHandler::_topicFp;
 	_commands["USER"] 		= &CommandHandler::_userFp;
-	(void)_server;
 }
 
 CommandHandler::~CommandHandler()
@@ -32,15 +29,18 @@ CommandHandler::~CommandHandler()
 	  int myints[] = {16,2,77,29};
 	  std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
 */
-void	CommandHandler::execute(void)
+
+
+void	CommandHandler::execute(parsed_message parsed_message)
 {
-	commands::iterator it = _commands.find(_parser.get_command());
+	const std::string command = parsed_message.command;
+	commands::iterator it = _commands.find(command);
 	if (it != _commands.end())
 	{
 		(this->*(it->second))();
 	}
 	else
-		Logger::log(INFO, "Unknown Command.", _parser.get_command());
+		Logger::log(INFO, "Unknown Command.", command);
 }
 
 void	CommandHandler::_passFp()

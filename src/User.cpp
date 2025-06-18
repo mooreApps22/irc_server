@@ -1,6 +1,7 @@
 #include "User.hpp"
 #include "Logger.hpp"
 #include <iostream>
+#include <string>
 
 User::User()
 	:	_nickname(""),

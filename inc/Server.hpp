@@ -6,7 +6,6 @@
 # include <string>
 #include <map>
 
-class CommandHandler;
 
 class Server
 {
@@ -18,7 +17,7 @@ class Server
 		int						_epoll_fd;
 		std::map<int, User*>	_users;
 		Parser					_parser;
-		CommandHandler*			_ch;
+		CommandHandler			_ch;
 
 		void		setup();
 		int			register_fd(int fd);
@@ -29,7 +28,6 @@ class Server
 		std::string peek();
 		std::string receive(int length);
 
-		// void		execute_commad();
 		void		reply_message(std::string& message);
 		void		send_reply(const std::string& reply);
 		void		clean_up();
