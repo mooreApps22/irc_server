@@ -28,7 +28,9 @@ class Server: public IServerAPI
 		std::string peek();
 		std::string receive(int length);
 
-		void		reply_message(std::string& message);
+		// void		execute_command();
+		void		reply_message(std::string& message, int fd);
+		void		send_reply(const std::string& reply, int fd);
 		void		clean_up();
 
     public:
