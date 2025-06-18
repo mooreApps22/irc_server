@@ -1,6 +1,7 @@
 #pragma once
-# include <iostream>
+# include "IServerAPI.hpp"
 # include "Parser.hpp"
+# include <iostream>
 # include <map>
 # include <string>
 
@@ -8,6 +9,7 @@ class CommandHandler
 {
 	typedef std::map<std::string, void (CommandHandler::*)()> commands;
     private:
+		IServerAPI&	_srvAPI;
 		commands	_commands;
 		void		_passFp();
 		void		_nickFp();
@@ -20,7 +22,7 @@ class CommandHandler
 		void		_modeFp();
 		void		_topicFp();
     public:
-		CommandHandler();
+		CommandHandler(IServerAPI& srvAPI);
         ~CommandHandler();
 		void				execute(void);
 		void				execute(parsed_message parsed_message);

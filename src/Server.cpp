@@ -19,7 +19,8 @@ Server::Server(const std::string& port, const std::string& password)
 		_password(password),
 		_server_fd(-1),
 		_client_fd(-1),
-		_epoll_fd(-1)
+		_epoll_fd(-1),
+		_ch(*this)
 {
 	Logger::log(INFO, "Server Constructor called.");
 	sig::set_signals();

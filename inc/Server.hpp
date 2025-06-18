@@ -1,5 +1,5 @@
-#ifndef SERVER_HPP
-# define SERVER_HPP
+#pragma once
+#include "IServerAPI.hpp"
 #include "User.hpp"
 #include "Parser.hpp"
 #include "CommandHandler.hpp"
@@ -7,7 +7,7 @@
 #include <map>
 
 
-class Server
+class Server: public IServerAPI
 {
     private:
 		const std::string		_port;
@@ -29,14 +29,11 @@ class Server
 		std::string receive(int length);
 
 		void		reply_message(std::string& message);
-		void		send_reply(const std::string& reply);
 		void		clean_up();
 
     public:
         Server(const std::string& port, const std::string& password);
         ~Server();
-		
 		void	run(void);
+		void		send_reply(const std::string& reply);
 };
-
-#endif

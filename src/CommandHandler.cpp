@@ -4,7 +4,8 @@
 #include <string>
 
 
-CommandHandler::CommandHandler()
+CommandHandler::CommandHandler(IServerAPI& srvAPI)
+	:	_srvAPI(srvAPI)
 {
 	Logger::log(INFO, "CommandHandler constructed.");
 
@@ -46,19 +47,23 @@ void	CommandHandler::execute(parsed_message parsed_message)
 void	CommandHandler::_passFp()
 {
 	Logger::log(INFO, "PASS received.");
-	
+	_srvAPI.send_reply("You've sent a PASS request!");
 }
 
 void	CommandHandler::_nickFp()
 {
 	
 	Logger::log(INFO, "NICK  received.");
+	_srvAPI.send_reply("You've sent a NICK request!");
+
 }
 
 void	CommandHandler::_userFp()
 {
 	
 	Logger::log(INFO, "USER  received.");
+	_srvAPI.send_reply("You've sent a USER request!");
+
 }
 
 void	CommandHandler::_realFp()
