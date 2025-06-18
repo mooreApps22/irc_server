@@ -100,7 +100,7 @@ void Server::run(void)
 					if (_parser.parse_message(message, parsed_message))
 						_ch.execute(parsed_message);
 					else
-						Logger::log(INFO, "Command Syntax Error.");	
+						Logger::log(INFO, "Command Syntax Error.", message);	
 				}
 			}
 		}
@@ -210,19 +210,17 @@ std::string Server::receive(int length)
 	return buffer;
 }
 
-void	Server::reply_message(std::string& message)
+void	Server::clean_up(void)
 {
-	std::cout << "Execute from fd" << _client_fd << ": " << message;
-	if (message.find("NICK") == 0)
-	{
-		if (!_users[_client_fd]->is_registered())
-		{
-			send_reply(":localhost 464  :Password incorrect");
-			send_reply("ERROR");
-			delete_user();
-		}
-	}
+	if (_server_fd != -1)
+		close(_server_fd);
+	if (_epoll_fd != -1)
+		close(_epoll_fd);
 }
+
+/*
+	API methods
+*/
 
 void	Server::send_reply(const std::string& reply)
 {
@@ -230,10 +228,7 @@ void	Server::send_reply(const std::string& reply)
 	send(_client_fd, CRLF, 2, 0);
 }
 
-void	Server::clean_up(void)
+bool	Server::is_user_registered()
 {
-	if (_server_fd != -1)
-		close(_server_fd);
-	if (_epoll_fd != -1)
-		close(_epoll_fd);
+	return true;
 }
