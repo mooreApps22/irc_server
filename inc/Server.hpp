@@ -28,7 +28,7 @@ class Server
 		std::string peek(int fd);
 		std::string receive(int fd, int length);
 
-		// void		execute_commad();
+		// void		execute_command();
 		void		reply_message(std::string& message, int fd);
 		void		send_reply(const std::string& reply, int fd);
 		void		clean_up();
