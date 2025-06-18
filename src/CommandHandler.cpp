@@ -9,6 +9,17 @@ CommandHandler::CommandHandler(Server& server, Parser& parser)
 		_parser(parser)
 {
 	Logger::log(INFO, "CommandHandler constructed.");
+
+	_commands["INVITE"]		= &CommandHandler::_inviteFp;
+	_commands["JOIN"]		= &CommandHandler::_joinFp;
+	_commands["KICK"]		= &CommandHandler::_kickFp;
+	_commands["MODE"]		= &CommandHandler::_modeFp;
+	_commands["NICK"]		= &CommandHandler::_nickFp;
+	_commands["PASS"]		= &CommandHandler::_passFp;
+	_commands["PRIVMSG"]	= &CommandHandler::_privMsgFp;
+	_commands["REAL"] 		= &CommandHandler::_realFp;
+	_commands["TOPIC"] 		= &CommandHandler::_topicFp;
+	_commands["USER"] 		= &CommandHandler::_userFp;
 	(void)_server;
 }
 
@@ -23,24 +34,13 @@ CommandHandler::~CommandHandler()
 */
 void	CommandHandler::execute(void)
 {
-	std::string my_commands[] = {"PASS", "NICK", "USER", "REAL", "JOIN", "PRIVMSG", "KICK", "INVITE", "TOPIC", "MODE"};
-		
-	std::vector<std::string> commands(my_commands, my_commands + sizeof(my_commands) / sizeof(std::string));
-  	void (CommandHandler::*fptr[])() = {&CommandHandler::_passFp, &CommandHandler::_nickFp, &CommandHandler::_userFp, &CommandHandler::_realFp, &CommandHandler::_joinFp, &CommandHandler::_privMsgFp,
-										&CommandHandler::_kickFp, &CommandHandler::_inviteFp, &CommandHandler::_topicFp, &CommandHandler::_modeFp};
-	
-	for (std::vector<std::string>::iterator it = commands.begin(); it < commands.end(); it++)
+	commands::iterator it = _commands.find(_parser.get_command());
+	if (it != _commands.end())
 	{
-		if (*it == _parser.get_command())
-		{
-			(this->*fptr[it - commands.begin()])();
-			break ;
-		}
-		else if (it == commands.end() - 1)
-		{
-			Logger::log(INFO, "Unknown Command.", _parser.get_command());
-		}
+		(this->*(it->second))();
 	}
+	else
+		Logger::log(INFO, "Unknown Command.", _parser.get_command());
 }
 
 void	CommandHandler::_passFp()
