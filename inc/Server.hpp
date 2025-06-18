@@ -24,14 +24,10 @@ class Server: public IServerAPI
 		int			register_fd(int fd);
 		void		accept_connection();
 		void		add_new_user();
-		void		delete_user();
 		std::string	get_message();
 		std::string peek();
 		std::string receive(int length);
 
-		// void		execute_command();
-//		void		reply_message(std::string& message, int fd);
-		void		send_reply(const std::string& reply, int fd);
 		void		clean_up();
 
     public:
@@ -40,5 +36,7 @@ class Server: public IServerAPI
 		void	run(void);
 
 		// API methods
-		void		send_reply(const std::string& reply);
+		void	send_reply(const std::string& reply);
+		bool	is_user_registered();
+		void		delete_user();
 };

@@ -11,6 +11,7 @@ public:
 	typedef std::map<std::string, Channel*>::iterator	chanIt;
 	typedef std::map<int, Channel*>::iterator			userIt;
 
+	// Server
 	virtual void send_reply(const std::string& message) = 0;
 
 /*
