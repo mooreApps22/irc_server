@@ -46,17 +46,17 @@ class Channel
 		void											setUserLimit(size_t limit);
 		void											clearUserLimit();
 		// Membership
-		void											addMember(User* user);
-		void											removeMember(User* user);
-		bool											isMember(User* user) const;
+		void											addMember(User* user, const std::string& name);
+		void											removeMember(const std::string& name);
+		bool											isMember(const std::string& name);
 		// Operators
-		void											addChop(User* user);
-		void											removeChop(User* user);
-		bool											isChop(User* user) const;
+		void											addChop(User* user, const std::string& name);
+		void											removeChop(const std::string& name);
+		bool											isChop(const std::string& name);
 		// Invitations
-		void											addInvitee(User* user);
-		void											removeInvitee(User* user);
-		bool											isInvitee(User* user) const;
+		void											addInvitee(User* user, const std::string& name);
+		void											removeInvitee(const std::string& name);
+		bool											isInvitee(const std::string& name);
 
 		class hashSymbolException : public std::exception
 		{

@@ -135,54 +135,51 @@ void	Channel::clearUserLimit()
 }
 
 // Membership
-void	Channel::addMember(const User& user, std::string name)
+void	Channel::addMember(User* user, const std::string& name)
 {
-	user['a'] = name;
-	_members.insert(user['a']);
-	
+	_members.insert(std::pair<std::string, User*>(name, user));
 }
 
-void	Channel::removeMember(User* user)
+void	Channel::removeMember(const std::string& name)
 {
-	_members.erase(user);
+	_members.erase(name);
 }
 
-bool	Channel::isMember(User* user) const
+bool	Channel::isMember(const std::string& name)
 {
-	return (_members.find(user) != _members.end());
+	return (_members.find(name) != _members.end());
 }
 
 // Operators
-void	Channel::addChop(User* user)
+void	Channel::addChop(User* user, const std::string& name)
 {
-	_operators.insert(user);
+	_operators.insert(std::pair<std::string, User*>(name, user));
 }
 
-void	Channel::removeChop(User* user)
+void	Channel::removeChop(const std::string& name)
 {
-	_operators.erase(user);
+	_operators.erase(name);
 }
 
-bool	Channel::isChop(User* user) const
+bool	Channel::isChop(const std::string& name)
 {
-	return (_operators.find(user) != _operators.end());
+	return (_operators.find(name) != _operators.end());
 }
 
 // Invitations
-void	Channel::addInvitee(User* user)
+void	Channel::addInvitee(User* user, const std::string& name)
 {
-	
-	_invitees.insert(user);
+	_invitees.insert(std::pair<std::string, User*>(name, user));
 }
 
-void	Channel::removeInvitee(User* user)
+void	Channel::removeInvitee(const std::string& name)
 {
-	_invitees.remove(user);
+	_invitees.erase(name);
 }
 
-bool	Channel::isInvitee(User* user) const
+bool	Channel::isInvitee(const std::string& name)
 {
-	return (_invitees.find(user) != _invitees.end());
+	return (_invitees.find(name) != _invitees.end());
 }
 
 const char*	Channel::hashSymbolException::what() const throw()
