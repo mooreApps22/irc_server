@@ -11,20 +11,20 @@ class CommandHandler
     private:
 		IServerAPI&	_srvAPI;
 		commands	_commands;
-		// void		_inviteFp(parsed_message& parsed_message);
-		// void		_joinFp(parsed_message& parsed_message);
-		// void		_kickFp(parsed_message& parsed_message);
-		// void		_modeFp(parsed_message& parsed_message);
-		void		_nickFp(parsed_message& parsed_message);
-		void		_passFp(parsed_message& parsed_message);
-		// void		_privMsgFp(parsed_message& parsed_message);
-		// void		_realFp(parsed_message& parsed_message);
-		// void		_topicFp(parsed_message& parsed_message);
-		void		_userFp(parsed_message& parsed_message);
+		// void		_inviteFp(parsed_message& parsed_msg);
+		// void		_joinFp(parsed_message& parsed_msg);
+		// void		_kickFp(parsed_message& parsed_msg);
+		// void		_modeFp(parsed_message& parsed_msg);
+		void		_nickFp(parsed_message& parsed_msg);
+		void		_passFp(parsed_message& parsed_msg);
+		// void		_privMsgFp(parsed_message& parsed_msg);
+		// void		_realFp(parsed_message& parsed_msg);
+		// void		_topicFp(parsed_message& parsed_msg);
+		void		_userFp(parsed_message& parsed_msg);
 		
     public:
 		CommandHandler(IServerAPI& srvAPI);
         ~CommandHandler();
 		void				execute(void);
-		void				execute(parsed_message& parsed_message);
+		void				execute(parsed_message& parsed_msg);
 };

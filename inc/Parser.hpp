@@ -4,7 +4,7 @@
 #include <vector>
 #define CRLF		"\r\n"
 
-typedef struct parsed_message
+typedef struct
 {
 	std::string					prefix;
 	std::string					command;
@@ -21,21 +21,21 @@ class Parser
 		// std::vector<std::string>	_params;
 		// std::string					_trailing;
 
-		bool is_message(parsed_message& parsed_message);
+		bool is_message(parsed_message& parsed_msg);
 		bool is_colon();
-		bool is_prefix(parsed_message& parsed_message);
+		bool is_prefix(parsed_message& parsed_msg);
 		bool is_servername();
 		bool is_nickname();
 		bool is_space();
-		bool is_command(parsed_message& parsed_message);
-		bool is_params(parsed_message& parsed_message);
-		bool is_middle(parsed_message& parsed_message);
+		bool is_command(parsed_message& parsed_msg);
+		bool is_params(parsed_message& parsed_msg);
+		bool is_middle(parsed_message& parsed_msg);
 		bool is_nospcrlfcl();
 		bool is_null();
 		bool is_cr();
 		bool is_lf();
 		bool is_crlf();
-		bool is_trailing(parsed_message& parsed_message);
+		bool is_trailing(parsed_message& parsed_msg);
 
     public:
         Parser();
@@ -43,7 +43,7 @@ class Parser
 
 		bool			is_partial(std::string& message);
 		int				get_message_length(std::string& message);
-		bool			parse_message(std::string& message, parsed_message& parsed_message);
+		bool			parse_message(std::string& message, parsed_message& parsed_msg);
 		std::string&	get_command(void);
 
 		std::string::iterator	_end; // Delete

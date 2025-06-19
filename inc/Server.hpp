@@ -26,6 +26,7 @@ class Server: public IServerAPI
 		std::string	get_message();
 		std::string peek();
 		std::string receive(int length);
+		void	delete_user();
 
 		void		clean_up();
 
@@ -34,8 +35,11 @@ class Server: public IServerAPI
         ~Server();
 		void	run(void);
 
-		// API methods
+		// API methods server related
 		void	send_reply(const std::string& reply);
+		
+		// API methods user related
 		bool	is_user_registered();
-		void		delete_user();
+
+		// API methods channel related
 };
