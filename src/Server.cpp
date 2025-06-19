@@ -146,13 +146,6 @@ void Server::add_new_user()
 	_users[_client_fd] = new User();	
 }
 
-void Server::delete_user()
-{
-		close(_client_fd);
-		delete _users[_client_fd];
-		_users.erase(_client_fd);
-}
-
 std::string	Server::get_message()
 {
 	User*		user;
@@ -183,7 +176,7 @@ std::string	Server::get_message()
 	{
 		Logger::log(INFO, "Client disconnected!", _client_fd);
 		// std::cerr << "Client disconnected! fd:" << _client_fd << std::endl;
-		delete_user();
+		disconnectUser();
 	}
 	return message;
 }
@@ -228,7 +221,24 @@ void	Server::send_reply(const std::string& reply)
 	send(_client_fd, CRLF, 2, 0);
 }
 
-bool	Server::is_user_registered()
+bool 	Server::isUserRegistered()
 {
-	return true;
+	return _users[_client_fd]->getPassword();
+}
+bool 	Server::isPasswordValid(const std::string& password)
+{
+	return _password == password;
+}
+
+void 	Server::setUserPassword(bool state)
+{
+	_users[_client_fd]->setPassword(state);
+}
+
+void	Server::disconnectUser(void)
+{
+	close(_client_fd);
+	// TODO delete user from all channels 
+	delete _users[_client_fd];
+	_users.erase(_client_fd);
 }

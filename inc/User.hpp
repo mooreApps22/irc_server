@@ -7,6 +7,7 @@ class User
     private:
 		std::string	_nickname;	
 		bool		_registered;
+		bool		_password;
 		std::string _partial_message;
 
     public:
@@ -18,6 +19,8 @@ class User
 		bool				is_registered();
 		void				buffer(std::string& message);
 		std::string 		get_partial_message();
+		bool				getPassword();
+		void				setPassword(bool state);
 };
 
 #endif

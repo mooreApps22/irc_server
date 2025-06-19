@@ -37,6 +37,8 @@ class Server: public IServerAPI
 
 		// API methods
 		void	send_reply(const std::string& reply);
-		bool	is_user_registered();
-		void		delete_user();
+		bool 	isUserRegistered();
+		bool 	isPasswordValid(const std::string& password);
+		void 	setUserPassword(bool state);
+		void	disconnectUser(void);
 };

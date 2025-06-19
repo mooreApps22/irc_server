@@ -6,6 +6,7 @@
 User::User()
 	:	_nickname(""),
 		_registered(false),
+		_password(false),
 		_partial_message("")
 {
 	Logger::log(INFO, "User Constructor called.");
@@ -31,4 +32,14 @@ std::string User::get_partial_message()
 bool User::is_registered()
 {
 	return _registered;
+}
+
+bool User::getPassword()
+{
+	return _password;
+}
+
+void User::setPassword(bool state)
+{
+	_password = state;
 }
