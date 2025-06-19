@@ -251,3 +251,42 @@ void	Server::clean_up(void)
 	if (_epoll_fd != -1)
 		close(_epoll_fd);
 }
+
+// Container Interface
+
+const std::map<int, User*>	Server::getUsers(void) const
+{
+	return (_users);
+}
+
+User*	Server::getUser(int fd)
+{
+	std::map<int, User*>::iterator it = _users.find(fd);
+	if (it != _users.end())
+		return (it->second);
+	return (NULL); //maybe nullptr;
+}
+
+Channel*	Server::getChannel(const std::string& name)
+{
+	std::map<std::string, Channel*>::iterator it = _channels.find(name);
+	if (it != _channels.end())
+		return (it->second);
+	return (NULL); //maybe nullptr;
+}
+
+void	Server::addChannel(const std::string& name)
+{
+	if (_channels.find(name) == _channels.end())
+		_channels[name] = new Channel(name);
+}
+
+void	Server::removeChannel(const std::string& name)
+{
+	std::map<std::string, Channel*>::iterator it = _channels.find(name); 
+	if (it != _channels.end())
+	{
+		delete it->second;
+		_channels.erase(it);
+	}
+}

@@ -1,16 +1,17 @@
 #include "Parser.hpp"
+#include "Logger.hpp"
 #include <iostream>
 
 Parser::Parser()
 	:	_prefix(""),
 		_command("")
 {
-	std::cout << "Parser Constructor called." << std::endl;
+	Logger::log(INFO, "Parser Constructor called.");
 }
 
 Parser::~Parser()
 {
-	std::cout << "Parser Destructor called." << std::endl;
+	Logger::log(INFO, "Parser Destructor called.");
 }
 
 bool Parser::is_partial(std::string& message)
@@ -290,6 +291,11 @@ std::string&	Parser::get_command(void)
 	return (_command);
 }
 
+const std::string	Parser::getTrailing(void)
+{
+	return (_trailing);
+}
+
 // To be deleted, only used for debugging
 void Parser::print()
 {
@@ -299,4 +305,5 @@ void Parser::print()
 	std::cout << '\'';
 	std::cout << std::endl;
 }
+
 

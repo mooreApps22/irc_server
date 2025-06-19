@@ -2,6 +2,7 @@
 # define SERVER_HPP
 #include "User.hpp"
 #include "Parser.hpp"
+#include "Channel.hpp"
 #include "CommandHandler.hpp"
 # include <string>
 #include <map>
@@ -16,6 +17,7 @@ class Server
 		int						_server_fd;
 		int						_epoll_fd;
 		std::map<int, User*>	_users;
+		std::map<std::string, Channel*>	_channels;
 		Parser					_parser;
 		CommandHandler*			_ch;
 
@@ -33,6 +35,7 @@ class Server
 		void		send_reply(const std::string& reply, int fd);
 		void		clean_up();
 
+
     public:
         Server();
         Server(const std::string& port, const std::string& password);
@@ -41,6 +44,11 @@ class Server
         ~Server();
 		
 		void	run(void);
+		const std::map<int, User*>	getUsers(void) const;
+		User*						getUser(int fd);
+		Channel*					getChannel(const std::string& name);
+		void						addChannel(const std::string& name);
+		void						removeChannel(const std::string& name);
 };
 
 #endif

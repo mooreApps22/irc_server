@@ -40,6 +40,7 @@ class Parser
 
 		std::string::iterator	_end; // Delete
 		void	print(); // Delete
+		const std::string	getTrailing(void);
 };
 
 #endif

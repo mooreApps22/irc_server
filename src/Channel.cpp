@@ -14,7 +14,7 @@ Channel::Channel(const std::string& name)
 		_mode_has_key(false),
 		_mode_has_limit(false)
 {
-	Logger::log(INFO, "Channel has been created.)", _name);
+	Logger::log(INFO, "Channel has been created. ->)", _name);
 	if (_name[0] != '#')
 		throw hashSymbolException();
 }

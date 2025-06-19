@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 
-
 CommandHandler::CommandHandler(Server& server, Parser& parser)
 	:	_server(server), 
 		_parser(parser)
@@ -69,15 +68,14 @@ void	CommandHandler::_realFp()
 
 void	CommandHandler::_joinFp()
 {
-	
-	Logger::log(INFO, ".");
+	Logger::log(INFO, "Handling JOIN.");
+	_server.addChannel(_parser.getTrailing()); // <==== I'm trying to 
 }
 
 void	CommandHandler::_privMsgFp()
 {
 	
 	Logger::log(INFO, ".");
-	
 }
 
 void	CommandHandler::_kickFp()
