@@ -267,8 +267,10 @@ bool Parser::is_trailing(parsed_message& parsed_message)
 	}
 
 	std::string trailing(begin, _it);
-	parsed_message.trailing = trailing;
-	Logger::log(DEBUG, "Trailing", parsed_message.trailing);
+
+//	parsed_message.trailing = trailing;
+	parsed_message.params.push_back(trailing);
+	Logger::log(DEBUG, "Trailing", trailing);
 	return true;
 }
 

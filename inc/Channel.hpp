@@ -30,9 +30,9 @@ class Channel
 		std::string										getTopic() const;
 		std::string										getKey() const;
 		size_t											getUserLimit() const;
-		const std::map<std::string, User*>&	getMembers() const;
-		const std::map<std::string, User*>&	getChops() const;
-		const std::map<std::string, User*>&	getInvitees() const;
+		const std::map<std::string, User*>&				getMembers() const;
+		const std::map<std::string, User*>&				getChops() const;
+		const std::map<std::string, User*>&				getInvitees() const;
 		bool											isInviteOnly() const;
 		bool											isTopicRestricted() const;
 		bool											needsChannelKey() const;

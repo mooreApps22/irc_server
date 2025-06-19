@@ -209,6 +209,7 @@ std::string Server::receive(int length)
 
 	return buffer;
 }
+/*
 
 void	Server::reply_message(std::string& message)
 {
@@ -223,7 +224,7 @@ void	Server::reply_message(std::string& message)
 		}
 	}
 }
-
+*/
 void	Server::send_reply(const std::string& reply)
 {
 	send(_client_fd, reply.c_str(), reply.length(), 0);

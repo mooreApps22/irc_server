@@ -9,8 +9,8 @@ typedef struct parsed_message
 	std::string					prefix;
 	std::string					command;
 	std::vector<std::string>	params;
-	std::string					trailing;
-}parsed_message;
+//	std::string					trailing;
+}	parsed_message;
 
 class Parser
 {

@@ -10,14 +10,15 @@
 class Server: public IServerAPI
 {
     private:
-		const std::string		_port;
-		const std::string		_password;
-		int						_server_fd;
-		int						_client_fd;
-		int						_epoll_fd;
-		std::map<int, User*>	_users;
-		Parser					_parser;
-		CommandHandler			_ch;
+		const std::string				_port;
+		const std::string				_password;
+		int								_server_fd;
+		int								_client_fd;
+		int								_epoll_fd;
+		std::map<int, User*>			_users;
+		std::map<std::string, Channel*>	_channels;
+		Parser							_parser;
+		CommandHandler					_ch;
 
 		void		setup();
 		int			register_fd(int fd);
@@ -29,7 +30,7 @@ class Server: public IServerAPI
 		std::string receive(int length);
 
 		// void		execute_command();
-		void		reply_message(std::string& message, int fd);
+//		void		reply_message(std::string& message, int fd);
 		void		send_reply(const std::string& reply, int fd);
 		void		clean_up();
 

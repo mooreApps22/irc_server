@@ -36,6 +36,7 @@ void	CommandHandler::execute(parsed_message& parsed_message)
 {
 	const std::string command = parsed_message.command;
 	commands::iterator it = _commands.find(command);
+
 	if (it != _commands.end())
 	{
 		(this->*(it->second))(parsed_message);
@@ -72,6 +73,7 @@ void	CommandHandler::_joinFp(parsed_message& parsed_message)
 {
 	Logger::log(INFO, parsed_message.command + " received.");
 	_srvAPI.send_reply("You've sent a" + parsed_message.command + "request!");
+	
 }
 
 void	CommandHandler::_privMsgFp(parsed_message& parsed_message)
