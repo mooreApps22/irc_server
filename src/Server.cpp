@@ -235,6 +235,10 @@ void 	Server::setUserPassword(bool state)
 	_users[_client_fd]->setPassword(state);
 }
 
+bool 	Server::getUserPassword(void)
+{
+	return _users[_client_fd]->getPassword();
+}
 void	Server::disconnectUser(void)
 {
 	close(_client_fd);

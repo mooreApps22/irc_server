@@ -40,5 +40,6 @@ class Server: public IServerAPI
 		bool 	isUserRegistered();
 		bool 	isPasswordValid(const std::string& password);
 		void 	setUserPassword(bool state);
+		bool 	getUserPassword(void);
 		void	disconnectUser(void);
 };

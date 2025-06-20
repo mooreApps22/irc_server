@@ -66,8 +66,21 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
-	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
-	_srvAPI.send_reply("You've provided " +  parsed_msg.params.at(0) + " as nickname!");
+	if (_srvAPI.getUserPassword())
+	{
+		// get all users and check if nick is unique. I not unique: send error if unique:
+		std::cout << "nEED TO CHECK, MATE!" << std::endl;
+		// _srvAPI.setUserNick();
+		if(_srvAPI.isUserRegistered())
+			(void) parsed_msg;	// change UserNIck In all channels
+	}
+
+	else
+	{
+		_srvAPI.send_reply("You have not provided any Password!"); // TODO send proper reply
+		_srvAPI.disconnectUser();
+	}
+
 }
 
 void	CommandHandler::_passFp(parsed_message& parsed_msg)
