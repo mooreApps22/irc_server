@@ -146,8 +146,11 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 
 	_srvAPI.setUserRegisteredStatus(true);
 
-	std::string message = RPL_WELCOME;
-	message.append(":Welcome to the Internet Relay Network\n");
+	std::string message = ":irc.ft_irc.com ";
+	message.append(RPL_WELCOME);
+	message.append(" ");
+	message.append(_srvAPI.getUserNick());
+	message.append(" :Welcome to the Internet Relay Network\n");
 	message.append(_srvAPI.getUserNick());
 	message.append("!");
 	message.append(*++it);
