@@ -133,7 +133,7 @@ void Server::accept_connection()
 		send(_client_fd, "Connection stablished!\n", 23, 0);
 		if (register_fd(_client_fd) == -1)
 		{
-			send(_client_fd, "ERROR :processing your request, please try again!\r\n", 51, 0);
+			send(_client_fd, "ERROR: error processing your request, please try again!\r\n", 51, 0);
 			close(_client_fd);
 		}
 		else
@@ -257,7 +257,7 @@ void	Server::setUserRegisteredStatus(bool status)
 
 bool 	Server::isUserRegistered()
 {
-	return _users[_client_fd]->getPasswordStatus();
+	return _users[_client_fd]->isRegistered();
 }
 
 void 	Server::setUserPasswordState(bool state)

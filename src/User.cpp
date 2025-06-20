@@ -4,7 +4,7 @@
 #include <string>
 
 User::User()
-	:	_nickname(""),
+	:	_nickname("*"),
 		_registered(false),
 		_password(false),
 		_partial_message("")

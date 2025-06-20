@@ -102,22 +102,45 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 void	CommandHandler::_passFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
-	if(!_srvAPI.isUserRegistered())
-	{
-		if(_srvAPI.isPasswordValid( parsed_msg.params.at(0)))
-		{
-			_srvAPI.setUserPasswordState(true);
-			_srvAPI.send_reply("You got it, mate!");
+	
+	std::string message;
 
-		}
-		else
-		{
-			_srvAPI.send_reply("Wrong Password!"); // Kick out (message?)
-			_srvAPI.disconnectUser();
-		}
+	if(_srvAPI.isUserRegistered())
+	{
+		message = SERVER_PEFIX;
+		message += SPACE ERR_ALREADYREGISTRED;
+		message += SPACE;
+		message += _srvAPI.getUserNick();
+		message += SPACE ":Unauthorized command (already registered)";
+		_srvAPI.send_reply(message);
+		return ;
 	}
+	
+	if(parsed_msg.params.capacity() != 1)
+	{
+		message = SERVER_PEFIX;
+		message += SPACE ERR_NEEDMOREPARAMS;
+		message += SPACE;
+		message += _srvAPI.getUserNick();
+		message += SPACE;
+		message += parsed_msg.command;
+		message += SPACE ":Not enough parameters";
+		_srvAPI.send_reply(message);
+		return ;
+	}
+
+	if(_srvAPI.isPasswordValid( parsed_msg.params.at(0)))
+		_srvAPI.setUserPasswordState(true);
 	else
-		_srvAPI.send_reply("You're already registered, mate!");
+	{
+		message = SERVER_PEFIX;
+		message += SPACE ERR_PASSWDMISMATCH;
+		message += SPACE;
+		message += _srvAPI.getUserNick();
+		message += SPACE ": Password incorrect";
+		_srvAPI.send_reply(message);
+		_srvAPI.disconnectUser();
+	}
 }
 
 void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
@@ -146,16 +169,15 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 
 	_srvAPI.setUserRegisteredStatus(true);
 
-	std::string message = ":irc.ft_irc.com ";
-	message.append(RPL_WELCOME);
-	message.append(" ");
-	message.append(_srvAPI.getUserNick());
-	message.append(" :Welcome to the Internet Relay Network\n");
-	message.append(_srvAPI.getUserNick());
-	message.append("!");
-	message.append(*++it);
-	message.append("@");
-	message.append(*++it);
+	std::string message = SERVER_PEFIX SPACE RPL_WELCOME SPACE;
+	message += _srvAPI.getUserNick();
+	message += " :Welcome to the Internet Relay Network\n";
+	message += _srvAPI.getUserNick();
+	message += "!";
+	message += *++it;
+	message += "@";
+	message += *++it;
+
 	_srvAPI.send_reply(message);
 }
 

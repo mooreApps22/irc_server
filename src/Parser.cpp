@@ -87,7 +87,7 @@ bool Parser::is_command(parsed_message& parsed_msg)
 	{
 		std::string command(begin, _it);
 		 parsed_msg.command = command;
-		Logger::log(DEBUG, "Command",  parsed_msg.command);
+		// Logger::log(DEBUG, "Command",  parsed_msg.command);
 		return true;
 	}
 	
@@ -98,7 +98,7 @@ bool Parser::is_command(parsed_message& parsed_msg)
 	{
 		std::string command(begin, _it++);
 		 parsed_msg.command = command;
-		Logger::log(DEBUG, "Command",  parsed_msg.command);
+		// Logger::log(DEBUG, "Command",  parsed_msg.command);
 		if ( parsed_msg.command.length() == 3)
 		{
 			return true;
@@ -184,7 +184,7 @@ bool Parser::is_middle(parsed_message& parsed_msg)
 	}
 	std::string param(begin, _it);
 	 parsed_msg.params.push_back(param);
-	Logger::log(DEBUG, "Param", param);
+	// Logger::log(DEBUG, "Param", param);
 	return true;
 }
 
@@ -270,7 +270,7 @@ bool Parser::is_trailing(parsed_message& parsed_msg)
 
 //	 parsed_msg.trailing = trailing;
 	 parsed_msg.params.push_back(trailing);
-	Logger::log(DEBUG, "Trailing", trailing);
+	// Logger::log(DEBUG, "Trailing", trailing);
 	return true;
 }
 
