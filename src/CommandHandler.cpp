@@ -70,7 +70,7 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	
 	// TODO check if there are arguments!!!
 	
-	if (_srvAPI.getUserPassword())
+	if (_srvAPI.getUserPasswordState())
 	{
 		Logger::log(DEBUG, "Checking uniqueness");
 
@@ -105,7 +105,7 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 	{
 		if(_srvAPI.isPasswordValid( parsed_msg.params.at(0)))
 		{
-			_srvAPI.setUserPassword(true);
+			_srvAPI.setUserPasswordState(true);
 			_srvAPI.send_reply("You got it, mate!");
 
 		}
@@ -140,6 +140,7 @@ void	CommandHandler::_topicFp(parsed_message& parsed_msg)
 void	CommandHandler::_userFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
+	// _srvAPI.setUser
 	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
 }
 
