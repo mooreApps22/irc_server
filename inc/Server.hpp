@@ -39,8 +39,8 @@ class Server: public IServerAPI
 		void	send_reply(const std::string& reply);
 		bool 	isUserRegistered();
 		bool 	isPasswordValid(const std::string& password);
-		void 	setUserPassword(bool state);
-		bool 	getUserPassword(void);
+		void 	setUserPasswordState(bool state);
+		bool 	getUserPasswordState(void);
 		usrsIt	getUsersBegin(void);
 		usrsIt	getUsersEnd(void);
 		void	setUserNick(const std::string& nickname);

@@ -1,5 +1,6 @@
 #include "CommandHandler.hpp"
 # include "IServerAPI.hpp"
+#include "macros.hpp"
 #include "Logger.hpp"
 #include <vector>
 #include <string>
@@ -140,8 +141,14 @@ void	CommandHandler::_topicFp(parsed_message& parsed_msg)
 void	CommandHandler::_userFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
-	// _srvAPI.setUser
-	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
+	// TODO check number of params!!!!
+	int i = 1;
+	for (paramsIt it = parsed_msg.getParamsBegin(); it != parsed_msg.getParamsEnd(); it++)
+	{
+		std::cout << "param" << i++ << ": " << *it << std::cout;
+	}
+	// _srvAPI.setUserRegisteredStatus(true);            
+	// _srvAPI.send_reply(RPL_WELCOME + " Welcome to the Internet Relay Network\n" + <nick> "!" <user>@<host>"" You've sent a" +  parsed_msg.command + "request!");
 }
 
 bool	CommandHandler::_isNickUnique(const std::string nick)

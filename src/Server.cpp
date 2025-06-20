@@ -231,12 +231,12 @@ bool 	Server::isPasswordValid(const std::string& password)
 	return _password == password;
 }
 
-void 	Server::setUserPassword(bool state)
+void 	Server::setUserPasswordState(bool state)
 {
 	_users[_client_fd]->setPasswordStatus(state);
 }
 
-bool 	Server::getUserPassword(void)
+bool 	Server::getUserPasswordState(void)
 {
 	return _users[_client_fd]->getPasswordStatus();
 }
