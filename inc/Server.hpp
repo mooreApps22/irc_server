@@ -35,14 +35,19 @@ class Server: public IServerAPI
         ~Server();
 		void	run(void);
 
-		// API methods
+		// Server API
+		// Server actions related
 		void	send_reply(const std::string& reply);
-		bool 	isUserRegistered();
 		bool 	isPasswordValid(const std::string& password);
-		void 	setUserPasswordState(bool state);
-		bool 	getUserPasswordState(void);
-		usrsIt	getUsersBegin(void);
-		usrsIt	getUsersEnd(void);
-		void	setUserNick(const std::string& nickname);
 		void	disconnectUser(void);
+
+		// User actions related
+		void				setUserNick(const std::string& nickname);
+		const std::string	getUserNick();
+		void				setUserRegisteredStatus(bool status);
+		bool 				isUserRegistered();
+		void 				setUserPasswordState(bool state);
+		bool 				getUserPasswordState(void);
+		usrsIt				getUsersBegin(void);
+		usrsIt				getUsersEnd(void);
 };

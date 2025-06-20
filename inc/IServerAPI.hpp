@@ -22,14 +22,14 @@ public:
 
 
 	// User actions related
-	virtual void	setUserNick(const std::string& nickname) = 0;
-	// virtual const std::string	getUserNick() = 0;
-	// virtual void	setUserRegisteredStatus(bool status) = 0;
-	virtual bool	isUserRegistered() = 0;
-	virtual void	setUserPasswordState(bool state) = 0;
-	virtual bool	getUserPasswordState(void) = 0;
-	virtual usrsIt	getUsersBegin(void) = 0;
-	virtual usrsIt	getUsersEnd(void) = 0;
+	virtual void				setUserNick(const std::string& nickname) = 0;
+	virtual const std::string	getUserNick() = 0;
+	virtual void				setUserRegisteredStatus(bool status) = 0;
+	virtual bool				isUserRegistered() = 0;
+	virtual void				setUserPasswordState(bool state) = 0;
+	virtual bool				getUserPasswordState(void) = 0;
+	virtual usrsIt				getUsersBegin(void) = 0;
+	virtual usrsIt				getUsersEnd(void) = 0;
 	
 
 /*

@@ -142,13 +142,18 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
 	// TODO check number of params!!!!
-	int i = 1;
-	for (paramsIt it = parsed_msg.getParamsBegin(); it != parsed_msg.getParamsEnd(); it++)
-	{
-		std::cout << "param" << i++ << ": " << *it << std::cout;
-	}
-	// _srvAPI.setUserRegisteredStatus(true);            
-	// _srvAPI.send_reply(RPL_WELCOME + " Welcome to the Internet Relay Network\n" + <nick> "!" <user>@<host>"" You've sent a" +  parsed_msg.command + "request!");
+	paramsIt it = parsed_msg.getParamsBegin();
+
+	_srvAPI.setUserRegisteredStatus(true);
+
+	std::string message = RPL_WELCOME;
+	message.append(":Welcome to the Internet Relay Network\n");
+	message.append(_srvAPI.getUserNick());
+	message.append("!");
+	message.append(*++it);
+	message.append("@");
+	message.append(*++it);
+	_srvAPI.send_reply(message);
 }
 
 bool	CommandHandler::_isNickUnique(const std::string nick)

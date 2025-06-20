@@ -212,7 +212,7 @@ void	Server::clean_up(void)
 }
 
 /*
-	API methods
+	API methods related to server actions
 */
 
 void	Server::send_reply(const std::string& reply)
@@ -222,13 +222,42 @@ void	Server::send_reply(const std::string& reply)
 	send(_client_fd, CRLF, 2, 0);
 }
 
-bool 	Server::isUserRegistered()
+void	Server::disconnectUser(void)
 {
-	return _users[_client_fd]->getPasswordStatus();
+	close(_client_fd);
+	// TODO delete user from all channels 
+	delete _users[_client_fd];
+	_users.erase(_client_fd);
 }
+
 bool 	Server::isPasswordValid(const std::string& password)
 {
 	return _password == password;
+}
+
+
+/*
+	API methods related to user actions
+*/
+
+void	Server::setUserNick(const std::string& nickname)
+{
+	_users[_client_fd]->setNickname(nickname);
+}
+
+const std::string	Server::getUserNick()
+{
+	return _users[_client_fd]->getNickname();
+}
+
+void	Server::setUserRegisteredStatus(bool status)
+{
+	_users[_client_fd]->setRegisteredStatus(status);
+}
+
+bool 	Server::isUserRegistered()
+{
+	return _users[_client_fd]->getPasswordStatus();
 }
 
 void 	Server::setUserPasswordState(bool state)
@@ -251,15 +280,4 @@ usrsIt	Server::getUsersEnd(void)
 	return _users.end();
 }
 
-void	Server::setUserNick(const std::string& nickname)
-{
-	_users[_client_fd]->setNickname(nickname);
-}
 
-void	Server::disconnectUser(void)
-{
-	close(_client_fd);
-	// TODO delete user from all channels 
-	delete _users[_client_fd];
-	_users.erase(_client_fd);
-}
