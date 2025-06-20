@@ -4,12 +4,17 @@
 #include <vector>
 #define CRLF		"\r\n"
 
+typedef std::vector<std::string>::iterator paramsIt;
 typedef struct parsed_message
 {
 	std::string					prefix;
 	std::string					command;
 	std::vector<std::string>	params;
 //	std::string					trailing;
+	paramsIt getParams()
+	{
+		return params.begin();
+	}
 }	parsed_message;
 
 class Parser
