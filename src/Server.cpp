@@ -217,13 +217,14 @@ void	Server::clean_up(void)
 
 void	Server::send_reply(const std::string& reply)
 {
+	Logger::log(DEBUG, "Sending reply", reply);
 	send(_client_fd, reply.c_str(), reply.length(), 0);
 	send(_client_fd, CRLF, 2, 0);
 }
 
 bool 	Server::isUserRegistered()
 {
-	return _users[_client_fd]->getPassword();
+	return _users[_client_fd]->getPasswordStatus();
 }
 bool 	Server::isPasswordValid(const std::string& password)
 {
@@ -232,13 +233,24 @@ bool 	Server::isPasswordValid(const std::string& password)
 
 void 	Server::setUserPassword(bool state)
 {
-	_users[_client_fd]->setPassword(state);
+	_users[_client_fd]->setPasswordStatus(state);
 }
 
 bool 	Server::getUserPassword(void)
 {
-	return _users[_client_fd]->getPassword();
+	return _users[_client_fd]->getPasswordStatus();
 }
+
+usrs	Server::getUsers(void)
+{
+	return _users;
+}
+
+void	Server::setUserNick(const std::string& nickname)
+{
+	_users[_client_fd]->setNickname(nickname);
+}
+
 void	Server::disconnectUser(void)
 {
 	close(_client_fd);

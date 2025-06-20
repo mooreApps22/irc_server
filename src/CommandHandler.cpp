@@ -1,4 +1,5 @@
 #include "CommandHandler.hpp"
+# include "IServerAPI.hpp"
 #include "Logger.hpp"
 #include <vector>
 #include <string>
@@ -66,13 +67,27 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
+	
+	// TODO check if there are arguments!!!
+	
 	if (_srvAPI.getUserPassword())
 	{
-		// get all users and check if nick is unique. I not unique: send error if unique:
-		std::cout << "nEED TO CHECK, MATE!" << std::endl;
-		// _srvAPI.setUserNick();
+		Logger::log(DEBUG, "Checking uniqueness");
+
+		std::string nickname = *parsed_msg.getParams();
+
+		if (!_isNickUnique(nickname))
+		{
+			_srvAPI.send_reply("The nickname provided is already in use!"); // TODO send proper reply
+			_srvAPI.disconnectUser();
+			return ;
+		}
+		
+		_srvAPI.send_reply("Nice nickname election, congrats!"); // TODO send proper reply
+		
+		_srvAPI.setUserNick(nickname);
 		if(_srvAPI.isUserRegistered())
-			(void) parsed_msg;	// change UserNIck In all channels
+			(void) parsed_msg;	// TODO change UserNIck In all channels keys
 	}
 
 	else
@@ -126,4 +141,15 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
 	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
+}
+
+bool	CommandHandler::_isNickUnique(const std::string nick)
+{
+	usrs users = _srvAPI.getUsers();
+	for (usrsIt it = users.begin(); it != users.end(); it++)
+	{
+		if(it->second->getNickname() == nick)
+			return false;
+	}
+	return true;
 }

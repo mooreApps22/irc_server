@@ -14,13 +14,14 @@ class User
         User();
         ~User();
 
-		void				set_nickname(const std::string& nickname);
-		const std::string&	get_nickname();
-		bool				is_registered();
-		void				buffer(std::string& message);
-		std::string 		get_partial_message();
-		bool				getPassword();
-		void				setPassword(bool state);
+		void				setNickname(const std::string& nickname);
+		const std::string&	getNickname() const;
+		void				setRegisteredStatus(const bool status);
+		bool				isRegistered() const;
+		void				buffer(const std::string& message);
+		const std::string	get_partial_message();
+		bool				getPasswordStatus() const;
+		void				setPasswordStatus(const bool state);
 };
 
 #endif

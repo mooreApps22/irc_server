@@ -11,6 +11,8 @@ class CommandHandler
     private:
 		IServerAPI&	_srvAPI;
 		commands	_commands;
+		
+		// Function pointers
 		void		_inviteFp(parsed_message& parsed_msg);
 		void		_joinFp(parsed_message& parsed_msg);
 		void		_kickFp(parsed_message& parsed_msg);
@@ -21,6 +23,9 @@ class CommandHandler
 		void		_realFp(parsed_message& parsed_msg);
 		void		_topicFp(parsed_message& parsed_msg);
 		void		_userFp(parsed_message& parsed_msg);
+
+		// Utils
+		bool		_isNickUnique(const std::string nick);
 		
     public:
 		CommandHandler(IServerAPI& srvAPI);
