@@ -241,9 +241,14 @@ bool 	Server::getUserPassword(void)
 	return _users[_client_fd]->getPasswordStatus();
 }
 
-usrs	Server::getUsers(void)
+usrsIt	Server::getUsersBegin(void)
 {
-	return _users;
+	return _users.begin();
+}
+
+usrsIt	Server::getUsersEnd(void)
+{
+	return _users.end();
 }
 
 void	Server::setUserNick(const std::string& nickname)

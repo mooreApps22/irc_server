@@ -74,7 +74,7 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	{
 		Logger::log(DEBUG, "Checking uniqueness");
 
-		std::string nickname = *parsed_msg.getParams();
+		std::string nickname = *parsed_msg.getParamsBegin();
 
 		if (!_isNickUnique(nickname))
 		{
@@ -145,8 +145,7 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 
 bool	CommandHandler::_isNickUnique(const std::string nick)
 {
-	usrs users = _srvAPI.getUsers();
-	for (usrsIt it = users.begin(); it != users.end(); it++)
+	for (usrsIt it = _srvAPI.getUsersBegin(); it != _srvAPI.getUsersEnd(); it++)
 	{
 		if(it->second->getNickname() == nick)
 			return false;

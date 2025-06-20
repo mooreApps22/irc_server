@@ -11,9 +11,15 @@ typedef struct parsed_message
 	std::string					command;
 	std::vector<std::string>	params;
 //	std::string					trailing;
-	paramsIt getParams()
+	
+	paramsIt getParamsBegin()
 	{
 		return params.begin();
+	}
+
+	paramsIt getParamsEnd()
+	{
+		return params.end();
 	}
 }	parsed_message;
 

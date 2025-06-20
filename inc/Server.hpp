@@ -15,8 +15,8 @@ class Server: public IServerAPI
 		int								_server_fd;
 		int								_client_fd;
 		int								_epoll_fd;
-		usrs							_users;
-		chan							_channels;
+		std::map<int, User*>			_users;
+		std::map<std::string, Channel*>	_channels;
 		Parser							_parser;
 		CommandHandler					_ch;
 
@@ -41,7 +41,8 @@ class Server: public IServerAPI
 		bool 	isPasswordValid(const std::string& password);
 		void 	setUserPassword(bool state);
 		bool 	getUserPassword(void);
-		usrs	getUsers(void);
+		usrsIt	getUsersBegin(void);
+		usrsIt	getUsersEnd(void);
 		void	setUserNick(const std::string& nickname);
 		void	disconnectUser(void);
 };

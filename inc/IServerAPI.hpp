@@ -5,10 +5,8 @@
 # include <map>
 
 
-typedef std::map<std::string, Channel*>	chan;
-typedef chan::iterator					chanIt;
-typedef std::map<int, User*>			usrs;
-typedef usrs::iterator					usrsIt;
+typedef std::map<std::string, Channel*>::iterator	chanIt;
+typedef std::map<int, User*>::iterator				usrsIt;
 
 class IServerAPI
 {
@@ -23,7 +21,8 @@ public:
 	virtual void	setUserPassword(bool state) = 0;
 	virtual bool	getUserPassword(void) = 0;
 	virtual void	disconnectUser(void) = 0;
-	virtual usrs	getUsers(void) = 0;
+	virtual usrsIt	getUsersBegin(void) = 0;
+	virtual usrsIt	getUsersEnd(void) = 0;
 	virtual void	setUserNick(const std::string& nickneame) = 0;
 
 /*
@@ -31,7 +30,8 @@ public:
 	virtual void removeChannel(const std::string& name) = 0;
 
 	virtual Channel*	getChannel(const std::string& name) = 0;
-	virtual chanIt		getChannels(void) = 0;
+	virtual chanIt		getChannelsBegin(void) = 0;
+	virtual chanIt		getChannelsEnd(void) = 0;
 	virtual User*		getUser(const int fd) = 0;
 
 */
