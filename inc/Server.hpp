@@ -50,4 +50,9 @@ class Server: public IServerAPI
 		bool 				getUserPasswordState(void);
 		usrsIt				getUsersBegin(void);
 		usrsIt				getUsersEnd(void);
+		// Channel API methods
+		Channel*	getChannel(const std::string& channel_name);
+		void 		addUserToChannel(User* user, const std::string& channel_name);
+		User*		getUser(const int fd);
+		int			getFdFromNickname(const std::string& nickname);
 };
