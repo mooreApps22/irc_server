@@ -58,3 +58,14 @@ void User::setPasswordStatus(const bool state)
 {
 	_password = state;
 }
+/*
+const std::string&	User::getNickname(void)
+{
+	return (_nickname);
+}
+
+void	User::setNickname(const std::string& nickname)
+{
+	_nickname = nickname;
+}
+*/

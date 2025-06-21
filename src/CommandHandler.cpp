@@ -221,4 +221,6 @@ const std::string CommandHandler::build_reply(const std::string& code, const std
 	std::cout << "Built message: " << reply_message << std::endl;
 	return reply_message;
 }
+=======
+>>>>>>> d8819ed06631dac8bcd021f7c32835302d0b7a70
 //	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
