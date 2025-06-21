@@ -69,50 +69,34 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
 	
-	std::string message;
+	std::string	user_nickname = _srvAPI.getUserNick();
+	std::string	command = parsed_msg.command;
+	std::string	nickname;
+	std::string	reply_message;
 
 	if (!_srvAPI.getUserPasswordState())
 	{
-		message = SERVER_PEFIX;
-		message += SPACE ERR_PASSWDMISMATCH;
-		message += SPACE;
-		message += _srvAPI.getUserNick();
-		message += SPACE;
-		message += ": Password incorrect";
-		_srvAPI.send_reply(message);
+		reply_message = build_reply(ERR_PASSWDMISMATCH, user_nickname, ": Password incorrect");
+		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;
 	}
 	
 	if(parsed_msg.params.capacity() != 1)
 	{
-		message = SERVER_PEFIX;
-		message += SPACE ERR_NONICKNAMEGIVEN;
-		message += SPACE;
-		message += _srvAPI.getUserNick();
-		message += SPACE;
-		message += parsed_msg.command;
-		message += SPACE;
-		message += ":No nickname given";
-		_srvAPI.send_reply(message);
+		reply_message = build_reply(ERR_NONICKNAMEGIVEN, user_nickname, command, ":No nickname given");
+		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;
 	}
 
-	std::string nickname = *parsed_msg.getParamsBegin();
+	nickname = *parsed_msg.getParamsBegin();
 	Logger::log(DEBUG, "Checking nick corectness");
 
 	if (!Parser::is_nickname(nickname))
 	{
-		message = SERVER_PEFIX;
-		message += SPACE ERR_ERRONEUSNICKNAME;
-		message += SPACE;
-		message += _srvAPI.getUserNick();
-		message += SPACE;
-		message += nickname;
-		message += SPACE;
-		message += ":Erroneous nickname";
-		_srvAPI.send_reply(message);
+		reply_message = build_reply(ERR_ERRONEUSNICKNAME, user_nickname, nickname, ":Erroneous nickname");
+		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;
 	}
@@ -120,15 +104,8 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	Logger::log(DEBUG, "Checking nick uniqueness");
 	if (!_isNickUnique(nickname))
 	{
-		message = SERVER_PEFIX;
-		message += SPACE ERR_NICKNAMEINUSE;
-		message += SPACE;
-		message += _srvAPI.getUserNick();
-		message += SPACE;
-		message += nickname;
-		message += SPACE;
-		message += ":Nickname is already in use";
-		_srvAPI.send_reply(message);
+		reply_message = build_reply(ERR_NICKNAMEINUSE, user_nickname, nickname, ":Nickname is already in use");
+		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;
 	}
@@ -142,31 +119,22 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
 	
-	std::string message;
+	std::string	user_nickname = _srvAPI.getUserNick();
+	std::string	command = parsed_msg.command;
+	std::string reply_message;
 
 	if(_srvAPI.isUserRegistered())
 	{
-		message = SERVER_PEFIX;
-		message += SPACE ERR_ALREADYREGISTRED;
-		message += SPACE;
-		message += _srvAPI.getUserNick();
-		message += SPACE;
-		message += ":Unauthorized command (already registered)";
-		_srvAPI.send_reply(message);
+		reply_message = build_reply(ERR_ALREADYREGISTRED, user_nickname, ":Unauthorized command (already registered)");
+		_srvAPI.send_reply(reply_message);
 		return ;
 	}
 	
 	if(parsed_msg.params.capacity() != 1)
 	{
-		message = SERVER_PEFIX;
-		message += SPACE ERR_NEEDMOREPARAMS;
-		message += SPACE;
-		message += _srvAPI.getUserNick();
-		message += SPACE;
-		message += parsed_msg.command;
-		message += SPACE;
-		message += ":Not enough parameters";
-		_srvAPI.send_reply(message);
+		reply_message = build_reply(ERR_NEEDMOREPARAMS, user_nickname, command, ":Not enough parameters");
+		_srvAPI.send_reply(reply_message);
+		_srvAPI.disconnectUser();
 		return ;
 	}
 
@@ -174,13 +142,8 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 		_srvAPI.setUserPasswordState(true);
 	else
 	{
-		message = SERVER_PEFIX;
-		message += SPACE ERR_PASSWDMISMATCH;
-		message += SPACE;
-		message += _srvAPI.getUserNick();
-		message += SPACE;
-		message += ": Password incorrect";
-		_srvAPI.send_reply(message);
+		reply_message = build_reply(ERR_PASSWDMISMATCH, user_nickname, ": Password incorrect");
+		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 	}
 }
@@ -231,4 +194,34 @@ bool	CommandHandler::_isNickUnique(const std::string nick)
 			return false;
 	}
 	return true;
+}
+
+const std::string CommandHandler::build_reply(const std::string& code, const std::string& dest, const std::string message)
+{
+	std::string reply_message = SERVER_PEFIX;
+	reply_message += SPACE;
+	reply_message += code;
+	reply_message += SPACE;
+	reply_message += dest;
+	reply_message += SPACE;
+	reply_message += message;
+
+	std::cout << "Built message: " << reply_message << std::endl;
+	return reply_message;
+}
+
+const std::string CommandHandler::build_reply(const std::string& code, const std::string& dest, const std::string arg, const std::string message)
+{
+	std::string reply_message = SERVER_PEFIX;
+	reply_message += SPACE;
+	reply_message += code;
+	reply_message += SPACE;
+	reply_message += dest;
+	reply_message += SPACE;
+	reply_message += arg;
+	reply_message += SPACE;
+	reply_message += message;
+
+	std::cout << "Built message: " << reply_message << std::endl;
+	return reply_message;
 }
