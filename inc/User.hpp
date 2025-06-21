@@ -25,6 +25,14 @@ class User
 		const std::string	get_partial_message();
 		bool				getPasswordStatus() const;
 		void				setPasswordStatus(const bool state);
+/*
+		const std::string&	getNickname(void);
+		bool				is_registered();
+		void				buffer(std::string& message);
+		std::string 		get_partial_message();
+		bool				getPassword();
+		void				setPassword(bool state);
+*/
 };
 
 #endif

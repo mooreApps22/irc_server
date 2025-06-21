@@ -1,6 +1,7 @@
 #pragma once
 
 # include "Channel.hpp" 
+# include "User.hpp" 
 # include <string>
 # include <map>
 
@@ -32,6 +33,11 @@ public:
 	virtual usrsIt				getUsersEnd(void) = 0;
 	
 
+	// Channel 
+	virtual Channel*	getChannel(const std::string& channel_name) = 0;
+	virtual void 		addUserToChannel(User* user, const std::string& channel_name) = 0;
+	virtual User*		getUser(const int fd) = 0;
+	virtual int			getFdFromNickname(const std::string& nickname) = 0;
 /*
 	// Channel actions relatedc
 	virtual void addChannel(const std::string& name) = 0;
@@ -41,6 +47,8 @@ public:
 	virtual chanIt		getChannelsBegin(void) = 0;
 	virtual chanIt		getChannelsEnd(void) = 0;
 	virtual User*		getUser(const int fd) = 0;
+	virtual chanIt		getChannels(void) = 0;
+	virtual userIt		getUsers(void) = 0;
 
 */
 };

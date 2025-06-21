@@ -5,7 +5,6 @@
 #include <vector>
 #include <string>
 
-
 CommandHandler::CommandHandler(IServerAPI& srvAPI)
 	:	_srvAPI(srvAPI)
 {
@@ -35,6 +34,7 @@ void	CommandHandler::execute(parsed_message& parsed_msg)
 
 	if (it != _commands.end())
 	{
+		Logger::log(INFO, "Passing parsed message into funcPtr.");
 		(this->*(it->second))(parsed_msg);
 	}
 	else
@@ -47,11 +47,7 @@ void	CommandHandler::_inviteFp(parsed_message& parsed_msg)
 	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
 }
 
-void	CommandHandler::_joinFp(parsed_message& parsed_msg)
-{
-	Logger::log(INFO,  parsed_msg.command + " received.");
-	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
-}
+// Join was added to it's own file: CommandHandler_Join.cpp
 
 void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 {
@@ -225,3 +221,4 @@ const std::string CommandHandler::build_reply(const std::string& code, const std
 	std::cout << "Built message: " << reply_message << std::endl;
 	return reply_message;
 }
+//	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");

@@ -143,6 +143,7 @@ void Server::accept_connection()
 
 void Server::add_new_user()
 {
+	Logger::log(INFO, "Added a new user.");
 	_users[_client_fd] = new User();	
 }
 
@@ -217,7 +218,7 @@ void	Server::clean_up(void)
 
 void	Server::send_reply(const std::string& reply)
 {
-	Logger::log(DEBUG, "Sending reply", reply);
+	Logger::log(INFO, "Sent reply to client.");
 	send(_client_fd, reply.c_str(), reply.length(), 0);
 	send(_client_fd, CRLF, 2, 0);
 }
@@ -279,5 +280,3 @@ usrsIt	Server::getUsersEnd(void)
 {
 	return _users.end();
 }
-
-
