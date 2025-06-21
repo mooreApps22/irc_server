@@ -24,7 +24,10 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 
 	if (!channel)
 	{
-		_srvAPI.send_reply(std::string(ERR_NOSUCHCHANNEL) + " :No such channel");
+		Logger::log(INFO, "Channel :", channelName);
+		channel = new Channel(channelName);
+		_srvAPI.addChannel(channelName, channel);
+	//	_srvAPI.send_reply(std::string(ERR_NOSUCHCHANNEL) + " :No such channel");
 		return ;
 	}
 	if (channel->needsChannelKey() && channel->getKey() != password)
