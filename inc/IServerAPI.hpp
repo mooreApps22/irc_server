@@ -38,6 +38,7 @@ public:
 	virtual void 		addUserToChannel(User* user, const std::string& channel_name) = 0;
 	virtual User*		getUser(const int fd) = 0;
 	virtual int			getFdFromNickname(const std::string& nickname) = 0;
+	virtual void		addChannel(const std::string& name, Channel* channel) = 0;
 /*
 	// Channel actions relatedc
 	virtual void addChannel(const std::string& name) = 0;
