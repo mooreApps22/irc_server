@@ -48,6 +48,8 @@ class Parser
 		bool is_crlf();
 		bool is_trailing(parsed_message& parsed_msg);
 
+		static bool		is_special(std::string::iterator it);
+
     public:
         Parser();
         ~Parser();
@@ -55,10 +57,8 @@ class Parser
 		bool			is_partial(std::string& message);
 		int				get_message_length(std::string& message);
 		bool			parse_message(std::string& message, parsed_message& parsed_msg);
-		std::string&	get_command(void);
+		static bool		is_nickname(std::string& nickname);
 
-		std::string::iterator	_end; // Delete
-		void	print(); // Delete
 };
 
 #endif

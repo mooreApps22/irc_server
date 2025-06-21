@@ -69,34 +69,73 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
 	
-	// TODO check if there are arguments!!!
-	
-	if (_srvAPI.getUserPasswordState())
+	std::string message;
+
+	if (!_srvAPI.getUserPasswordState())
 	{
-		Logger::log(DEBUG, "Checking uniqueness");
-
-		std::string nickname = *parsed_msg.getParamsBegin();
-
-		if (!_isNickUnique(nickname))
-		{
-			_srvAPI.send_reply("The nickname provided is already in use!"); // TODO send proper reply
-			_srvAPI.disconnectUser();
-			return ;
-		}
-		
-		_srvAPI.send_reply("Nice nickname election, congrats!"); // TODO send proper reply
-		
-		_srvAPI.setUserNick(nickname);
-		if(_srvAPI.isUserRegistered())
-			(void) parsed_msg;	// TODO change UserNIck In all channels keys
-	}
-
-	else
-	{
-		_srvAPI.send_reply("You have not provided any Password!"); // TODO send proper reply
+		message = SERVER_PEFIX;
+		message += SPACE ERR_PASSWDMISMATCH;
+		message += SPACE;
+		message += _srvAPI.getUserNick();
+		message += SPACE;
+		message += ": Password incorrect";
+		_srvAPI.send_reply(message);
 		_srvAPI.disconnectUser();
+		return ;
+	}
+	
+	if(parsed_msg.params.capacity() != 1)
+	{
+		message = SERVER_PEFIX;
+		message += SPACE ERR_NONICKNAMEGIVEN;
+		message += SPACE;
+		message += _srvAPI.getUserNick();
+		message += SPACE;
+		message += parsed_msg.command;
+		message += SPACE;
+		message += ":No nickname given";
+		_srvAPI.send_reply(message);
+		_srvAPI.disconnectUser();
+		return ;
 	}
 
+	std::string nickname = *parsed_msg.getParamsBegin();
+	Logger::log(DEBUG, "Checking nick corectness");
+
+	if (!Parser::is_nickname(nickname))
+	{
+		message = SERVER_PEFIX;
+		message += SPACE ERR_ERRONEUSNICKNAME;
+		message += SPACE;
+		message += _srvAPI.getUserNick();
+		message += SPACE;
+		message += nickname;
+		message += SPACE;
+		message += ":Erroneous nickname";
+		_srvAPI.send_reply(message);
+		_srvAPI.disconnectUser();
+		return ;
+	}
+
+	Logger::log(DEBUG, "Checking nick uniqueness");
+	if (!_isNickUnique(nickname))
+	{
+		message = SERVER_PEFIX;
+		message += SPACE ERR_NICKNAMEINUSE;
+		message += SPACE;
+		message += _srvAPI.getUserNick();
+		message += SPACE;
+		message += nickname;
+		message += SPACE;
+		message += ":Nickname is already in use";
+		_srvAPI.send_reply(message);
+		_srvAPI.disconnectUser();
+		return ;
+	}
+		
+	_srvAPI.setUserNick(nickname);
+	if(_srvAPI.isUserRegistered())
+		(void) parsed_msg;	// TODO change UserNIck In all channels keys
 }
 
 void	CommandHandler::_passFp(parsed_message& parsed_msg)
@@ -111,7 +150,8 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 		message += SPACE ERR_ALREADYREGISTRED;
 		message += SPACE;
 		message += _srvAPI.getUserNick();
-		message += SPACE ":Unauthorized command (already registered)";
+		message += SPACE;
+		message += ":Unauthorized command (already registered)";
 		_srvAPI.send_reply(message);
 		return ;
 	}
@@ -124,12 +164,13 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 		message += _srvAPI.getUserNick();
 		message += SPACE;
 		message += parsed_msg.command;
-		message += SPACE ":Not enough parameters";
+		message += SPACE;
+		message += ":Not enough parameters";
 		_srvAPI.send_reply(message);
 		return ;
 	}
 
-	if(_srvAPI.isPasswordValid( parsed_msg.params.at(0)))
+	if(_srvAPI.isPasswordValid(parsed_msg.params.at(0)))
 		_srvAPI.setUserPasswordState(true);
 	else
 	{
@@ -137,7 +178,8 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 		message += SPACE ERR_PASSWDMISMATCH;
 		message += SPACE;
 		message += _srvAPI.getUserNick();
-		message += SPACE ": Password incorrect";
+		message += SPACE;
+		message += ": Password incorrect";
 		_srvAPI.send_reply(message);
 		_srvAPI.disconnectUser();
 	}

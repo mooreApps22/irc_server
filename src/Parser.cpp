@@ -274,3 +274,27 @@ bool Parser::is_trailing(parsed_message& parsed_msg)
 	return true;
 }
 
+// nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
+// letter     =  %x41-5A / %x61-7A       ; A-Z / a-z
+// digit      =  %x30-39                 ; 0-9
+// special    =  %x5B-60 / %x7B-7D		 ; "[", "]", "\", "`", "_", "^", "{", "|", "}"
+bool	Parser::is_nickname(std::string& nickname)
+{
+	std::string::iterator it = nickname.begin();
+	if (!std::isalpha(*it) && !Parser::is_special(it))
+		return false;
+	it++;
+	for(int i = 0; it != nickname.end(); i++, it++)
+	{
+		if (i == 8)
+			return false;
+		if(!std::isalnum(*it) && !Parser::is_special(it) && *it != '-')
+			return false;
+	}	
+	return true;
+}
+
+bool	Parser::is_special(std::string::iterator it)
+{
+	return *it == '[' || *it == ']' || *it == '\\' || *it == '`' || *it == '_' || *it == '^' || *it == '{' || *it == '|' || *it == '}';
+}
