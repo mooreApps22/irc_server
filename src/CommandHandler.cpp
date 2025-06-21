@@ -169,21 +169,74 @@ void	CommandHandler::_topicFp(parsed_message& parsed_msg)
 void	CommandHandler::_userFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
-	// TODO check number of params!!!!
-	paramsIt it = parsed_msg.getParamsBegin();
+	
+	std::string	user_nickname = _srvAPI.getUserNick();
+	std::string	command = parsed_msg.command;
+	std::string reply_message;
+	std::string username;
+	std::string hostname;
+	std::string servername; 
+	std::string realname;
+
+	
+	if(user_nickname == "*")
+	{
+		reply_message = build_reply(ERR_NONICKNAMEGIVEN, user_nickname, command, ":No nickname given");
+		_srvAPI.send_reply(reply_message);
+		_srvAPI.disconnectUser();
+		return ;
+	}
+
+	if(_srvAPI.isUserRegistered())
+	{
+		reply_message = build_reply(ERR_ALREADYREGISTRED, user_nickname, ":Unauthorized command (already registered)");
+		_srvAPI.send_reply(reply_message);
+		return ;
+	}
+	
+	if(parsed_msg.params.capacity() != 4)
+	{
+		reply_message = build_reply(ERR_NEEDMOREPARAMS, user_nickname, command, ":Not enough parameters");
+		_srvAPI.send_reply(reply_message);
+		_srvAPI.disconnectUser();
+		return ;
+	}
+
+	username = parsed_msg.params.at(0);
+	hostname = parsed_msg.params.at(1);
 
 	_srvAPI.setUserRegisteredStatus(true);
 
-	std::string message = SERVER_PEFIX SPACE RPL_WELCOME SPACE;
-	message += _srvAPI.getUserNick();
-	message += " :Welcome to the Internet Relay Network\n";
-	message += _srvAPI.getUserNick();
+	std::string message = ":Welcome to the Internet Relay Network ";
+	message += user_nickname;
 	message += "!";
-	message += *++it;
+	message += username;
 	message += "@";
-	message += *++it;
+	message += hostname;
+	reply_message = build_reply(RPL_WELCOME, user_nickname, message);
+	_srvAPI.send_reply(reply_message);
 
-	_srvAPI.send_reply(message);
+	message = ":Your host is ";
+	message += SERVER_NAME;
+	message += ", running version ";
+	message += VERSION;
+	reply_message = build_reply(RPL_YOURHOST, user_nickname, message);
+	_srvAPI.send_reply(reply_message);
+
+	message = ":This server was created ";
+	message += CREATION_DATE;
+	reply_message = build_reply(RPL_CREATED, user_nickname, message);
+	_srvAPI.send_reply(reply_message);
+
+	message = SERVER_NAME;
+	message += SPACE;
+	message += VERSION;
+	message += SPACE;
+	message += USER_MODES;
+	message += SPACE;
+	message += CHANNEL_MODES;
+	reply_message = build_reply(RPL_MYINFO, user_nickname, message);
+	_srvAPI.send_reply(reply_message);
 }
 
 bool	CommandHandler::_isNickUnique(const std::string nick)

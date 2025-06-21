@@ -6,9 +6,6 @@ class User
 {
     private:
 		std::string	_nickname;	
-		// std::string	_nickname;
-		// std::string	_nickname;
-		// std::string	_nickname;
 		bool		_registered;
 		bool		_password;
 		std::string _partial_message;

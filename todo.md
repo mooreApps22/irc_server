@@ -19,13 +19,20 @@
   - [x] Register client to the event poll -register_fd()-.
   - [x] Add client as new user.
 
-- [ ] Read message -get_message()-:
+- [x] Read message -get_message()-:
   - [x] Deal with partial messages.
-  - [ ] Deal with complete messages.
+  - [x] Deal with complete messages.
 
-- [ ] Add new user
+- [x] Add new user
 
-- [ ] Delete user
+- [x] Delete user
 
 # User tasks:
+
+# Commands:
+## PASS:
+## NICK:
+- [ ] Change nick when already registered
+## USER:
+- [ ] Any user mode?
 
