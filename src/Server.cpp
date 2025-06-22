@@ -256,7 +256,7 @@ void	Server::setUserNick(const std::string& nickname)
 	_users[_client_fd]->setNickname(nickname);
 }
 
-const std::string	Server::getUserNick()
+const std::string&	Server::getUserNick()
 {
 	return _users[_client_fd]->getNickname();
 }
@@ -264,6 +264,11 @@ const std::string	Server::getUserNick()
 void	Server::setUserUsername(const std::string& username)
 {
 	_users[_client_fd]->setUsername(username);
+}
+
+const std::string	Server::getUserIdentifier()
+{
+	return _users[_client_fd]->getIdentifier();
 }
 
 void	Server::setUserRegisteredStatus(bool status)

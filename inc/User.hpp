@@ -21,6 +21,7 @@ class User
 		void				setNickname(const std::string& nickname);
 		const std::string&	getNickname() const;
 		void				setUsername(const std::string& nickname);
+		const std::string	getIdentifier() const;
 		void				setRegisteredStatus(const bool status);
 		bool				isRegistered() const;
 		void				buffer(const std::string& message);

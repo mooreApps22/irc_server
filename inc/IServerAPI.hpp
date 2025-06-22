@@ -23,8 +23,9 @@ public:
 
 	// User actions related
 	virtual void				setUserNick(const std::string& nickname) = 0;
-	virtual const std::string	getUserNick() = 0;
+	virtual const std::string&	getUserNick() = 0;
 	virtual void				setUserUsername(const std::string& username) = 0;
+	virtual const std::string	getUserIdentifier() = 0;
 	virtual void				setUserRegisteredStatus(bool status) = 0;
 	virtual bool				isUserRegistered() = 0;
 	virtual void				setUserPasswordState(bool state) = 0;

@@ -34,6 +34,16 @@ void User::setUsername(const std::string& username)
 	_username = username;
 }
 
+const std::string	User::getIdentifier() const
+{
+	std::string identifier = _nickname;
+	identifier += "!";
+	identifier += _username;
+	identifier += "@";
+	identifier += _host;
+	return identifier;
+}
+
 void	User::setRegisteredStatus(const bool status)
 {
 	_registered = status;
