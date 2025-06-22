@@ -3,8 +3,9 @@
 #include <iostream>
 #include <string>
 
-User::User()
+User::User(const std::string& host)
 	:	_nickname("*"),
+		_host(host),
 		_registered(false),
 		_password(false),
 		_partial_message("")

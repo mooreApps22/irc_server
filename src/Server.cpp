@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <string>
 
+#include <arpa/inet.h>
+
 #define BACKLOG		10
 #define BUFFER_SIZE	1024
 #define MAX_EVENTS	10
@@ -128,8 +130,17 @@ void Server::accept_connection()
 	}
 	else
 	{
+		char host[INET6_ADDRSTRLEN];
+		
+	
 		std::cout << "Client connected! fd: " << _client_fd << std::endl;
 		Logger::log(INFO, "Client connected! fd", _client_fd);
+
+		if (client_addr.ss_family == AF_INET) // IPv4
+			inet_ntop(AF_INET, &((struct sockaddr_in *)&client_addr)->sin_addr, host, sizeof host);
+		else	 // IPv6
+			inet_ntop(AF_INET6, &((struct sockaddr_in6 *)&client_addr)->sin6_addr, host, sizeof host);
+
 		send(_client_fd, "Connection stablished!\n", 23, 0);
 		if (register_fd(_client_fd) == -1)
 		{
@@ -137,13 +148,13 @@ void Server::accept_connection()
 			close(_client_fd);
 		}
 		else
-			add_new_user();
+			add_new_user(host);
 	}
 }
 
-void Server::add_new_user()
+void Server::add_new_user(const std::string& host)
 {
-	_users[_client_fd] = new User();	
+	_users[_client_fd] = new User(host);	
 }
 
 std::string	Server::get_message()

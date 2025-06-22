@@ -6,12 +6,15 @@ class User
 {
     private:
 		std::string	_nickname;	
+		std::string	_host;
+		// std::string	_nickname;
+		// std::string	_nickname;
 		bool		_registered;
 		bool		_password;
 		std::string _partial_message;
 
     public:
-        User();
+        User(const std::string& host);
         ~User();
 
 		void				setNickname(const std::string& nickname);

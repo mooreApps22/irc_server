@@ -23,7 +23,7 @@ class Server: public IServerAPI
 		void		setup();
 		int			register_fd(int fd);
 		void		accept_connection();
-		void		add_new_user();
+		void		add_new_user(const std::string& host);
 		std::string	get_message();
 		std::string peek();
 		std::string receive(int length);
