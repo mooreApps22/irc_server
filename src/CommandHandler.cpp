@@ -86,7 +86,8 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	{
 		reply_message = build_reply(ERR_NONICKNAMEGIVEN, user_nickname, command, ":No nickname given");
 		_srvAPI.send_reply(reply_message);
-		_srvAPI.disconnectUser();
+		if( !_srvAPI.isUserRegistered())
+			_srvAPI.disconnectUser();
 		return ;
 	}
 
@@ -102,17 +103,33 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	}
 
 	Logger::log(DEBUG, "Checking nick uniqueness");
-	if (!_isNickUnique(nickname))
+	if (!_isNickUnique(nickname) && nickname != user_nickname)
 	{
 		reply_message = build_reply(ERR_NICKNAMEINUSE, user_nickname, nickname, ":Nickname is already in use");
 		_srvAPI.send_reply(reply_message);
-		_srvAPI.disconnectUser();
+		if( !_srvAPI.isUserRegistered())
+			_srvAPI.disconnectUser();
 		return ;
-	}
-		
+	}	
 	_srvAPI.setUserNick(nickname);
 	if(_srvAPI.isUserRegistered())
-		(void) parsed_msg;	// TODO change UserNIck In all channels keys
+	{
+		std::string message = ":";
+		message += user_nickname;
+		message += "!";
+		message += "username";
+		message += "@";
+		message += "hostname"; 
+		message += SPACE;
+		message += "NICK";
+		message += SPACE;
+		message += ":";
+		message += nickname;
+		// TODO instead of getting each, get all from user (nickname!username@hostname
+		// reply_message = build_reply(RPL_WELCOME, user_nickname, message);
+		_srvAPI.send_reply(message);
+		// TODO send to the rest of users
+	}
 }
 
 void	CommandHandler::_passFp(parsed_message& parsed_msg)
@@ -132,7 +149,7 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 	
 	if(parsed_msg.params.capacity() != 1)
 	{
-		reply_message = build_reply(ERR_NEEDMOREPARAMS, user_nickname, command, ":Not enough parameters");
+		reply_message = build_reply(ERR_PASSWDMISMATCH, user_nickname, command, ":Not enough parameters");
 		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;

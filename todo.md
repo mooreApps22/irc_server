@@ -35,4 +35,7 @@
 - [ ] Change nick when already registered
 ## USER:
 - [ ] Any user mode?
+- [ ] Parse username
+- [ ] Parse host
+- [ ] Parse 
 
