@@ -103,10 +103,13 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	}
 
 	Logger::log(DEBUG, "Checking nick uniqueness");
-	if (!_isNickUnique(nickname) && nickname != user_nickname)
+	if (!_isNickUnique(nickname))
 	{
-		reply_message = build_reply(ERR_NICKNAMEINUSE, user_nickname, nickname, ":Nickname is already in use");
-		_srvAPI.send_reply(reply_message);
+		if (nickname != user_nickname)
+		{
+			reply_message = build_reply(ERR_NICKNAMEINUSE, user_nickname, nickname, ":Nickname is already in use");
+			_srvAPI.send_reply(reply_message);
+		}	
 		if( !_srvAPI.isUserRegistered())
 			_srvAPI.disconnectUser();
 		return ;
