@@ -34,11 +34,6 @@ void User::setUsername(const std::string& username)
 	_username = username;
 }
 
-const std::string&	User::getNickname() const
-{
-	return _nickname;
-}
-
 void	User::setRegisteredStatus(const bool status)
 {
 	_registered = status;

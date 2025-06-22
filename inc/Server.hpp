@@ -44,6 +44,7 @@ class Server: public IServerAPI
 		// User actions related
 		void				setUserNick(const std::string& nickname);
 		const std::string	getUserNick();
+		void				setUserUsername(const std::string& username);
 		void				setUserRegisteredStatus(bool status);
 		bool 				isUserRegistered();
 		void 				setUserPasswordState(bool state);
