@@ -111,25 +111,19 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 			_srvAPI.disconnectUser();
 		return ;
 	}	
-	_srvAPI.setUserNick(nickname);
 	if(_srvAPI.isUserRegistered())
 	{
 		std::string message = ":";
-		message += user_nickname;
-		message += "!";
-		message += "username";
-		message += "@";
-		message += "hostname"; 
+		message += _srvAPI.getUserIdentifier(); 
 		message += SPACE;
 		message += "NICK";
 		message += SPACE;
 		message += ":";
 		message += nickname;
-		// TODO instead of getting each, get all from user (nickname!username@hostname
-		// reply_message = build_reply(RPL_WELCOME, user_nickname, message);
 		_srvAPI.send_reply(message);
 		// TODO send to the rest of users
 	}
+	_srvAPI.setUserNick(nickname);
 }
 
 void	CommandHandler::_passFp(parsed_message& parsed_msg)
@@ -191,9 +185,7 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 	std::string	command = parsed_msg.command;
 	std::string reply_message;
 	std::string username;
-	std::string hostname;
-	std::string servername; 
-	std::string realname;
+	// std::string realname;
 
 	
 	if(user_nickname == "*")
@@ -220,16 +212,13 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 	}
 
 	username = parsed_msg.params.at(0);
-	hostname = parsed_msg.params.at(1);
+	_srvAPI.setUserUsername(username);
+
 
 	_srvAPI.setUserRegisteredStatus(true);
 
 	std::string message = ":Welcome to the Internet Relay Network ";
-	message += user_nickname;
-	message += "!";
-	message += username;
-	message += "@";
-	message += hostname;
+	message += _srvAPI.getUserIdentifier();
 	reply_message = build_reply(RPL_WELCOME, user_nickname, message);
 	_srvAPI.send_reply(reply_message);
 
