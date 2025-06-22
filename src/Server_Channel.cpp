@@ -48,7 +48,7 @@ void	Server::addUserToChannel(User* user, const std::string& channel_name)
 			Logger::log(INFO, "User " + user->getNickname());
 		}
 		else
-			Logger::log(INFO, "Channel " + channel_name + " does no exist.");
+			Logger::log(INFO, "Channel " + channel_name + " does not exist.");
 	}
 	else
 		Logger::log(ERROR, "Invalid user or channel name.");

@@ -218,9 +218,16 @@ void	Server::clean_up(void)
 
 void	Server::send_reply(const std::string& reply)
 {
-	Logger::log(INFO, "Sent reply to client.");
+	Logger::log(INFO, "Sent reply to client.", reply);
 	send(_client_fd, reply.c_str(), reply.length(), 0);
 	send(_client_fd, CRLF, 2, 0);
+}
+
+void	Server::send_reply(const std::string& reply, int fd)
+{
+	Logger::log(INFO, "Sent reply to client.", reply);
+	send(fd, reply.c_str(), reply.length(), 0);
+	send(fd, CRLF, 2, 0);
 }
 
 void	Server::disconnectUser(void)

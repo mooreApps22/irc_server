@@ -18,6 +18,7 @@ public:
 	// Server API
 	// Server actions related
 	virtual void	send_reply(const std::string& message) = 0;
+	virtual void	send_reply(const std::string& reply, int fd) = 0; // added
 	virtual bool	isPasswordValid(const std::string& password) = 0;
 	virtual void	disconnectUser(void) = 0;
 

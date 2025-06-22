@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 
+
 void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
@@ -19,7 +20,7 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 	Logger::log(INFO, "Have fd.");
 	User* 		user = _srvAPI.getUser(fd);
 	Logger::log(INFO, "Have user.");
-	Channel*	channel = _srvAPI.getChannel(parsed_msg.prefix);
+	Channel*	channel = _srvAPI.getChannel(channelName);
 	Logger::log(INFO, "Have channel.");
 
 	if (!channel)
@@ -27,7 +28,7 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 		Logger::log(INFO, "Channel :", channelName);
 		channel = new Channel(channelName);
 		_srvAPI.addChannel(channelName, channel);
-	//	_srvAPI.send_reply(std::string(ERR_NOSUCHCHANNEL) + " :No such channel");
+		std::cout << "New channel created: " << channelName << std::endl;
 		return ;
 	}
 	if (channel->needsChannelKey() && channel->getKey() != password)

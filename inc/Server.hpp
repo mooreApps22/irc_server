@@ -38,6 +38,7 @@ class Server: public IServerAPI
 		// Server API
 		// Server actions related
 		void	send_reply(const std::string& reply);
+		void	send_reply(const std::string& reply, int fd); // added
 		bool 	isPasswordValid(const std::string& password);
 		void	disconnectUser(void);
 
