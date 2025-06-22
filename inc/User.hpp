@@ -6,6 +6,7 @@ class User
 {
     private:
 		std::string	_nickname;	
+		std::string	_username;	
 		std::string	_host;
 		// std::string	_nickname;
 		// std::string	_nickname;
@@ -19,6 +20,7 @@ class User
 
 		void				setNickname(const std::string& nickname);
 		const std::string&	getNickname() const;
+		void				setUsername(const std::string& nickname);
 		void				setRegisteredStatus(const bool status);
 		bool				isRegistered() const;
 		void				buffer(const std::string& message);

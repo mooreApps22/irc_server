@@ -5,6 +5,7 @@
 
 User::User(const std::string& host)
 	:	_nickname("*"),
+		_username(""),
 		_host(host),
 		_registered(false),
 		_password(false),
@@ -21,6 +22,16 @@ User::~User()
 void User::setNickname(const std::string& nickname)
 {
 	_nickname = nickname;
+}
+
+const std::string&	User::getNickname() const
+{
+	return _nickname;
+}
+
+void User::setUsername(const std::string& username)
+{
+	_username = username;
 }
 
 const std::string&	User::getNickname() const
