@@ -1,6 +1,7 @@
 #ifndef USER_HPP
 # define USER_HPP
 # include <string>
+# include <ctime>
 
 class User
 {
@@ -12,6 +13,7 @@ class User
 		bool		_password;
 		bool		_invisible;
 		std::string _partial_message;
+		time_t		_last_contact;
 
     public:
         User(const std::string& host);
@@ -29,6 +31,8 @@ class User
 		const std::string	get_partial_message();
 		bool				getPasswordStatus() const;
 		void				setPasswordStatus(const bool state);
+		time_t				getLastContact(void);
+		void				setLastContact(time_t now);
 };
 
 #endif

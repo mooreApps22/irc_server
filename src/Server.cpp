@@ -9,6 +9,7 @@
 #include <sys/epoll.h>
 #include <unistd.h>
 #include <string>
+#include <map>
 
 #include <arpa/inet.h>
 
@@ -94,6 +95,7 @@ void Server::run(void)
 			else
 			{	
 				_client_fd = events[i].data.fd;
+				Server::_users[_client_fd]->setLastContact(time(NULL));
 				message = get_message();
 				if (!message.empty())
 				{
@@ -105,6 +107,9 @@ void Server::run(void)
 						Logger::log(INFO, "Command Syntax Error.", message);	
 				}
 			}
+		}
+		for (std::map<int, User*>::iterator it = _users.begin(); it != _users.end(); it++){
+			std::cout << it->second->getLastContact() << std::endl;
 		}
 	}
 }

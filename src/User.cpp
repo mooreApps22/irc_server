@@ -2,6 +2,7 @@
 #include "Logger.hpp"
 #include <iostream>
 #include <string>
+#include <ctime>
 
 User::User(const std::string& host)
 	:	_nickname("*"),
@@ -10,7 +11,8 @@ User::User(const std::string& host)
 		_registered(false),
 		_password(false),
 		_invisible(false),
-		_partial_message("")
+		_partial_message(""),
+		_last_contact(time(NULL))
 {
 	Logger::log(INFO, "User Constructor called.");
 }
@@ -85,4 +87,12 @@ bool User::getPasswordStatus() const
 void User::setPasswordStatus(const bool state)
 {
 	_password = state;
+}
+
+void User::setLastContact(time_t now){
+	_last_contact = now;
+}
+
+time_t User::getLastContact(void){
+	return _last_contact;
 }

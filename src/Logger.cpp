@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <ctime>
 
 Logger Logger::_instance;
 
@@ -46,20 +47,35 @@ void	Logger::closer()
 void	Logger::log(LogLevel level, const std::string& message)
 {
 	std::ostream& stream = _instance._fileStream ;
-	stream << "[" << _levelToString(level) << "] " << message << std::endl;
+    std::time_t raw_time = std::time(NULL);
+    std::tm* time_info = std::localtime(&raw_time);
+    char buffer[20];
+
+    std::strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M:%S", time_info);
+	stream << buffer << "[" << _levelToString(level) << "] " << message << std::endl;
 
 }
 
 void	Logger::log(LogLevel level, const std::string& message, int var)
 {
 	std::ostream& stream = _instance._fileStream ;
-	stream << "[" << _levelToString(level) << "] " << message << " (" << var << ")" << std::endl;
+    std::time_t raw_time = std::time(NULL);
+    std::tm* time_info = std::localtime(&raw_time);
+    char buffer[20];
+
+    std::strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M:%S", time_info);
+	stream << buffer << "[" << _levelToString(level) << "] " << message << " (" << var << ")" << std::endl;
 
 }
 
 void	Logger::log(LogLevel level, const std::string& message, std::string var)
 {
 	std::ostream& stream = _instance._fileStream ;
-	stream << "[" << _levelToString(level) << "] " << message << " (" << var << ")" << std::endl;
+    std::time_t raw_time = std::time(NULL);
+    std::tm* time_info = std::localtime(&raw_time);
+    char buffer[20];
+
+    std::strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M:%S", time_info);
+	stream << buffer << "[" << _levelToString(level) << "] " << message << " (" << var << ")" << std::endl;
 
 }
