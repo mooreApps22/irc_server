@@ -71,12 +71,13 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	
 	std::string	user_nickname = _srvAPI.getUserNick();
 	std::string	command = parsed_msg.command;
-	std::string	nickname;
+	std::string	new_nickname;
 	std::string	reply_message;
+	std::string user_identifier;
 
 	if (!_srvAPI.getUserPasswordState())
 	{
-		reply_message = build_reply(SERVER_PEFIX, ERR_PASSWDMISMATCH, user_nickname, ": Password incorrect");
+		reply_message = build_reply(SERVER_PEFIX, ERR_PASSWDMISMATCH, user_nickname, "Password incorrect");
 		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;
@@ -84,30 +85,30 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	
 	if(parsed_msg.params.capacity() != 1)
 	{
-		reply_message = build_reply(SERVER_PEFIX, ERR_NONICKNAMEGIVEN, user_nickname, command, ":No nickname given");
+		reply_message = build_reply(SERVER_PEFIX, ERR_NONICKNAMEGIVEN, user_nickname, command, "No nickname given");
 		_srvAPI.send_reply(reply_message);
 		if( !_srvAPI.isUserRegistered())
 			_srvAPI.disconnectUser();
 		return ;
 	}
 
-	nickname = *parsed_msg.getParamsBegin();
+	new_nickname = *parsed_msg.getParamsBegin();
 	Logger::log(DEBUG, "Checking nick correctness");
 
-	if (!Parser::is_nickname(nickname))
+	if (!Parser::is_nickname(new_nickname))
 	{
-		reply_message = build_reply(SERVER_PEFIX, ERR_ERRONEUSNICKNAME, user_nickname, nickname, ":Erroneous nickname");
+		reply_message = build_reply(SERVER_PEFIX, ERR_ERRONEUSNICKNAME, user_nickname, new_nickname, "Erroneous nickname");
 		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;
 	}
 
 	Logger::log(DEBUG, "Checking nick uniqueness");
-	if (!_isNickUnique(nickname))
+	if (!_isNickUnique(new_nickname))
 	{
-		if (nickname != user_nickname)
+		if (new_nickname != user_nickname)
 		{
-			reply_message = build_reply(SERVER_PEFIX, ERR_NICKNAMEINUSE, user_nickname, nickname, "Nickname is already in use");
+			reply_message = build_reply(SERVER_PEFIX, ERR_NICKNAMEINUSE, user_nickname, new_nickname, "Nickname is already in use");
 			_srvAPI.send_reply(reply_message);
 		}	
 		if( !_srvAPI.isUserRegistered())
@@ -116,17 +117,13 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	}	
 	if(_srvAPI.isUserRegistered())
 	{
-		std::string message = ":";
-		message += _srvAPI.getUserIdentifier(); 
-		message += SPACE;
-		message += "NICK";
-		message += SPACE;
-		message += ":";
-		message += nickname;
-		_srvAPI.send_reply(message);
+		user_identifier = _srvAPI.getUserIdentifier(); 
+		
+		reply_message = build_reply(user_identifier, "NICK", new_nickname);
+		_srvAPI.send_reply(reply_message);
 		// TODO send to the rest of users
 	}
-	_srvAPI.setUserNick(nickname);
+	_srvAPI.setUserNick(new_nickname);
 }
 
 void	CommandHandler::_passFp(parsed_message& parsed_msg)
@@ -271,6 +268,20 @@ bool	CommandHandler::_isNickUnique(const std::string nick)
 // 	std::cout << "Built message: " << reply_message << std::endl;
 // 	return reply_message;
 // }
+
+const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& command, const std::string message)
+{
+	std::string reply_message = COLON;
+	reply_message += prefix;
+	reply_message += SPACE;
+	reply_message += command;
+	reply_message += SPACE;
+	reply_message += COLON;
+	reply_message += message;
+
+	std::cout << "Built message: " << reply_message << std::endl;
+	return reply_message;
+}
 
 const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string message)
 {
