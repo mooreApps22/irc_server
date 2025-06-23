@@ -70,7 +70,8 @@ int	Server::getFdFromNickname(const std::string& nickname)
 }
 
 
-void	Server::addChannel(const std::string& name, Channel* channel)
+void	Server::addChannel(const std::string& name)
 {
+	Channel* channel = new Channel(name);
 	_channels[name] = channel;
 }

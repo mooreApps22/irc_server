@@ -26,9 +26,13 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 	if (!channel)
 	{
 		Logger::log(INFO, "Channel :", channelName);
-		channel = new Channel(channelName);
-		_srvAPI.addChannel(channelName, channel);
+		_srvAPI.addChannel(channelName);
 		std::cout << "New channel created: " << channelName << std::endl;
+		return ;
+	}
+	if (channel->isFull())
+	{
+		_srvAPI.send_reply(std::string(ERR_CHANNELISFULL) + " :Channel is full");
 		return ;
 	}
 	if (channel->needsChannelKey() && channel->getKey() != password)

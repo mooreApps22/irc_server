@@ -11,3 +11,4 @@
 #define ERR_PASSWDMISMATCH "464"
 #define ERR_INVITEONLYCHAN "473"
 #define ERR_BANNEDFROMCHAN "474"
+#define ERR_CHANNELISFULL "478"	// "<channel>: <reason>

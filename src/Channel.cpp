@@ -186,3 +186,8 @@ const char*	Channel::hashSymbolException::what() const throw()
 {
 	return ("Channel names have to begin with a '#'!");
 }
+
+bool	Channel::isFull(void) const
+{
+	return (_user_limit > 0 && _members.size() >= _user_limit);
+}

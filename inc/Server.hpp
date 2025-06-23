@@ -56,5 +56,5 @@ class Server: public IServerAPI
 		void 		addUserToChannel(User* user, const std::string& channel_name);
 		User*		getUser(const int fd);
 		int			getFdFromNickname(const std::string& nickname);
-		void		addChannel(const std::string& name, Channel* channel);
+		void		addChannel(const std::string& name);
 };

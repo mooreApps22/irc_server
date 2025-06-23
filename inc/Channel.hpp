@@ -57,6 +57,8 @@ class Channel
 		void											addInvitee(User* user, const std::string& name);
 		void											removeInvitee(const std::string& name);
 		bool											isInvitee(const std::string& name);
+		// State
+		bool											isFull(void) const;
 
 		class hashSymbolException : public std::exception
 		{
