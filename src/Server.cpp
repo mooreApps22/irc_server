@@ -233,6 +233,20 @@ void	Server::send_reply(const std::string& reply)
 	send(_client_fd, CRLF, 2, 0);
 }
 
+void	Server::sendToAll(const std::string& message)
+{
+	Logger::log(DEBUG, "Sending message to all users", message);
+	for (usrsIt it = getUsersBegin(); it != getUsersEnd(); it++)
+		sendToUser(message, it->first);
+}
+
+void	Server::sendToUser(const std::string& message, int user_fd)
+{
+	Logger::log(DEBUG, "Sending message to user", message);
+	send(user_fd, message.c_str(), message.length(), 0);
+	send(_client_fd, CRLF, 2, 0);
+}
+
 void	Server::disconnectUser(void)
 {
 	close(_client_fd);

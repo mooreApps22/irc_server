@@ -120,7 +120,7 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 		user_identifier = _srvAPI.getUserIdentifier(); 
 		
 		reply_message = build_reply(user_identifier, "NICK", new_nickname);
-		_srvAPI.send_reply(reply_message);
+		_srvAPI.sendToAll(reply_message);
 		// TODO send to the rest of users
 	}
 	_srvAPI.setUserNick(new_nickname);
@@ -222,7 +222,7 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 	reply_message = build_reply(SERVER_PEFIX, RPL_WELCOME, user_nickname, message);
 	_srvAPI.send_reply(reply_message);
 
-	message = ":Your host is ";
+	message = "Your host is ";
 	message += SERVER_NAME;
 	message += ", running version ";
 	message += VERSION;
@@ -254,20 +254,6 @@ bool	CommandHandler::_isNickUnique(const std::string nick)
 	}
 	return true;
 }
-
-// const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& command, const std::string trailing)
-// {
-// 	std::string reply_message = COLON;
-// 	reply_message = prefix;
-// 	reply_message += SPACE;
-// 	reply_message += command;
-// 	reply_message += SPACE;
-// 	reply_message += COLON;
-// 	reply_message += trailing;
-
-// 	std::cout << "Built message: " << reply_message << std::endl;
-// 	return reply_message;
-// }
 
 const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& command, const std::string message)
 {
