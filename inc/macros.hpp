@@ -15,4 +15,5 @@
 #define ERR_NEEDMOREPARAMS		"461"	// "<command> :Not enough parameters"
 #define ERR_ALREADYREGISTRED 	"462" 	// ":Unauthorized command (already registered)"
 #define ERR_PASSWDMISMATCH 		"464" 	// ": Password incorrect"
+#define ERR_INVITEONLYCHAN		"473"
 #define ERR_CHANNELISFULL		"478"	// "<channel>: <reason>

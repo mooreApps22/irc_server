@@ -35,6 +35,11 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 		_srvAPI.send_reply(std::string(ERR_CHANNELISFULL) + " :Channel is full");
 		return ;
 	}
+	if (channel->isInviteOnly() && !channel->isInvitee(user->getNickname()))
+	{		
+		_srvAPI.send_reply(std::string(ERR_INVITEONLYCHAN) + " :Channel is full");
+		return ;
+	}
 	if (channel->needsChannelKey() && channel->getKey() != password)
 	{
 		_srvAPI.send_reply(std::string(ERR_PASSWDMISMATCH) + " :Invalid channel password");
