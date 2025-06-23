@@ -10,6 +10,7 @@ class User
 		std::string	_host;
 		bool		_registered;
 		bool		_password;
+		bool		_invisible;
 		std::string _partial_message;
 
     public:
@@ -22,6 +23,8 @@ class User
 		const std::string	getIdentifier() const;
 		void				setRegisteredStatus(const bool status);
 		bool				isRegistered() const;
+		void				setInvisibleStatus(const bool status);
+		bool				isInvisible() const;
 		void				buffer(const std::string& message);
 		const std::string	get_partial_message();
 		bool				getPasswordStatus() const;

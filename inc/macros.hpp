@@ -1,7 +1,7 @@
 #pragma once
 
 // Server data
-#define SERVER_PEFIX			"irc.serverirc.42.fr"
+#define SERVER_PREFIX			"irc.serverirc.42.fr"
 #define SERVER_NAME				"marvin@serverirc.42.fr"
 #define VERSION					"v0.0"
 #define CREATION_DATE			"21/06/2025"
@@ -19,6 +19,7 @@
 #define RPL_YOURHOST			"002"	// "Your host is <servername>, running version <ver>"
 #define	RPL_CREATED				"003"	// "This server was created <date>"
 #define RPL_MYINFO				"004"	// "<servername> <version> <available user modes> <available channel modes>"
+#define RPL_UMODEIS				"221"	// "<user mode string>"
 
 // Error replies
 #define ERR_UNKNOWNCOMMAND 		"421" 	// "<command> :Unknown command"

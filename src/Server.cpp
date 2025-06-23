@@ -305,6 +305,12 @@ bool 	Server::getUserPasswordState(void)
 	return _users[_client_fd]->getPasswordStatus();
 }
 
+void	Server::setUserInvisibleMode(bool status)
+{
+	_users[_client_fd]->setInvisibleStatus(status);
+}
+
+
 usrsIt	Server::getUsersBegin(void)
 {
 	return _users.begin();

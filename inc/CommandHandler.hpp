@@ -19,6 +19,7 @@ class CommandHandler
 		void		_modeFp(parsed_message& parsed_msg);
 		void		_nickFp(parsed_message& parsed_msg);
 		void		_passFp(parsed_message& parsed_msg);
+		void		_pingFp(parsed_message& parsed_msg);
 		void		_privMsgFp(parsed_message& parsed_msg);
 		void		_realFp(parsed_message& parsed_msg);
 		void		_topicFp(parsed_message& parsed_msg);

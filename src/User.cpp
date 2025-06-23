@@ -9,6 +9,7 @@ User::User(const std::string& host)
 		_host(host),
 		_registered(false),
 		_password(false),
+		_invisible(false),
 		_partial_message("")
 {
 	Logger::log(INFO, "User Constructor called.");
@@ -52,6 +53,16 @@ void	User::setRegisteredStatus(const bool status)
 bool	User::isRegistered() const
 {
 	return _registered;
+}
+
+void	User::setInvisibleStatus(const bool status)
+{
+	_invisible = status;
+}
+
+bool	User::isInvisible() const
+{
+	return _invisible;
 }
 
 void User::buffer(const std::string& message)

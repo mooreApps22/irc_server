@@ -50,6 +50,7 @@ class Server: public IServerAPI
 		const std::string	getUserIdentifier();
 		void				setUserRegisteredStatus(bool status);
 		bool 				isUserRegistered();
+		void				setUserInvisibleMode(bool status);
 		void 				setUserPasswordState(bool state);
 		bool 				getUserPasswordState(void);
 		usrsIt				getUsersBegin(void);
