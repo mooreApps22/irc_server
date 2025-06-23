@@ -1,12 +1,16 @@
 #pragma once
 
-#define SERVER_PEFIX			":irc.serverirc.42.fr"
+// Server data
+#define SERVER_PEFIX			"irc.serverirc.42.fr"
 #define SERVER_NAME				"marvin@serverirc.42.fr"
 #define VERSION					"v0.0"
-#define SPACE					" "
 #define CREATION_DATE			"21/06/2025"
 #define USER_MODES				"o"
 #define	CHANNEL_MODES			"iklot"
+
+// Syntax
+#define SPACE					" "
+#define COLON					":"
 
 // Command replies
 #define RPL_WELCOME				"001"	// "Welcome to the Internet Relay Network

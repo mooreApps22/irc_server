@@ -76,7 +76,7 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 
 	if (!_srvAPI.getUserPasswordState())
 	{
-		reply_message = build_reply(ERR_PASSWDMISMATCH, user_nickname, ": Password incorrect");
+		reply_message = build_reply(SERVER_PEFIX, ERR_PASSWDMISMATCH, user_nickname, ": Password incorrect");
 		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;
@@ -84,7 +84,7 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	
 	if(parsed_msg.params.capacity() != 1)
 	{
-		reply_message = build_reply(ERR_NONICKNAMEGIVEN, user_nickname, command, ":No nickname given");
+		reply_message = build_reply(SERVER_PEFIX, ERR_NONICKNAMEGIVEN, user_nickname, command, ":No nickname given");
 		_srvAPI.send_reply(reply_message);
 		if( !_srvAPI.isUserRegistered())
 			_srvAPI.disconnectUser();
@@ -92,11 +92,11 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	}
 
 	nickname = *parsed_msg.getParamsBegin();
-	Logger::log(DEBUG, "Checking nick corectness");
+	Logger::log(DEBUG, "Checking nick correctness");
 
 	if (!Parser::is_nickname(nickname))
 	{
-		reply_message = build_reply(ERR_ERRONEUSNICKNAME, user_nickname, nickname, ":Erroneous nickname");
+		reply_message = build_reply(SERVER_PEFIX, ERR_ERRONEUSNICKNAME, user_nickname, nickname, ":Erroneous nickname");
 		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;
@@ -107,7 +107,7 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	{
 		if (nickname != user_nickname)
 		{
-			reply_message = build_reply(ERR_NICKNAMEINUSE, user_nickname, nickname, ":Nickname is already in use");
+			reply_message = build_reply(SERVER_PEFIX, ERR_NICKNAMEINUSE, user_nickname, nickname, "Nickname is already in use");
 			_srvAPI.send_reply(reply_message);
 		}	
 		if( !_srvAPI.isUserRegistered())
@@ -139,14 +139,14 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 
 	if(_srvAPI.isUserRegistered())
 	{
-		reply_message = build_reply(ERR_ALREADYREGISTRED, user_nickname, ":Unauthorized command (already registered)");
+		reply_message = build_reply(SERVER_PEFIX, ERR_ALREADYREGISTRED, user_nickname, "Unauthorized command (already registered)");
 		_srvAPI.send_reply(reply_message);
 		return ;
 	}
 	
 	if(parsed_msg.params.capacity() != 1)
 	{
-		reply_message = build_reply(ERR_PASSWDMISMATCH, user_nickname, command, ":Not enough parameters");
+		reply_message = build_reply(SERVER_PEFIX, ERR_PASSWDMISMATCH, user_nickname, command, "Not enough parameters");
 		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;
@@ -156,7 +156,7 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 		_srvAPI.setUserPasswordState(true);
 	else
 	{
-		reply_message = build_reply(ERR_PASSWDMISMATCH, user_nickname, ": Password incorrect");
+		reply_message = build_reply(SERVER_PEFIX, ERR_PASSWDMISMATCH, user_nickname, "Password incorrect");
 		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 	}
@@ -193,7 +193,7 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 	
 	if(user_nickname == "*")
 	{
-		reply_message = build_reply(ERR_NONICKNAMEGIVEN, user_nickname, command, ":No nickname given");
+		reply_message = build_reply(SERVER_PEFIX, ERR_NONICKNAMEGIVEN, user_nickname, command, "No nickname given");
 		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;
@@ -201,14 +201,14 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 
 	if(_srvAPI.isUserRegistered())
 	{
-		reply_message = build_reply(ERR_ALREADYREGISTRED, user_nickname, ":Unauthorized command (already registered)");
+		reply_message = build_reply(SERVER_PEFIX, ERR_ALREADYREGISTRED, user_nickname, "Unauthorized command (already registered)");
 		_srvAPI.send_reply(reply_message);
 		return ;
 	}
 	
 	if(parsed_msg.params.capacity() != 4)
 	{
-		reply_message = build_reply(ERR_NEEDMOREPARAMS, user_nickname, command, ":Not enough parameters");
+		reply_message = build_reply(SERVER_PEFIX, ERR_NEEDMOREPARAMS, user_nickname, command, "Not enough parameters");
 		_srvAPI.send_reply(reply_message);
 		_srvAPI.disconnectUser();
 		return ;
@@ -220,21 +220,21 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 
 	_srvAPI.setUserRegisteredStatus(true);
 
-	std::string message = ":Welcome to the Internet Relay Network ";
+	std::string message = "Welcome to the Internet Relay Network ";
 	message += _srvAPI.getUserIdentifier();
-	reply_message = build_reply(RPL_WELCOME, user_nickname, message);
+	reply_message = build_reply(SERVER_PEFIX, RPL_WELCOME, user_nickname, message);
 	_srvAPI.send_reply(reply_message);
 
 	message = ":Your host is ";
 	message += SERVER_NAME;
 	message += ", running version ";
 	message += VERSION;
-	reply_message = build_reply(RPL_YOURHOST, user_nickname, message);
+	reply_message = build_reply(SERVER_PEFIX, RPL_YOURHOST, user_nickname, message);
 	_srvAPI.send_reply(reply_message);
 
-	message = ":This server was created ";
+	message = "This server was created ";
 	message += CREATION_DATE;
-	reply_message = build_reply(RPL_CREATED, user_nickname, message);
+	reply_message = build_reply(SERVER_PEFIX, RPL_CREATED, user_nickname, message);
 	_srvAPI.send_reply(reply_message);
 
 	message = SERVER_NAME;
@@ -244,7 +244,7 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 	message += USER_MODES;
 	message += SPACE;
 	message += CHANNEL_MODES;
-	reply_message = build_reply(RPL_MYINFO, user_nickname, message);
+	reply_message = build_reply(SERVER_PEFIX, RPL_MYINFO, user_nickname, message);
 	_srvAPI.send_reply(reply_message);
 }
 
@@ -258,23 +258,40 @@ bool	CommandHandler::_isNickUnique(const std::string nick)
 	return true;
 }
 
-const std::string CommandHandler::build_reply(const std::string& code, const std::string& dest, const std::string message)
+// const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& command, const std::string trailing)
+// {
+// 	std::string reply_message = COLON;
+// 	reply_message = prefix;
+// 	reply_message += SPACE;
+// 	reply_message += command;
+// 	reply_message += SPACE;
+// 	reply_message += COLON;
+// 	reply_message += trailing;
+
+// 	std::cout << "Built message: " << reply_message << std::endl;
+// 	return reply_message;
+// }
+
+const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string message)
 {
-	std::string reply_message = SERVER_PEFIX;
+	std::string reply_message = COLON;
+	reply_message += prefix;
 	reply_message += SPACE;
 	reply_message += code;
 	reply_message += SPACE;
 	reply_message += dest;
 	reply_message += SPACE;
+	reply_message += COLON;
 	reply_message += message;
 
 	std::cout << "Built message: " << reply_message << std::endl;
 	return reply_message;
 }
 
-const std::string CommandHandler::build_reply(const std::string& code, const std::string& dest, const std::string arg, const std::string message)
+const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string arg, const std::string message)
 {
-	std::string reply_message = SERVER_PEFIX;
+	std::string reply_message = COLON;
+	reply_message += prefix;
 	reply_message += SPACE;
 	reply_message += code;
 	reply_message += SPACE;
@@ -282,6 +299,7 @@ const std::string CommandHandler::build_reply(const std::string& code, const std
 	reply_message += SPACE;
 	reply_message += arg;
 	reply_message += SPACE;
+	reply_message += COLON;
 	reply_message += message;
 
 	std::cout << "Built message: " << reply_message << std::endl;
