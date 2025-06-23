@@ -298,3 +298,6 @@ bool	Parser::is_special(std::string::iterator it)
 {
 	return *it == '[' || *it == ']' || *it == '\\' || *it == '`' || *it == '_' || *it == '^' || *it == '{' || *it == '|' || *it == '}';
 }
+
+// <channel>    ::= ('#' | '&') <chstring>
+// <chstring>   ::= <any 8bit code except SPACE, BELL, NUL, CR, LF and comma (',')>

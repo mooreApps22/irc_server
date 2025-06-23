@@ -1,7 +1,6 @@
 #pragma once
 
 // Server data
-#define SERVER_PREFIX			"irc.serverirc.42.fr"
 #define SERVER_NAME				"marvin@serverirc.42.fr"
 #define VERSION					"v0.0"
 #define CREATION_DATE			"21/06/2025"
