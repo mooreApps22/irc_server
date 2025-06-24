@@ -32,3 +32,15 @@ int	Server::getUserFd(const std::string& nick)
 }
 
 
+Channel*	Server::getChannel(const std::string& channelName)
+{
+	std::map<std::string, Channel*>::iterator it = _channels.find(channelName);
+
+	if (it != _channels.end())
+	{
+		Logger::log(INFO, "The JOIN command got the " + channelName);
+		return (it->second);
+	}
+	Logger::log(ERROR, "The JOIN command failed to get the " + channelName);
+	return (NULL);
+}

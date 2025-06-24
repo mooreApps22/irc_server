@@ -60,4 +60,5 @@ class Server: public IServerAPI
 		
 		//Channel
 		int					getUserFd(const std::string& nick);
+		Channel*			getChannel(const std::string& channelName);
 };

@@ -64,6 +64,12 @@ bool	CommandHandler::processJoinParams(User* user, std::string chanParams, std::
 		if (!validChannelName(*it))
 			return (false);	
 		//if channel (aka *it) doesnt't exist, create it and make the user the operator
+		Channel* currentChannel = _srvAPI.getChannel(*it);
+		if (!currentChannel)
+		{
+			
+			_srvAPI.send_reply("Creating a current channel");
+		}
 		//if the channel isFull() then don't allow to join
 		//if the channel isInviteOnly() then don't allow to join
 		//if key is set the key must match (if a key is used it must be iterated)

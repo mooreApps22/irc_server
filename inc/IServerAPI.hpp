@@ -39,6 +39,7 @@ public:
 	virtual	User*				getUser(const int fd) = 0;
 
 	virtual int					getUserFd(const std::string& nick) = 0;
+	virtual Channel*			getChannel(const std::string& channelName) = 0;
 	
 
 /*
