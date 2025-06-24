@@ -20,15 +20,18 @@ std::vector<std::string>	mySplit(const std::string& str, char delimiter)
 	return (split);
 }
 
-bool	validChannelName(const std::string& name)
+bool	CommandHandler::validChannelName(const std::string& name)
 {
 	if (name.empty())
 		return (false);
 	
 	char	firstChar = name[0];
 
-	if (firstChar != '#' && firstChar != '+')
+	if (firstChar != '#')
+	{
+		_srvAPI.send_reply("Channels must start with a #.");
 		return (false);
+	}
 	for (std::string::const_iterator it = name.begin(); it != name.end(); ++it)
 	{
 		if (*it == ' ' || *it == ',' || static_cast<unsigned char>(*it) < 32)

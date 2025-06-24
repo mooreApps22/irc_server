@@ -42,4 +42,5 @@ class CommandHandler
 		void				execute(parsed_message& parsed_msg, int fd);
 		void				setClientFd(int fd);
 		int					getClientFd(void) const;
+		bool				validChannelName(const std::string& name);
 };
