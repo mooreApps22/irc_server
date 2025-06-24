@@ -31,6 +31,7 @@ public:
 	virtual void				setUserRegisteredStatus(bool status) = 0;
 	virtual bool				isUserRegistered() = 0;
 	virtual void				setUserInvisibleMode(bool state) = 0;
+	virtual bool				isUserInvisible() = 0;
 	virtual void				setUserPasswordState(bool state) = 0;
 	virtual bool				getUserPasswordState(void) = 0;
 	virtual usrsIt				getUsersBegin(void) = 0;

@@ -301,3 +301,23 @@ bool	Parser::is_special(std::string::iterator it)
 
 // <channel>    ::= ('#' | '&') <chstring>
 // <chstring>   ::= <any 8bit code except SPACE, BELL, NUL, CR, LF and comma (',')>
+bool	Parser::is_channel(std::string& channel)
+{
+	std::string::iterator it = channel.begin();
+
+	if (*it != '#' && *it != '&')
+		return false;
+	it++;
+	for(; it != channel.end(); it++)
+	{
+		if (is_chstring(it))
+			return false;
+	}
+	
+	return true;
+}
+
+bool	Parser::is_chstring(std::string::iterator it)
+{
+	return *it != ' ' && *it != 7 && *it != '\0' && *it != '\r' && *it != '\n' && *it != ',';
+}

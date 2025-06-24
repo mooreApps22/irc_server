@@ -310,6 +310,10 @@ void	Server::setUserInvisibleMode(bool status)
 	_users[_client_fd]->setInvisibleStatus(status);
 }
 
+bool	Server::isUserInvisible()
+{
+	return _users[_client_fd]->isInvisible();
+}
 
 usrsIt	Server::getUsersBegin(void)
 {

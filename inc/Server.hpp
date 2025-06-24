@@ -51,6 +51,7 @@ class Server: public IServerAPI
 		void				setUserRegisteredStatus(bool status);
 		bool 				isUserRegistered();
 		void				setUserInvisibleMode(bool status);
+		bool				isUserInvisible();
 		void 				setUserPasswordState(bool state);
 		bool 				getUserPasswordState(void);
 		usrsIt				getUsersBegin(void);
