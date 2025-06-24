@@ -99,8 +99,11 @@ void Server::run(void)
 				{
 					parsed_message	parsed_msg;
 
+					_parser.setContext(_client_fd, this); // this is the server 
 					if (_parser.parse_message(message, parsed_msg))
-						_ch.execute(parsed_msg);
+					{
+						_ch.execute(parsed_msg, _client_fd);
+					}
 					else
 						Logger::log(INFO, "Command Syntax Error.", message);	
 				}
@@ -322,3 +325,15 @@ usrsIt	Server::getUsersEnd(void)
 }
 
 
+User*	Server::getUser(const int fd)
+{
+	std::map<const int, User*>::iterator it = _users.find(fd);
+
+	if (it != _users.end())
+	{
+		Logger::log(INFO, "Got User.");
+		return (it->second);
+	}
+	Logger::log(ERROR, "Failed to get User.");
+	return (NULL);
+}

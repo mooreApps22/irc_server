@@ -22,6 +22,13 @@ int Parser::get_message_length(std::string& message)
 	return message.find(CRLF) + 2;
 }
 
+
+void	Parser::setContext(int fd, IServerAPI* srv)
+{
+	_fd = fd;
+	_srv = srv;
+}
+
 bool Parser::parse_message(std::string& message, parsed_message& parsed_msg)
 {
 	std::string::iterator begin = message.begin();
@@ -35,9 +42,12 @@ bool Parser::parse_message(std::string& message, parsed_message& parsed_msg)
 bool Parser::is_message(parsed_message& parsed_msg)
 {
 	std::string::iterator begin = _it;
+	
 
+	Logger::log(DEBUG, "In is_message().");
 	if (is_colon())
 	{
+		Logger::log(DEBUG, "About to enter is_prefix().");
 		if (!is_prefix(parsed_msg))
 		 	return false;
 		if (!is_space())
@@ -66,8 +76,22 @@ bool Parser::is_colon()
 // prefix     =  servername / ( nickname [ [ "!" user ] "@" host ] )
 bool Parser::is_prefix(parsed_message& parsed_msg)
 {
-	(void) parsed_msg;
-	return false;
+	if (!_srv)
+	{
+		Logger::log(ERROR, "No server for the parser.");	
+		return (false);
+	}
+	
+	User*	user = _srv->getUser(_fd);
+	if (!user)
+	{
+		Logger::log(ERROR, "No user for the parser.");	
+		return (false);
+	}
+	Logger::log(INFO, "Parser get fd");	
+	parsed_msg.prefix = user->getNickname();
+	Logger::log(DEBUG, "Prefix set to: " + parsed_msg.prefix);	
+	return (true);
 }
 
 // SPACE      =  %x20        ; space character

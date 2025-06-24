@@ -11,6 +11,7 @@ class CommandHandler
     private:
 		IServerAPI&	_srvAPI;
 		commands	_commands;
+		int			_fd;
 		
 		// Function pointers
 		void		_inviteFp(parsed_message& parsed_msg);
@@ -31,9 +32,14 @@ class CommandHandler
 		const std::string	build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string message);
 		const std::string	build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string arg, const std::string message);
 
+		//Join Utils
+		bool				processJoinParams(User* user, std::string chanParams, std::string keyParams);
+
     public:
 		CommandHandler(IServerAPI& srvAPI);
         ~CommandHandler();
 		void				execute(void);
-		void				execute(parsed_message& parsed_msg);
+		void				execute(parsed_message& parsed_msg, int fd);
+		void				setClientFd(int fd);
+		int					getClientFd(void) const;
 };

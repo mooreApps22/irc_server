@@ -1,10 +1,12 @@
 #ifndef PARSER_HPP
 # define PARSER_HPP
 # include <string>
-#include <vector>
-#define CRLF		"\r\n"
+# include <vector>
+# include "IServerAPI.hpp"
+# define CRLF		"\r\n"
 
 typedef std::vector<std::string>::iterator paramsIt;
+
 typedef struct parsed_message
 {
 	std::string					prefix;
@@ -27,9 +29,11 @@ class Parser
 {
     private:
 		std::string::iterator		_it;
+		int							_fd;
+		IServerAPI*					_srv;
 		// std::string					_prefix;
 		// std::string					_command;
-		// std::vector<std::string>	_params;
+		// std::vector<std::string>		_params;
 		// std::string					_trailing;
 
 		bool is_message(parsed_message& parsed_msg);
@@ -58,6 +62,7 @@ class Parser
 		int				get_message_length(std::string& message);
 		bool			parse_message(std::string& message, parsed_message& parsed_msg);
 		static bool		is_nickname(std::string& nickname);
+		void			setContext(int fd, IServerAPI* srv);
 
 };
 

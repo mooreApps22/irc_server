@@ -1,10 +1,9 @@
 #include "CommandHandler.hpp"
-# include "IServerAPI.hpp"
+#include "IServerAPI.hpp"
 #include "macros.hpp"
 #include "Logger.hpp"
 #include <vector>
 #include <string>
-
 
 CommandHandler::CommandHandler(IServerAPI& srvAPI)
 	:	_srvAPI(srvAPI)
@@ -29,11 +28,12 @@ CommandHandler::~CommandHandler()
 	Logger::log(INFO, "CommandHandler destructed.");
 }
 
-void	CommandHandler::execute(parsed_message& parsed_msg)
+void	CommandHandler::execute(parsed_message& parsed_msg, int fd)
 {
 	const std::string command =  parsed_msg.command;
 	commands::iterator it = _commands.find(command);
 
+	CommandHandler::setClientFd(fd);
 	if (it != _commands.end())
 	{
 		(this->*(it->second))(parsed_msg);
@@ -43,12 +43,6 @@ void	CommandHandler::execute(parsed_message& parsed_msg)
 }
 
 void	CommandHandler::_inviteFp(parsed_message& parsed_msg)
-{
-	Logger::log(INFO,  parsed_msg.command + " received.");
-	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
-}
-
-void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
 	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
@@ -321,4 +315,15 @@ const std::string CommandHandler::build_reply(const std::string& prefix, const s
 
 	std::cout << "Built message: " << reply_message << std::endl;
 	return reply_message;
+}
+
+
+void	CommandHandler::setClientFd(int fd)
+{
+	_fd = fd;
+}
+
+int	CommandHandler::getClientFd(void) const
+{
+	return (_fd);
 }

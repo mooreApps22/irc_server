@@ -35,6 +35,10 @@ public:
 	virtual bool				getUserPasswordState(void) = 0;
 	virtual usrsIt				getUsersBegin(void) = 0;
 	virtual usrsIt				getUsersEnd(void) = 0;
+
+	virtual	User*				getUser(const int fd) = 0;
+
+	virtual int					getUserFd(const std::string& nick) = 0;
 	
 
 /*

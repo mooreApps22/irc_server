@@ -55,4 +55,9 @@ class Server: public IServerAPI
 		bool 				getUserPasswordState(void);
 		usrsIt				getUsersBegin(void);
 		usrsIt				getUsersEnd(void);
+
+		User*				getUser(const int fd);
+		
+		//Channel
+		int					getUserFd(const std::string& nick);
 };
