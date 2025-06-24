@@ -18,7 +18,7 @@ public:
 	// Server actions related
 	virtual void	send_reply(const std::string& message) = 0;
 	virtual void	sendToAll(const std::string& message) = 0;
-	virtual void	sendToUser(const std::string& message, int user_fd) = 0;
+	virtual void	sendToUser(const std::string& message, std::string nickname) = 0;
 	virtual bool	isPasswordValid(const std::string& password) = 0;
 	virtual void	disconnectUser(void) = 0;
 	

@@ -86,7 +86,6 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 	std::string	param = parsed_msg.params.at(0);
 	if (Parser::is_nickname(param))
 	{
-		std::cout << "MODE nickname" << std::endl;
 		std::string nickname = param;
 		if (nickname != user_nickname)
 		{
@@ -183,7 +182,7 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 	}
 
 	Logger::log(DEBUG, "Checking nick uniqueness");
-	if (!_isNickUnique(new_nickname))
+	if (!isNickUnique(new_nickname))
 	{
 		if (new_nickname != user_nickname)
 		{
@@ -241,13 +240,83 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 void	CommandHandler::_pingFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
-	_srvAPI.send_reply("You've sent a " +  parsed_msg.command + " request!");
+	_srvAPI.send_reply("PONG");
 }
 
 void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
-	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
+	std::string user_nickname = _srvAPI.getUserNick();
+	std::string	command = parsed_msg.command;
+	std::string recipient;
+	std::string reply_message;
+	std::string message;
+	std::string user_identifier = _srvAPI.getUserIdentifier();
+
+	if (!_srvAPI.isUserRegistered())
+	{
+		reply_message = build_reply(SERVER_NAME, ERR_NOTREGISTERED, user_nickname, command, "You have not registered");
+		_srvAPI.send_reply(reply_message);
+		return ;
+	}
+
+	if (parsed_msg.params.capacity() == 0)
+	{
+		message = "No recipient given (";
+		message += command;
+		message += ")";
+
+		reply_message = build_reply(SERVER_NAME, ERR_NORECIPIENT, user_nickname, message);
+		_srvAPI.send_reply(reply_message);
+		return ;
+	}
+
+	if (parsed_msg.params.capacity() == 1)
+	{
+		reply_message = build_reply(SERVER_NAME, ERR_NOTEXTTOSEND, user_nickname, "No text to send");
+		_srvAPI.send_reply(reply_message);
+		return ;
+	}
+
+	if (parsed_msg.params.capacity() > 2)
+	{
+		reply_message = build_reply(SERVER_NAME, ERR_TOOMANYTARGETS, user_nickname, command, "Too many targets. Nomessage delivered");
+		_srvAPI.send_reply(reply_message);
+		return ;
+	}
+
+	recipient = parsed_msg.params.at(0);
+	message = parsed_msg.params.at(1);
+
+	if (Parser::is_nickname(recipient))
+	{
+		if (isNickUnique(recipient))
+		{
+			reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, recipient, "No such nick/channel");
+			_srvAPI.send_reply(reply_message);
+			return ;
+		}
+		if (recipient != user_nickname)
+		{
+			reply_message = build_reply(user_identifier, command, recipient, message);
+			_srvAPI.sendToUser(reply_message, recipient);
+		}
+	}
+	else if (Parser::is_channel(recipient))
+	{
+		// if (recipient !exists)
+		// {
+		// 	reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, recipient, "No such nick/channel");
+		// 	_srvAPI.send_reply(reply_message);
+		// 	return ;
+		// }
+	}
+	else
+	{
+		reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, recipient, "No such nick/channel");
+		_srvAPI.send_reply(reply_message);
+		return ;
+	}
 }
 
 void	CommandHandler::_realFp(parsed_message& parsed_msg)
@@ -330,7 +399,7 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 	_srvAPI.send_reply(reply_message);
 }
 
-bool	CommandHandler::_isNickUnique(const std::string nick)
+bool	CommandHandler::isNickUnique(const std::string nick)
 {
 	for (usrsIt it = _srvAPI.getUsersBegin(); it != _srvAPI.getUsersEnd(); it++)
 	{
