@@ -94,6 +94,12 @@ bool	Channel::hasUserLimit() const
 	return (_mode_has_limit);	
 }
 
+
+bool	Channel::isFull() const
+{
+	return (_members.size() + _operators.size() == _user_limit);
+}
+
 // Setters
 void	Channel::setTopic(const std::string& topic)
 {
@@ -135,17 +141,22 @@ void	Channel::clearUserLimit()
 }
 
 // Membership
-void	Channel::addMember(User* user, const std::string& name)
+void	Channel::addUser(User* user, const std::string& name)
 {
 	_members.insert(std::pair<std::string, User*>(name, user));
 }
 
-void	Channel::removeMember(const std::string& name)
+void	Channel::addUser(int fd)
+{
+	_members.insert(std::pair<fd, User*>(name, user));
+}
+
+void	Channel::removeUser(const std::string& name)
 {
 	_members.erase(name);
 }
 
-bool	Channel::isMember(const std::string& name)
+bool	Channel::isUser(const std::string& name)
 {
 	return (_members.find(name) != _members.end());
 }
@@ -186,3 +197,4 @@ const char*	Channel::hashSymbolException::what() const throw()
 {
 	return ("Channel names have to begin with a '#'!");
 }
+

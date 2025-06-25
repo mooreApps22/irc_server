@@ -29,8 +29,6 @@ class Parser
 {
     private:
 		std::string::iterator		_it;
-		int							_fd;
-		IServerAPI*					_srv;
 		// std::string					_prefix;
 		// std::string					_command;
 		// std::vector<std::string>		_params;
@@ -62,8 +60,6 @@ class Parser
 		int				get_message_length(std::string& message);
 		bool			parse_message(std::string& message, parsed_message& parsed_msg);
 		static bool		is_nickname(std::string& nickname);
-		void			setContext(int fd, IServerAPI* srv);
-
 };
 
 #endif

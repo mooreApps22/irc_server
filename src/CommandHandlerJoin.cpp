@@ -4,6 +4,34 @@
 #include "Logger.hpp"
 #include <vector>
 #include <string>
+/*
+	#define ERR_INVITEONLYCHAN 		"473"	// "<channel> :Cannot join channel (+i)"
+	#define ERR_CHANNELISFULL 		"471"	// "<channel> :Cannot join channel (+l)"
+	#define ERR_NOSUCHCHANNEL 		"403"	// "<channel name> :No such channel"
+	#define ERR_BADCHANNELKEY 		"475"	// "<channel> :Cannot join channel (+k)"
+	#define ERR_TOOMANYCHANNELS 	"405"	// "<channel name> :You have joined too many channels"
+*/
+
+
+bool	CommandHandler::isChString(std::string::iterator it)
+{
+	return *it != ' ' && *it != 7 && *it != '\0' && *it != '\r' && *it != '\n' && *it != ',';
+}
+
+bool	CommandHandler::isValidChannelName(std::string& channel)
+{
+	std::string::iterator it = channel.begin();
+
+	if (*it != '#' && *it != '&')
+		return false;
+	it++;
+	for(; it != channel.end(); it++)
+	{
+		if (!isChString(it))
+			return false;
+	}
+	return true;
+}
 
 std::vector<std::string>	mySplit(const std::string& str, char delimiter)
 {
@@ -20,67 +48,57 @@ std::vector<std::string>	mySplit(const std::string& str, char delimiter)
 	return (split);
 }
 
-bool	CommandHandler::validChannelName(const std::string& name)
-{
-	if (name.empty())
-		return (false);
-	
-	char	firstChar = name[0];
-
-	if (firstChar != '#')
-	{
-		_srvAPI.send_reply("Channels must start with a #.");
-		return (false);
-	}
-	for (std::string::const_iterator it = name.begin(); it != name.end(); ++it)
-	{
-		if (*it == ' ' || *it == ',' || static_cast<unsigned char>(*it) < 32)
-			return (false);
-	}
-	return (true);
-}
-
-
-bool	CommandHandler::processJoinParams(User* user, std::string chanParams, std::string keyParams)
+bool	CommandHandler::processJoinParams(std::string chanParams, std::string keyParams)
 {
 	if (chanParams.empty())
 	{
 		_srvAPI.send_reply("No valid JOIN parameters.");
 		return (false);
 	}
-	if (!user)
-	{
-		_srvAPI.send_reply("No valid JOIN user.");
-		return (false);
-	}
 
 	std::vector<std::string> channelNames = mySplit(chanParams, ',');
-	std::vector<std::string> keyNames;
-	if (!keyParams.empty())
-		keyNames = mySplit(keyParams, ',');
-	for (paramsIt it = channelNames.begin(); it != channelNames.end(); ++it)
+	std::vector<std::string> keyNames = mySplit(keyParams, ',');
+
+	if (keyParams.empty())
+		keyNames.clear();
+	for (paramsIt chanIt = channelNames.begin(); chanIt != channelNames.end(); ++chanIt) //, keyIt = keyNames.begin()
 	{
 		//if channel name is valid
-		if (!validChannelName(*it))
-			return (false);	
-		//if channel (aka *it) doesnt't exist, create it and make the user the operator
-		Channel* currentChannel = _srvAPI.getChannel(*it);
-		if (!currentChannel)
+		if (!isValidChannelName(*chanIt))
 		{
-			
-			_srvAPI.send_reply("Creating a current channel");
+			_srvAPI.send_reply("Is no valid channel.");
+			return (false);	
 		}
-		//if the channel isFull() then don't allow to join
-		//if the channel isInviteOnly() then don't allow to join
+		//if channel (aka *it) doesnt't exist, create it and make the user the operator
+		if (!_srvAPI.doesChannelExist(*chanIt))
+		{
+			_srvAPI.addChannel(*chanIt);
+			_srvAPI.send_reply("Creating a channel:" + *chanIt);
+			_srvAPI.addUserToChannel(*chanIt);
+			_srvAPI.send_reply("You were added to " + *chanIt);
+			return (true);
+		}
 		//if key is set the key must match (if a key is used it must be iterated)
+
+		//if the channel isInviteOnly() then don't allow to join
+
+		//if the channel isFull() then don't allow to join
+		if (_srvAPI.doesChannelHaveLimit(*chanIt) && _srvAPI.isChannelFull(*chanIt))
+		{
+			_srvAPI.send_reply("Channel is full, sorry!");
+			return (false);	
+		}
+		_srvAPI.addUserToChannel(*chanIt);
+		_srvAPI.send_reply("You were added to " + *chanIt);
 		//send notice about available channel command
 			// PRIVMSG to everyone in the channel
+		//send notice of list of users who are on the channel 
 		//if they are an operator, send channel operator commands
 			/*
 				KICK, INVITE, TOPIC, MODE(+/-itkol)
 			*/
 		//send the the current TOPIC of the channel
-		_srvAPI.send_reply(*it);
+		_srvAPI.send_reply(*chanIt);
 	}
 	return (true);
 }
@@ -89,16 +107,29 @@ bool	CommandHandler::processJoinParams(User* user, std::string chanParams, std::
 
 void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 {
-	
 	Logger::log(INFO,  parsed_msg.command + " received.");
 	
-//	paramsIt it = parsed_msg.getParamsBegin();
-	int			fd = getClientFd();
-	User*		user = _srvAPI.getUser(fd);
+	std::string	replyMessage;
+	std::string	userNickname = _srvAPI.getUserNick();
+	std::string	command = parsed_msg.command;	
+
+	if (!_srvAPI.isUserRegistered())
+	{
+		replyMessage = build_reply(std::string(SERVER_NAME), std::string(ERR_NOTREGISTERED), userNickname, command, "You have not registered");
+		_srvAPI.send_reply(replyMessage);
+		return ;
+	}
+	if (parsed_msg.params.size() == 0)
+	{
+		replyMessage = build_reply(std::string(SERVER_NAME), std::string(ERR_NOTREGISTERED), userNickname, command, "You have no params.");
+		_srvAPI.send_reply(replyMessage);
+		return ;
+	}
+
 	std::string channelParam = parsed_msg.params[0];
 	std::string keyParam = (parsed_msg.params.size() > 1) ? parsed_msg.params[1] : "";
 	
-	processJoinParams(user, channelParam, keyParam);
+	processJoinParams(channelParam, keyParam);
 //	createORJoinChannels(it);
 	//checkChannelKeys(it);
 

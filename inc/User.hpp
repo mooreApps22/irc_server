@@ -1,17 +1,19 @@
 #ifndef USER_HPP
 # define USER_HPP
 # include <string>
+# include <set>
 
 class User
 {
     private:
-		std::string	_nickname;
-		std::string	_username;
-		std::string	_host;
-		bool		_registered;
-		bool		_password;
-		bool		_invisible;
-		std::string _partial_message;
+		std::string				_nickname;
+		std::string				_username;
+		std::string				_host;
+		bool					_registered;
+		bool					_password;
+		bool					_invisible;
+		std::string				_partial_message;
+		std::set<std::string>	_channels;
 
     public:
         User(const std::string& host);
@@ -29,6 +31,8 @@ class User
 		const std::string	get_partial_message();
 		bool				getPasswordStatus() const;
 		void				setPasswordStatus(const bool state);
+		void				addChannel(const std::string& channelName);
+		void				removeChannel(const std::string& channelName);
 };
 
 #endif

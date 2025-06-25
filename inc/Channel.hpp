@@ -21,7 +21,7 @@ class Channel
 		bool									_mode_has_limit; //				l: set/remove the userlimit
 																//				o: give/take chop privilege
     public:
-		//Special Members
+		//Special Users
         Channel(const std::string& name);
         Channel(const Channel& other);
         Channel& operator=(const Channel& other);
@@ -30,13 +30,14 @@ class Channel
 		std::string										getTopic() const;
 		std::string										getKey() const;
 		size_t											getUserLimit() const;
-		const std::map<std::string, User*>&				getMembers() const;
+		const std::map<std::string, User*>&				getUsers() const;
 		const std::map<std::string, User*>&				getChops() const;
 		const std::map<std::string, User*>&				getInvitees() const;
 		bool											isInviteOnly() const;
 		bool											isTopicRestricted() const;
 		bool											needsChannelKey() const;
 		bool											hasUserLimit() const;
+		bool											isFull() const;
 		// Setters
 		void											setTopic(const std::string& topic);
 		void											setInviteOnly(bool state);
@@ -45,10 +46,10 @@ class Channel
 		void											clearKey();
 		void											setUserLimit(size_t limit);
 		void											clearUserLimit();
-		// Membership
-		void											addMember(User* user, const std::string& name);
-		void											removeMember(const std::string& name);
-		bool											isMember(const std::string& name);
+		// Usership
+		void											addUser(User* user, const std::string& name);
+		void											removeUser(const std::string& name);
+		bool											isUser(const std::string& name);
 		// Operators
 		void											addChop(User* user, const std::string& name);
 		void											removeChop(const std::string& name);

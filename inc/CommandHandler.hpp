@@ -33,7 +33,9 @@ class CommandHandler
 		const std::string	build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string arg, const std::string message);
 
 		//Join Utils
-		bool				processJoinParams(User* user, std::string chanParams, std::string keyParams);
+		bool				processJoinParams(std::string chanParams, std::string keyParams);
+		bool				isChString(std::string::iterator it);
+		bool				isValidChannelName(std::string& channel);
 
     public:
 		CommandHandler(IServerAPI& srvAPI);
@@ -42,5 +44,5 @@ class CommandHandler
 		void				execute(parsed_message& parsed_msg, int fd);
 		void				setClientFd(int fd);
 		int					getClientFd(void) const;
-		bool				validChannelName(const std::string& name);
+		//bool				validChannelName(const std::string& name);
 };

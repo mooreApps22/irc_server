@@ -44,3 +44,35 @@ Channel*	Server::getChannel(const std::string& channelName)
 	Logger::log(ERROR, "The JOIN command failed to get the " + channelName);
 	return (NULL);
 }
+
+///void	Server::addUserToChannel(std::string& channelName)
+bool	Server::doesChannelExist(const std::string& channelName)
+{
+	for (chanIt it = _channels.begin(); it != _channels.end(); it++)
+	{
+		if (it->first == channelName)		
+			return (true);
+	}
+	return (false);
+}
+
+void	Server::addChannel(const std::string& channelName)
+{
+	_channels[channelName] = new Channel(channelName);
+}
+
+void	Server::addUserToChannel(const std::string& channelName)
+{
+	_channels[channelName].addUser(_client_fd);
+	_users[_client_fd].addChannel(channelName);
+}
+
+bool	Server::isChannelFull(const std::string& channelName)
+{
+	return (_channels[channelName].isFull());	
+}
+
+bool	Server::doesChannelHaveLimit(const std::string& channelName)
+{
+	return (_channels[channelName].hasUserLimit());	
+}

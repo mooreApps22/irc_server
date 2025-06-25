@@ -56,9 +56,14 @@ class Server: public IServerAPI
 		usrsIt				getUsersBegin(void);
 		usrsIt				getUsersEnd(void);
 
-		User*				getUser(const int fd);
+		User*				getUser(void);
 		
 		//Channel
 		int					getUserFd(const std::string& nick);
 		Channel*			getChannel(const std::string& channelName);
+		bool				doesChannelExist(const std::string& channelName);
+		void				addChannel(const std::string& channelName);
+		void				addUserToChannel(const std::string& channelName);
+		bool				isChannelFull(const std::string& channelName);
+		bool				doesChannelHaveLimit(const std::string& channelName);
 };
