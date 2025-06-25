@@ -76,7 +76,7 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 		return ;
 	}
 
-	if (parsed_msg.params.capacity() == 0)
+	if (parsed_msg.params.size() == 0)
 	{
 		reply_message = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, user_nickname, command, "Not enough parameters");
 		_srvAPI.send_reply(reply_message);
@@ -93,7 +93,7 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 			_srvAPI.send_reply(reply_message);
 			return ;
 		}
-		if (parsed_msg.params.capacity() == 1)
+		if (parsed_msg.params.size() == 1)
 		{
 			if (_srvAPI.isUserInvisible())
 				mode = "+i";
@@ -161,7 +161,7 @@ void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 		return ;
 	}
 	
-	if(parsed_msg.params.capacity() != 1)
+	if(parsed_msg.params.size() != 1)
 	{
 		reply_message = build_reply(SERVER_NAME, ERR_NONICKNAMEGIVEN, user_nickname, command, "No nickname given");
 		_srvAPI.send_reply(reply_message);
@@ -219,7 +219,7 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 		return ;
 	}
 	
-	if(parsed_msg.params.capacity() != 1)
+	if(parsed_msg.params.size() != 1)
 	{
 		reply_message = build_reply(SERVER_NAME, ERR_PASSWDMISMATCH, user_nickname, command, "Not enough parameters");
 		_srvAPI.send_reply(reply_message);
@@ -260,7 +260,7 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 		return ;
 	}
 
-	if (parsed_msg.params.capacity() == 0)
+	if (parsed_msg.params.size() == 0)
 	{
 		message = "No recipient given (";
 		message += command;
@@ -271,14 +271,14 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 		return ;
 	}
 
-	if (parsed_msg.params.capacity() == 1)
+	if (parsed_msg.params.size() == 1)
 	{
 		reply_message = build_reply(SERVER_NAME, ERR_NOTEXTTOSEND, user_nickname, "No text to send");
 		_srvAPI.send_reply(reply_message);
 		return ;
 	}
 
-	if (parsed_msg.params.capacity() > 2)
+	if (parsed_msg.params.size() > 2)
 	{
 		reply_message = build_reply(SERVER_NAME, ERR_TOOMANYTARGETS, user_nickname, command, "Too many targets. Nomessage delivered");
 		_srvAPI.send_reply(reply_message);
@@ -357,7 +357,7 @@ void	CommandHandler::_userFp(parsed_message& parsed_msg)
 		return ;
 	}
 	
-	if(parsed_msg.params.capacity() != 4)
+	if(parsed_msg.params.size() != 4)
 	{
 		reply_message = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, user_nickname, command, "Not enough parameters");
 		_srvAPI.send_reply(reply_message);
