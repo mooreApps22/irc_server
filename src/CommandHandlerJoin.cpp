@@ -4,14 +4,8 @@
 #include "Logger.hpp"
 #include <vector>
 #include <string>
-/*
-	#define ERR_INVITEONLYCHAN 		"473"	// "<channel> :Cannot join channel (+i)"
-	#define ERR_CHANNELISFULL 		"471"	// "<channel> :Cannot join channel (+l)"
-	#define ERR_NOSUCHCHANNEL 		"403"	// "<channel name> :No such channel"
-	#define ERR_BADCHANNELKEY 		"475"	// "<channel> :Cannot join channel (+k)"
-	#define ERR_TOOMANYCHANNELS 	"405"	// "<channel name> :You have joined too many channels"
-*/
 
+/*
 // TODO: Delete (duplicated from Parser method())
 bool	CommandHandler::isChString(std::string::iterator it)
 {
@@ -33,6 +27,7 @@ bool	CommandHandler::isValidChannelName(std::string& channel)
 	}
 	return true;
 }
+*/
 
 std::vector<std::string>	mySplit(const std::string& str, char delimiter)
 {
@@ -83,7 +78,7 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 	{
 		std::cout << "Loop::Channels: " << *chIt << std::endl;
 		//if channel name is valid
-		if (!isValidChannelName(*chIt)) // TODO: Change to -if (!Parser::is_channel(*chIt))	-
+		if (!Parser::is_channel(*chIt)) // TODO: !isValidChannelName(*chIt)Change to -if ()	-
 		{
 			replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, userNickname, *chIt, "No such channel");
 				_srvAPI.send_reply(replyMessage);
