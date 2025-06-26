@@ -51,8 +51,9 @@ public:
 
 	virtual bool				isChannelInviteOnly(const std::string& channelName) = 0;
 	virtual bool				isUserInvited(const std::string& channelName) = 0;
-	
-
+	virtual bool				isChannelTopicSet(const std::string& channelName) = 0;	
+	virtual const std::string&	getChannelTopic(const std::string& channelName) = 0;
+	virtual const std::string	getChannelUsersList(const std::string& channelName) = 0;
 /*
 	// Channel actions relatedc
 	virtual void addChannel(const std::string& name) = 0;

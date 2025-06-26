@@ -72,5 +72,8 @@ class Server: public IServerAPI
 		bool				isChannelPasswordProtected(const std::string& channelName);
 		bool				isChannelPasswordValid(const std::string& channelName, const std::string& key);
 		bool				isChannelInviteOnly(const std::string& channelName);
+		bool				isChannelTopicSet(const std::string& channelName);
 		bool				isUserInvited(const std::string& channelName);
+		const std::string&	getChannelTopic(const std::string& channelName);
+		const std::string	getChannelUsersList(const std::string& channelName);
 };

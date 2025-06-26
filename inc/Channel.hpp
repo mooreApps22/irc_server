@@ -27,10 +27,12 @@ class Channel
         Channel& operator=(const Channel& other);
 		// Getters
 		const std::string								getName() const;
-		std::string										getTopic() const;
+		const std::string&								getTopic() const;
 //		std::string										getKey() const;
+		bool											isTopicSet() const;
 		bool											isKeyValid(const std::string& key) const;
 		size_t											getUserLimit() const;
+		const std::string								getUsersList() const;
 		const std::map<int, User*>&						getMembers() const;
 		const std::map<int, User*>&						getChops() const;
 		const std::map<int, User*>&						getInvitees() const;

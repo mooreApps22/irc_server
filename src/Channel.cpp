@@ -6,8 +6,8 @@
 
 Channel::Channel(const std::string& name)
 	:	_name(name),
-		_topic("This channels topic has not been set."),
-		_key("This channels key has not been set"),
+		_topic(""),
+		_key(""),
 		_user_limit(0),
 		_mode_invite_only(false),
 		_mode_topic_restricted(false),
@@ -45,7 +45,7 @@ const std::string	Channel::getName() const
 	return(_name);	
 }
 
-std::string	Channel::getTopic() const
+const std::string&	Channel::getTopic() const
 {
 	return(_topic);	
 }
@@ -75,6 +75,11 @@ const std::map<int, User*>&	Channel::getChops() const
 const std::map<int, User*>&	Channel::getInvitees() const
 {
 	return(_invitees);	
+}
+
+bool	Channel::isTopicSet() const
+{
+	return (_topic.size() > 0);
 }
 
 bool	Channel::isInviteOnly() const
@@ -204,4 +209,24 @@ const char*	Channel::hashSymbolException::what() const throw()
 bool	Channel::isKeyValid(const std::string& key) const
 {
 	return (_key == key);
+}
+
+const std::string	Channel::getUsersList() const
+{
+	std::string	list = "";
+
+	for (std::map<int, User*>::const_iterator it = _members.begin(); it != _members.end(); it++)
+	{
+		list += it->second->getNickname();
+		list += " ";
+	}
+
+	for (std::map<int, User*>::const_iterator it = _operators.begin(); it != _operators.end(); it++)
+	{
+		list += "@";
+		list += it->second->getNickname();
+		list += " ";
+	}
+	
+	return list;
 }

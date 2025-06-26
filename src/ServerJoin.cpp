@@ -108,3 +108,19 @@ bool	Server::isUserInvited(const std::string& channelName)
 {
 	return (_channels[channelName]->isInvitee(_client_fd));
 }
+
+bool	Server::isChannelTopicSet(const std::string& channelName)
+{
+	return (_channels[channelName]->isTopicSet());
+}
+
+const std::string&	Server::getChannelTopic(const std::string& channelName)
+{
+	return (_channels[channelName]->getTopic());
+}
+
+const std::string	Server::getChannelUsersList(const std::string& channelName)
+{
+	return (_channels[channelName]->getUsersList());
+}
+

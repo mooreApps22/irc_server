@@ -457,13 +457,22 @@ const std::string CommandHandler::build_reply(const std::string& prefix, const s
 	return reply_message;
 }
 
-
-/*void	CommandHandler::setClientFd(int fd)
+const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string arg, const std::string arg2, const std::string message)
 {
-	_fd = fd;
-}*/
+	std::string reply_message = COLON;
+	reply_message += prefix;
+	reply_message += SPACE;
+	reply_message += code;
+	reply_message += SPACE;
+	reply_message += dest;
+	reply_message += SPACE;
+	reply_message += arg;
+	reply_message += SPACE;
+	reply_message += arg2;
+	reply_message += SPACE;
+	reply_message += COLON;
+	reply_message += message;
 
-/*int	CommandHandler::getClientFd(void) const
-{
-	return (_fd);
-}*/
+	std::cout << "Built message: " << reply_message << std::endl;
+	return reply_message;
+}

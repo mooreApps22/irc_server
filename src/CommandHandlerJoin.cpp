@@ -5,28 +5,17 @@
 #include <vector>
 #include <string>
 
-/*
-// TODO: Delete (duplicated from Parser method())
-bool	CommandHandler::isChString(std::string::iterator it)
-{
-	return *it != ' ' && *it != 7 && *it != '\0' && *it != '\r' && *it != '\n' && *it != ',';
-}
+/* 
+		Once a user has joined a channel, they receive notice about all
+	   commands their server receives which affect the channel.  This
+	   includes MODE, KICK, PART, QUIT and of course PRIVMSG/NOTICE.  The
+	   JOIN command needs to be broadcast to all servers so that each server
+	   knows where to find the users who are on the channel.  This allows
+	   optimal delivery of PRIVMSG/NOTICE messages to the channel.
 
-// TODO: Delete (duplicated from Parser method())
-bool	CommandHandler::isValidChannelName(std::string& channel)
-{
-	std::string::iterator it = channel.begin();
-
-	if (*it != '#' && *it != '&')
-		return false;
-	it++;
-	for(; it != channel.end(); it++)
-	{
-		if (!isChString(it))
-			return false;
-	}
-	return true;
-}
+	   If a JOIN is successful, the user is then sent the channel's topic
+	   (using RPL_TOPIC) and the list of users who are on the channel (using
+	   RPL_NAMREPLY), which must include the user joining.
 */
 
 std::vector<std::string>	mySplit(const std::string& str, char delimiter)
@@ -51,6 +40,8 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 	std::string	replyMessage;
 	std::string	userNickname = _srvAPI.getUserNick();
 	std::string	command = parsed_msg.command;	
+	std::string	userID = _srvAPI.getUserIdentifier();
+
 
 	if (!_srvAPI.isUserRegistered())
 	{
@@ -78,7 +69,7 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 	{
 		std::cout << "Loop::Channels: " << *chIt << std::endl;
 		//if channel name is valid
-		if (!Parser::is_channel(*chIt)) // TODO: !isValidChannelName(*chIt)Change to -if ()	-
+		if (!Parser::is_channel(*chIt))
 		{
 			replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, userNickname, *chIt, "No such channel");
 				_srvAPI.send_reply(replyMessage);
@@ -92,6 +83,22 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 			_srvAPI.addUserToChannel(*chIt);
 			_srvAPI.setUserAsOperator(*chIt);
 			// _srvAPI.send_reply("You were added to " + *chIt);
+			replyMessage = build_reply(userID, command, *chIt);
+			_srvAPI.send_reply(replyMessage);
+
+			if (!_srvAPI.isChannelTopicSet(*chIt))
+				replyMessage = build_reply(SERVER_NAME, RPL_NOTOPIC, userNickname, *chIt, "No topic is set");
+			else
+				replyMessage = build_reply(SERVER_NAME, RPL_TOPIC, userNickname, *chIt, _srvAPI.getChannelTopic(*chIt));
+			_srvAPI.send_reply(replyMessage);
+
+			std::string message = _srvAPI.getChannelUsersList(*chIt);
+			replyMessage = build_reply(SERVER_NAME, RPL_NAMREPLY, userNickname, "=", *chIt, message);
+			_srvAPI.send_reply(replyMessage);
+
+			replyMessage = build_reply(SERVER_NAME, RPL_ENDOFNAMES, userNickname, *chIt, "End of NAMES list");
+			_srvAPI.send_reply(replyMessage);
+
 			continue ;
 		}
 
@@ -128,5 +135,22 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 			continue ;
 		}
 		_srvAPI.addUserToChannel(*chIt);
+		replyMessage = build_reply(userID, command, *chIt);
+		_srvAPI.send_reply(replyMessage);
+
+		if (!_srvAPI.isChannelTopicSet(*chIt))
+			replyMessage = build_reply(SERVER_NAME, RPL_NOTOPIC, userNickname, *chIt, "No topic is set");
+		else
+			replyMessage = build_reply(SERVER_NAME, RPL_TOPIC, userNickname, *chIt, _srvAPI.getChannelTopic(*chIt));
+		_srvAPI.send_reply(replyMessage);
+
+		std::string message = _srvAPI.getChannelUsersList(*chIt);
+		replyMessage = build_reply(SERVER_NAME, RPL_NAMREPLY, userNickname, "=", *chIt, message);
+		_srvAPI.send_reply(replyMessage);
+
+		replyMessage = build_reply(SERVER_NAME, RPL_ENDOFNAMES, userNickname, *chIt, "End of NAMES list");
+		_srvAPI.send_reply(replyMessage);
+
+
 	}
 }

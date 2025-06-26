@@ -20,6 +20,14 @@
 #define RPL_MYINFO				"004"	// "<servername> <version> <available user modes> <available channel modes>"
 #define RPL_UMODEIS				"221"	// "<user mode string>"
 
+#define	RPL_NOTOPIC				"331"	// "<channel> :No topic is set"
+#define RPL_TOPIC				"332"	// "<channel> :<topic>"
+#define	RPL_NAMREPLY			"353"	// "( "=" / "*" / "@" ) <channel>
+										// :[ "@" / "+" ] <nick> *( " " [ "@" / "+" ] <nick> )
+										// - "@" is used for secret channels, "*" for private
+										// channels, and "=" for others (public channels).
+#define	RPL_ENDOFNAMES			"366"	// "<channel> :End of NAMES list"
+
 // Error replies
 #define ERR_NOSUCHNICK			"401"	// "<nickname> :No such nick/channel"
 #define ERR_TOOMANYTARGETS		"407"	// "<target> :Duplicate recipients. No message delivered"
