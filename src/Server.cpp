@@ -101,7 +101,7 @@ void Server::run(void)
 
 					if (_parser.parse_message(message, parsed_msg))
 					{
-						_ch.execute(parsed_msg, _client_fd);
+						_ch.execute(parsed_msg);
 					}
 					else
 						Logger::log(INFO, "Command Syntax Error.", message);	

@@ -39,6 +39,6 @@ class CommandHandler
     public:
 		CommandHandler(IServerAPI& srvAPI);
         ~CommandHandler();
-		void				execute(void);
-		void				execute(parsed_message& parsed_msg, int fd);
+		// void				execute(void);
+		void				execute(parsed_message& parsed_msg);
 };

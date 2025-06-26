@@ -28,7 +28,7 @@ CommandHandler::~CommandHandler()
 	Logger::log(INFO, "CommandHandler destructed.");
 }
 
-void	CommandHandler::execute(parsed_message& parsed_msg, int fd)
+void	CommandHandler::execute(parsed_message& parsed_msg)
 {
 	const std::string command =  parsed_msg.command;
 	commands::iterator it = _commands.find(command);
