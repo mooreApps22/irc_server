@@ -51,23 +51,27 @@ std::vector<std::string>	mySplit(const std::string& str, char delimiter)
 
 bool	CommandHandler::processJoinParams(std::string chanParams, std::string keyParams)
 {
-	if (chanParams.empty())
+	std::string	replyMessage;
+	std::string	userNickname = _srvAPI.getUserNick();
+
+	if (chanParams.empty()) // TODO delete
 	{
 		_srvAPI.send_reply("No valid JOIN parameters.");
 		return (false);
 	}
 
-	std::vector<std::string> channelNames = mySplit(chanParams, ',');
-	std::vector<std::string> keyNames = mySplit(keyParams, ',');
+	std::vector<std::string> channelNames = mySplit(chanParams, ','); // TODO Refactor yo Parser
+	std::vector<std::string> keyNames = mySplit(keyParams, ','); // TODO Refactor yo Parser
 
 	if (keyParams.empty())
 		keyNames.clear();
-	for (paramsIt chIt = channelNames.begin(); chIt != channelNames.end(); ++chIt) //, keyIt = keyNames.begin()
+	for (paramsIt chIt = channelNames.begin(), keyIt = keyNames.begin(); chIt != channelNames.end(); ++chIt) //, keyIt = keyNames.begin()
 	{
 		//if channel name is valid
 		if (!isValidChannelName(*chIt)) // TODO: Change to -if (!Parser::is_channel(*chIt))	-
 		{
-			_srvAPI.send_reply("Is no valid channel.");
+			replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, userNickname, *chIt, "No such channel");
+				_srvAPI.send_reply(replyMessage);
 			return (false);	
 		}
 		//if channel (aka *it) doesnt't exist, create it and make the user the operator
@@ -80,7 +84,7 @@ bool	CommandHandler::processJoinParams(std::string chanParams, std::string keyPa
 			return (true);
 		}
 		//if key is set the key must match (if a key is used it must be iterated)
-
+		(void) keyIt;
 		//if the channel isInviteOnly() then don't allow to join
 
 		//if the channel isFull() then don't allow to join
