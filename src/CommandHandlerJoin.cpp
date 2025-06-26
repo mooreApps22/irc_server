@@ -62,21 +62,21 @@ bool	CommandHandler::processJoinParams(std::string chanParams, std::string keyPa
 
 	if (keyParams.empty())
 		keyNames.clear();
-	for (paramsIt chanIt = channelNames.begin(); chanIt != channelNames.end(); ++chanIt) //, keyIt = keyNames.begin()
+	for (paramsIt chIt = channelNames.begin(); chIt != channelNames.end(); ++chIt) //, keyIt = keyNames.begin()
 	{
 		//if channel name is valid
-		if (!isValidChannelName(*chanIt)) // TODO: Change to -if (!Parser::is_channel(*chanIt))	-
+		if (!isValidChannelName(*chIt)) // TODO: Change to -if (!Parser::is_channel(*chIt))	-
 		{
 			_srvAPI.send_reply("Is no valid channel.");
 			return (false);	
 		}
 		//if channel (aka *it) doesnt't exist, create it and make the user the operator
-		if (!_srvAPI.doesChannelExist(*chanIt))
+		if (!_srvAPI.doesChannelExist(*chIt))
 		{
-			_srvAPI.addChannel(*chanIt);
-			_srvAPI.send_reply("Creating a channel:" + *chanIt);
-			_srvAPI.addUserToChannel(*chanIt);
-			_srvAPI.send_reply("You were added to " + *chanIt);
+			_srvAPI.addChannel(*chIt);
+			_srvAPI.send_reply("Creating a channel:" + *chIt);
+			_srvAPI.addUserToChannel(*chIt);
+			_srvAPI.send_reply("You were added to " + *chIt);
 			return (true);
 		}
 		//if key is set the key must match (if a key is used it must be iterated)
@@ -84,13 +84,13 @@ bool	CommandHandler::processJoinParams(std::string chanParams, std::string keyPa
 		//if the channel isInviteOnly() then don't allow to join
 
 		//if the channel isFull() then don't allow to join
-		/*if (_srvAPI.doesChannelHaveLimit(*chanIt) && _srvAPI.isChannelFull(*chanIt))
+		/*if (_srvAPI.doesChannelHaveLimit(*chIt) && _srvAPI.isChannelFull(*chIt))
 		{
 			_srvAPI.send_reply("Channel is full, sorry!");
 			return (false);	
 		}*/
-		/*_srvAPI.addUserToChannel(*chanIt);*/
-		/*_srvAPI.send_reply("You were added to " + *chanIt);*/
+		/*_srvAPI.addUserToChannel(*chIt);*/
+		/*_srvAPI.send_reply("You were added to " + *chIt);*/
 		//send notice about available channel command
 			// PRIVMSG to everyone in the channel
 		//send notice of list of users who are on the channel 
@@ -99,7 +99,7 @@ bool	CommandHandler::processJoinParams(std::string chanParams, std::string keyPa
 				KICK, INVITE, TOPIC, MODE(+/-itkol)
 			*/
 		//send the the current TOPIC of the channel
-		_srvAPI.send_reply(*chanIt);
+		_srvAPI.send_reply(*chIt);
 	}
 	return (true);
 }
