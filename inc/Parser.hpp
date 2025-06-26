@@ -55,12 +55,12 @@ class Parser
         Parser();
         ~Parser();
 
-		bool			is_partial(std::string& message);
-		int				get_message_length(std::string& message);
-		bool			parse_message(std::string& message, parsed_message& parsed_msg);
-		static bool		is_nickname(std::string& nickname);
-		static bool		is_channel(std::string& channel);
-
+		bool							is_partial(std::string& message);
+		int								get_message_length(std::string& message);
+		bool							parse_message(std::string& message, parsed_message& parsed_msg);
+		static bool						is_nickname(std::string& nickname);
+		static bool						is_channel(std::string& channel);
+		static std::vector<std::string>	parse_msgtarget(const std::string& msgtarget);
 };
 
 #endif

@@ -246,12 +246,13 @@ void	CommandHandler::_pingFp(parsed_message& parsed_msg)
 void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
-	std::string user_nickname = _srvAPI.getUserNick();
-	std::string	command = parsed_msg.command;
-	std::string recipient;
-	std::string reply_message;
-	std::string message;
-	std::string user_identifier = _srvAPI.getUserIdentifier();
+	
+	std::string 				user_nickname = _srvAPI.getUserNick();
+	std::string					command = parsed_msg.command;
+	std::vector<std::string>	targets;
+	std::string 				reply_message;
+	std::string					message;
+	std::string					user_identifier = _srvAPI.getUserIdentifier();
 
 	if (!_srvAPI.isUserRegistered())
 	{
@@ -285,37 +286,42 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 		return ;
 	}
 
-	recipient = parsed_msg.params.at(0);
+	Logger::log(DEBUG, parsed_msg.command + " Parsing targets: ", parsed_msg.params.at(0));
+	targets = Parser::parse_msgtarget(parsed_msg.params.at(0));
 	message = parsed_msg.params.at(1);
 
-	if (Parser::is_nickname(recipient))
+	for (std::vector<std::string>::iterator msgto = targets.begin(); msgto != targets.end(); msgto++)
 	{
-		if (isNickUnique(recipient))
+		Logger::log(DEBUG, parsed_msg.command + " Target: ", *msgto);
+		if (Parser::is_nickname(*msgto))
 		{
-			reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, recipient, "No such nick/channel");
+			if (isNickUnique(*msgto))
+			{
+				reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, *msgto, "No such nick/channel");
+				_srvAPI.send_reply(reply_message);
+				return ;
+			}
+			if (*msgto != user_nickname)
+			{
+				reply_message = build_reply(user_identifier, command, *msgto, message);
+				_srvAPI.sendToUser(reply_message, *msgto);
+			}
+		}
+		else if (Parser::is_channel(*msgto))
+		{
+			// if (*msgto !exists)
+			// {
+			// 	reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, *msgto, "No such nick/channel");
+			// 	_srvAPI.send_reply(reply_message);
+			// 	return ;
+			// }
+		}
+		else
+		{
+			reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, *msgto, "No such nick/channel");
 			_srvAPI.send_reply(reply_message);
 			return ;
 		}
-		if (recipient != user_nickname)
-		{
-			reply_message = build_reply(user_identifier, command, recipient, message);
-			_srvAPI.sendToUser(reply_message, recipient);
-		}
-	}
-	else if (Parser::is_channel(recipient))
-	{
-		// if (recipient !exists)
-		// {
-		// 	reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, recipient, "No such nick/channel");
-		// 	_srvAPI.send_reply(reply_message);
-		// 	return ;
-		// }
-	}
-	else
-	{
-		reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, recipient, "No such nick/channel");
-		_srvAPI.send_reply(reply_message);
-		return ;
 	}
 }
 

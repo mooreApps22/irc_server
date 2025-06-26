@@ -310,14 +310,36 @@ bool	Parser::is_channel(std::string& channel)
 	it++;
 	for(; it != channel.end(); it++)
 	{
-		if (is_chstring(it))
+		if (!is_chstring(it))
 			return false;
 	}
-	
 	return true;
 }
 
 bool	Parser::is_chstring(std::string::iterator it)
 {
 	return *it != ' ' && *it != 7 && *it != '\0' && *it != '\r' && *it != '\n' && *it != ',';
+}
+
+// msgtarget  =  msgto *( "," msgto )
+// msgto      =  channel / ( user [ "%" host ] "@" servername )
+// msgto      =/ ( user "%" host ) / targetmask
+// msgto      =/ nickname / ( nickname "!" user "@" host )
+std::vector<std::string> Parser::parse_msgtarget(const std::string& msgtarget)
+{
+	std::vector<std::string>	targets;
+	std::string					msgto;
+	std::string::size_type		start = 0;
+	std::string::size_type		end;
+
+	while ((end = msgtarget.find(',', start)) != std::string::npos)
+	{
+		msgto = msgtarget.substr(start, end - start);
+		if (is_channel(msgto) || is_nickname(msgto))
+			targets.push_back(msgto);
+		start = end + 1;
+	}
+	if (is_channel(msgto) || is_nickname(msgto))
+			targets.push_back(msgto);
+	return (targets);
 }
