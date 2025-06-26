@@ -96,5 +96,3 @@ void	User::removeChannel(const std::string& channelName)
 {
 	_channels.erase(channelName);
 }
-	
-}

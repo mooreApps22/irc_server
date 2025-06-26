@@ -63,16 +63,18 @@ void	Server::addChannel(const std::string& channelName)
 
 void	Server::addUserToChannel(const std::string& channelName)
 {
-	_channels[channelName].addUser(_client_fd);
-	_users[_client_fd].addChannel(channelName);
+	User*	user = _users[_client_fd];
+
+	_channels[channelName]->addUser(_client_fd, user);
+	user->addChannel(channelName);
 }
 
 bool	Server::isChannelFull(const std::string& channelName)
 {
-	return (_channels[channelName].isFull());	
+	return (_channels[channelName]->isFull());	
 }
 
 bool	Server::doesChannelHaveLimit(const std::string& channelName)
 {
-	return (_channels[channelName].hasUserLimit());	
+	return (_channels[channelName]->hasUserLimit());	
 }

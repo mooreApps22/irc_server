@@ -141,14 +141,14 @@ void	Channel::clearUserLimit()
 }
 
 // Membership
-void	Channel::addUser(User* user, const std::string& name)
-{
-	_members.insert(std::pair<std::string, User*>(name, user));
-}
+// void	Channel::addUser(User* user, const std::string& name)
+// {
+// 	_members.insert(std::pair<std::string, User*>(name, user));
+// }
 
-void	Channel::addUser(int fd)
+void	Channel::addUser(int user_fd, User* user)
 {
-	_members.insert(std::pair<fd, User*>(name, user));
+	_membersFd.insert(std::pair<int, User*>(user_fd, user));
 }
 
 void	Channel::removeUser(const std::string& name)

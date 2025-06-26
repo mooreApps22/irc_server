@@ -15,6 +15,9 @@ class Channel
 		std::map<std::string, User*>			_members;
 		std::map<std::string, User*>			_operators;
 		std::map<std::string, User*>			_invitees;
+		std::map<int, User*>					_membersFd;
+		std::map<int, User*>					_operatorsFd;
+		std::map<int, User*>					_inviteesFd;
 		bool									_mode_invite_only; //			i: set/remove Invite-only channel
 		bool									_mode_topic_restricted; //		t: set/remove the restrictions of the topic command to ch-ops
 		bool									_mode_has_key; //				k: set/remove the channel key (password)
@@ -30,7 +33,7 @@ class Channel
 		std::string										getTopic() const;
 		std::string										getKey() const;
 		size_t											getUserLimit() const;
-		const std::map<std::string, User*>&				getUsers() const;
+		const std::map<std::string, User*>&				getMembers() const;
 		const std::map<std::string, User*>&				getChops() const;
 		const std::map<std::string, User*>&				getInvitees() const;
 		bool											isInviteOnly() const;
@@ -48,6 +51,7 @@ class Channel
 		void											clearUserLimit();
 		// Usership
 		void											addUser(User* user, const std::string& name);
+		void											addUser(int user_fd, User* user);
 		void											removeUser(const std::string& name);
 		bool											isUser(const std::string& name);
 		// Operators
