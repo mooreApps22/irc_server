@@ -34,7 +34,7 @@ class CommandHandler
 
 
 		//Join Utils
-		bool				processJoinParams(std::string chanParams, std::string keyParams);
+		bool				processJoinParams(std::string chanParams, std::string keyParams); // TODO: delete
 		bool				isChString(std::string::iterator it);		// TODO: delete (we have the same method in Parse)
 		bool				isValidChannelName(std::string& channel);	// TODO: Same as above
 

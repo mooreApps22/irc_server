@@ -61,7 +61,7 @@ class Parser
 		bool							parse_message(std::string& message, parsed_message& parsed_msg);
 		static bool						is_nickname(std::string& nickname);
 		static bool						is_channel(std::string& channel);
-		static std::vector<std::string>	parse_msgtarget(const std::string& msgtarget);
+		static std::vector<std::string>	splitParam(const std::string& msgtarget, char c);
 };
 
 #endif

@@ -281,7 +281,7 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 	}
 
 	Logger::log(DEBUG, parsed_msg.command + " Parsing targets: ", parsed_msg.params.at(0));
-	targets = Parser::parse_msgtarget(parsed_msg.params.at(0));
+	targets = Parser::splitParam(parsed_msg.params.at(0), ',');
 	message = parsed_msg.params.at(1);
 
 	for (std::vector<std::string>::iterator msgto = targets.begin(); msgto != targets.end(); msgto++)
@@ -293,7 +293,6 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 			{
 				reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, *msgto, "No such nick/channel");
 				_srvAPI.send_reply(reply_message);
-				return ;
 			}
 			if (*msgto != user_nickname)
 			{
@@ -314,7 +313,6 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 		{
 			reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, *msgto, "No such nick/channel");
 			_srvAPI.send_reply(reply_message);
-			return ;
 		}
 	}
 }
