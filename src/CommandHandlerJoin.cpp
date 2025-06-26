@@ -12,12 +12,13 @@
 	#define ERR_TOOMANYCHANNELS 	"405"	// "<channel name> :You have joined too many channels"
 */
 
-
+// TODO: Delete (duplicated from Parser method())
 bool	CommandHandler::isChString(std::string::iterator it)
 {
 	return *it != ' ' && *it != 7 && *it != '\0' && *it != '\r' && *it != '\n' && *it != ',';
 }
 
+// TODO: Delete (duplicated from Parser method())
 bool	CommandHandler::isValidChannelName(std::string& channel)
 {
 	std::string::iterator it = channel.begin();
@@ -64,7 +65,7 @@ bool	CommandHandler::processJoinParams(std::string chanParams, std::string keyPa
 	for (paramsIt chanIt = channelNames.begin(); chanIt != channelNames.end(); ++chanIt) //, keyIt = keyNames.begin()
 	{
 		//if channel name is valid
-		if (!isValidChannelName(*chanIt))
+		if (!isValidChannelName(*chanIt)) // TODO: Change to -if (!Parser::is_channel(*chanIt))	-
 		{
 			_srvAPI.send_reply("Is no valid channel.");
 			return (false);	

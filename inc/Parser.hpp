@@ -2,7 +2,6 @@
 # define PARSER_HPP
 # include <string>
 # include <vector>
-# include "IServerAPI.hpp"
 # define CRLF		"\r\n"
 
 typedef std::vector<std::string>::iterator paramsIt;

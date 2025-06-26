@@ -11,7 +11,6 @@ class CommandHandler
     private:
 		IServerAPI&	_srvAPI;
 		commands	_commands;
-		int			_fd;
 		
 		// Function pointers
 		void		_inviteFp(parsed_message& parsed_msg);
@@ -34,15 +33,12 @@ class CommandHandler
 
 		//Join Utils
 		bool				processJoinParams(std::string chanParams, std::string keyParams);
-		bool				isChString(std::string::iterator it);
-		bool				isValidChannelName(std::string& channel);
+		bool				isChString(std::string::iterator it);		// TODO: delete (we have the same method in Parse)
+		bool				isValidChannelName(std::string& channel);	// TODO: Same as above
 
     public:
 		CommandHandler(IServerAPI& srvAPI);
         ~CommandHandler();
 		void				execute(void);
 		void				execute(parsed_message& parsed_msg, int fd);
-		void				setClientFd(int fd);
-		int					getClientFd(void) const;
-		//bool				validChannelName(const std::string& name);
 };
