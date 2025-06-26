@@ -15,6 +15,7 @@
 	Server Method Specific to the JOIN command 
 */													
 
+/*
 int	Server::getUserFd(const std::string& nick)
 {
 	std::map<int, User*>::iterator	it;
@@ -30,7 +31,7 @@ int	Server::getUserFd(const std::string& nick)
 	Logger::log(ERROR, "Failed to get FD from User.");
 	return (-1);
 }
-
+*/
 
 Channel*	Server::getChannel(const std::string& channelName)
 {

@@ -259,7 +259,7 @@ void	Server::sendToUser(const std::string& message, int user_fd)
 	send(user_fd, CRLF, 2, 0);
 }
 
-void	Server::sendToUser(const std::string& message, std::string nickname)
+void	Server::sendToUser(const std::string& message, std::string& nickname)
 {
 	Logger::log(DEBUG, "Sending message to user", message);
 	int user_fd = getUserFd(nickname);

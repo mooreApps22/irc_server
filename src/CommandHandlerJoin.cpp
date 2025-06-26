@@ -72,15 +72,14 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 
 	std::string channelParam = parsed_msg.params[0];
 	std::string keyParam = (parsed_msg.params.size() > 1) ? parsed_msg.params[1] : "";
-	
-//	processJoinParams(channelParam, keyParam);
 	std::vector<std::string> channelNames = mySplit(channelParam, ','); // TODO Refactor yo Parser
 	std::vector<std::string> keyNames = mySplit(keyParam, ','); // TODO Refactor yo Parser
 
 	if (keyParam.empty())
 		keyNames.clear();
 
-	for (paramsIt chIt = channelNames.begin(), keyIt = keyNames.begin(); chIt != channelNames.end(); ++chIt) //, keyIt = keyNames.begin()
+	for (paramsIt chIt = channelNames.begin(), keyIt = keyNames.begin();
+		chIt != channelNames.end(); ++chIt) //, keyIt = keyNames.begin()
 	{
 		std::cout << "Loop::Channels: " << *chIt << std::endl;
 		//if channel name is valid
