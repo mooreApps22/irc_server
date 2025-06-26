@@ -28,6 +28,8 @@ class Server: public IServerAPI
 		std::string peek();
 		std::string receive(int length);
 
+		void	sendToUser(const std::string& message, int user_fd);
+		int		getUserFd(std::string nickname);
 		void		clean_up();
 
     public:
@@ -39,7 +41,7 @@ class Server: public IServerAPI
 		// Server actions related
 		void	send_reply(const std::string& reply);
 		void	sendToAll(const std::string& message);
-		void	sendToUser(const std::string& message, int user_fd);
+		void	sendToUser(const std::string& message, std::string nickname);
 		bool 	isPasswordValid(const std::string& password);
 		void	disconnectUser(void);
 
@@ -51,6 +53,7 @@ class Server: public IServerAPI
 		void				setUserRegisteredStatus(bool status);
 		bool 				isUserRegistered();
 		void				setUserInvisibleMode(bool status);
+		bool				isUserInvisible();
 		void 				setUserPasswordState(bool state);
 		bool 				getUserPasswordState(void);
 		usrsIt				getUsersBegin(void);

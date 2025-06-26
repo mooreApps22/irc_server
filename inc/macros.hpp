@@ -40,4 +40,3 @@
 #define ERR_NOSUCHCHANNEL 		"403"	// "<channel name> :No such channel"
 #define ERR_BADCHANNELKEY 		"475"	// "<channel> :Cannot join channel (+k)"
 #define ERR_TOOMANYCHANNELS 	"405"	// "<channel name> :You have joined too many channels"
-

@@ -216,6 +216,16 @@ std::string Server::receive(int length)
 	return buffer;
 }
 
+int		Server::getUserFd(std::string nickname)
+{
+	for (usrsIt it = _users.begin(); it != _users.end(); it++)
+	{
+		if (it->second->getNickname() == nickname)
+			return it->first;
+	}
+	return 0;
+}
+
 void	Server::clean_up(void)
 {
 	if (_server_fd != -1)
@@ -246,7 +256,14 @@ void	Server::sendToUser(const std::string& message, int user_fd)
 {
 	Logger::log(DEBUG, "Sending message to user", message);
 	send(user_fd, message.c_str(), message.length(), 0);
-	send(_client_fd, CRLF, 2, 0);
+	send(user_fd, CRLF, 2, 0);
+}
+
+void	Server::sendToUser(const std::string& message, std::string nickname)
+{
+	Logger::log(DEBUG, "Sending message to user", message);
+	int user_fd = getUserFd(nickname);
+	sendToUser(message, user_fd);
 }
 
 void	Server::disconnectUser(void)
@@ -312,6 +329,10 @@ void	Server::setUserInvisibleMode(bool status)
 	_users[_client_fd]->setInvisibleStatus(status);
 }
 
+bool	Server::isUserInvisible()
+{
+	return _users[_client_fd]->isInvisible();
+}
 
 usrsIt	Server::getUsersBegin(void)
 {
