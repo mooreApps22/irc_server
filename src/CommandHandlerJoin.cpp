@@ -80,30 +80,44 @@ bool	CommandHandler::processJoinParams(std::string chanParams, std::string keyPa
 			_srvAPI.addChannel(*chIt);
 			_srvAPI.send_reply("Creating a channel:" + *chIt);
 			_srvAPI.addUserToChannel(*chIt);
-			_srvAPI.send_reply("You were added to " + *chIt);
+			_srvAPI.setUserAsOperator(*chIt);
+			// _srvAPI.send_reply("You were added to " + *chIt);
 			return (true);
 		}
-		//if key is set the key must match (if a key is used it must be iterated)
-		(void) keyIt;
-		//if the channel isInviteOnly() then don't allow to join
 
-		//if the channel isFull() then don't allow to join
-		/*if (_srvAPI.doesChannelHaveLimit(*chIt) && _srvAPI.isChannelFull(*chIt))
+		//if key is set the key must match (if a key is used it must be iterated)
+		if (_srvAPI.isChannelPasswordProtected(*chIt))
 		{
-			_srvAPI.send_reply("Channel is full, sorry!");
+			bool password = false;
+			if (keyIt != keyNames.end())
+			{
+				password = _srvAPI.isChannelPassworValid(*chIt, *keyIt);
+				keyIt++;
+			}
+			if (!password)
+			{
+				replyMessage = build_reply(SERVER_NAME, ERR_BADCHANNELKEY, userNickname, *chIt, "Cannot join channel (+k)");
+				_srvAPI.send_reply(replyMessage);
+				return (false);	
+			}
+		}
+		
+		//if the channel isInviteOnly() then don't allow to join
+		if (_srvAPI.isChannelInviteOnly(*chIt) && !_srvAPI.isUserInvited(*chIt))
+		{
+			replyMessage = build_reply(SERVER_NAME, ERR_INVITEONLYCHAN, userNickname, *chIt, "Cannot join channel (+i)");
+			_srvAPI.send_reply(replyMessage);
+			return (false);
+		}
+		
+		//if the channel isFull() then don't allow to join
+		if (_srvAPI.doesChannelHaveLimit(*chIt) && _srvAPI.isChannelFull(*chIt))
+		{
+			replyMessage = build_reply(SERVER_NAME, ERR_CHANNELISFULL, userNickname, *chIt, "Cannot join channel (+l)");
+			_srvAPI.send_reply(replyMessage);
 			return (false);	
-		}*/
-		/*_srvAPI.addUserToChannel(*chIt);*/
-		/*_srvAPI.send_reply("You were added to " + *chIt);*/
-		//send notice about available channel command
-			// PRIVMSG to everyone in the channel
-		//send notice of list of users who are on the channel 
-		//if they are an operator, send channel operator commands
-			/*
-				KICK, INVITE, TOPIC, MODE(+/-itkol)
-			*/
-		//send the the current TOPIC of the channel
-		_srvAPI.send_reply(*chIt);
+		}
+		_srvAPI.addUserToChannel(*chIt);
 	}
 	return (true);
 }
