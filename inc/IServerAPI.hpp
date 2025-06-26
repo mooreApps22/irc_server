@@ -45,7 +45,12 @@ public:
 	virtual void				addUserToChannel(const std::string& channelName) = 0;
 	virtual bool				isChannelFull(const std::string& channelName) = 0;
 	virtual bool				doesChannelHaveLimit(const std::string& channelName) = 0;
+	virtual void				setUserAsOperator(const std::string& channelName) = 0;
+	virtual bool				isChannelPasswordProtected(const std::string& channelName) = 0;
+	virtual bool				isChannelPasswordValid(const std::string& channelName, const std::string&  key) = 0;
 
+	virtual bool				isChannelInviteOnly(const std::string& channelName) = 0;
+	virtual bool				isUserInvited(const std::string& channelName) = 0;
 	
 
 /*

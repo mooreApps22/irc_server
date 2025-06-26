@@ -12,12 +12,9 @@ class Channel
 		std::string								_topic;
 		std::string								_key; // (channel password)
 		size_t									_user_limit;
-		std::map<std::string, User*>			_members;
-		std::map<std::string, User*>			_operators;
-		std::map<std::string, User*>			_invitees;
-		std::map<int, User*>					_membersFd;
-		std::map<int, User*>					_operatorsFd;
-		std::map<int, User*>					_inviteesFd;
+		std::map<int, User*>					_members;
+		std::map<int, User*>					_operators;
+		std::map<int, User*>					_invitees;
 		bool									_mode_invite_only; //			i: set/remove Invite-only channel
 		bool									_mode_topic_restricted; //		t: set/remove the restrictions of the topic command to ch-ops
 		bool									_mode_has_key; //				k: set/remove the channel key (password)
@@ -31,11 +28,12 @@ class Channel
 		// Getters
 		const std::string								getName() const;
 		std::string										getTopic() const;
-		std::string										getKey() const;
+//		std::string										getKey() const;
+		bool											isKeyValid(const std::string& key) const;
 		size_t											getUserLimit() const;
-		const std::map<std::string, User*>&				getMembers() const;
-		const std::map<std::string, User*>&				getChops() const;
-		const std::map<std::string, User*>&				getInvitees() const;
+		const std::map<int, User*>&						getMembers() const;
+		const std::map<int, User*>&						getChops() const;
+		const std::map<int, User*>&						getInvitees() const;
 		bool											isInviteOnly() const;
 		bool											isTopicRestricted() const;
 		bool											needsChannelKey() const;
@@ -49,19 +47,19 @@ class Channel
 		void											clearKey();
 		void											setUserLimit(size_t limit);
 		void											clearUserLimit();
-		// Usership
-		void											addUser(User* user, const std::string& name);
-		void											addUser(int user_fd, User* user);
-		void											removeUser(const std::string& name);
-		bool											isUser(const std::string& name);
+		// Membership
+		void											addMember(int userFd, User* user);
+		void											removeMember(int userFd);
+		bool											isMember(int userFd);
 		// Operators
-		void											addChop(User* user, const std::string& name);
-		void											removeChop(const std::string& name);
-		bool											isChop(const std::string& name);
+		void											addOperator(int userFd, User* user);
+		void											removeOperator(int userFd);
+		bool											isOperator(int userFd);
 		// Invitations
-		void											addInvitee(User* user, const std::string& name);
-		void											removeInvitee(const std::string& name);
-		bool											isInvitee(const std::string& name);
+		void											addInvitee(int userFd, User* user);
+		void											removeInvitee(int userFd);
+		bool											isInvitee(int userFd);
+
 
 		class hashSymbolException : public std::exception
 		{

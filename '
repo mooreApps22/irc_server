@@ -149,33 +149,33 @@ void	Channel::clearUserLimit()
 // 	_members.insert(std::pair<std::string, User*>(name, user));
 // }
 
-void	Channel::addMember(int user_fd, User* user)
+void	Channel::addUser(int user_fd, User* user)
 {
 	_members.insert(std::pair<int, User*>(user_fd, user));
 }
 
-void	Channel::removeMember(int userFd)
+void	Channel::removeUser(int userFd)
 {
 	_members.erase(userFd);
 }
 
-bool	Channel::isMember(int userFd)
+bool	Channel::isUser(int userFd)
 {
 	return (_members.find(userFd) != _members.end());
 }
 
 // Operators
-void	Channel::addOperator(int userFd , User* user)
+void	Channel::addChop(int userFd , User* user)
 {
 	_operators.insert(std::pair<int, User*>(userFd, user));
 }
 
-void	Channel::removeOperator(int userFd)
+void	Channel::removeChop(int userFd)
 {
 	_operators.erase(userFd);
 }
 
-bool	Channel::isOperator(int userFd)
+bool	Channel::isChop(int userFd)
 {
 	return (_operators.find(userFd) != _operators.end());
 }
@@ -183,12 +183,12 @@ bool	Channel::isOperator(int userFd)
 // Invitations
 void	Channel::addInvitee(int userFd, User* user)
 {
-	_invitees.insert(std::pair<int, User*>(userFd, user));
+	_invitees.insert(std::pair<std::string, User*>(name, user));
 }
 
 void	Channel::removeInvitee(int userFd)
 {
-	_invitees.erase(userFd);
+	_invitees.erase(name);
 }
 
 bool	Channel::isInvitee(int userFd)

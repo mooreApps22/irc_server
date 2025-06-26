@@ -1,0 +1,79 @@
+[INFO] ircserv compiled.
+[INFO] port and password validated.
+[INFO] Parser Constructor called.
+[INFO] CommandHandler constructed.
+[INFO] Server Constructor called.
+[INFO] Server Setup called.
+[INFO] TCP/IP data stored.
+[INFO] _server_fd assigned.
+[INFO] _server_fd bind()ed to port.
+[INFO] Server is listening to port.
+[INFO] Event poll created.
+[INFO] Listener registered to the event poll.
+[INFO] Client connected! fd (6)
+[INFO] User Constructor called.
+[DEBUG] Parsing (PASS p
+)
+[DEBUG] In is_message().
+[INFO] PASS received.
+[DEBUG] Parsing (NICK f6
+)
+[DEBUG] In is_message().
+[INFO] NICK received.
+[DEBUG] Checking nick correctness
+[DEBUG] Checking nick uniqueness
+[DEBUG] Parsing (USER a s d f
+)
+[DEBUG] In is_message().
+[INFO] USER received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 001 f6 :Welcome to the Internet Relay Network f6!a@127.0.0.1)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 002 f6 :Your host is marvin@serverirc.42.fr, running version v0.0)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 003 f6 :This server was created 21/06/2025)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 004 f6 :marvin@serverirc.42.fr v0.0 o iklot)
+[DEBUG] Parsing (JOIN #A,#B,#C,#D
+)
+[DEBUG] In is_message().
+[INFO] JOIN received.
+[INFO] Channel has been created.) (#A)
+[DEBUG] Sending reply (Creating a channel:#A)
+[INFO] Channel has been created.) (#B)
+[DEBUG] Sending reply (Creating a channel:#B)
+[INFO] Channel has been created.) (#C)
+[DEBUG] Sending reply (Creating a channel:#C)
+[INFO] Channel has been created.) (#D)
+[DEBUG] Sending reply (Creating a channel:#D)
+[DEBUG] Sending reply (You've sent aJOINrequest!)
+[INFO] Client connected! fd (7)
+[INFO] User Constructor called.
+[DEBUG] Parsing (PASS p
+)
+[DEBUG] In is_message().
+[INFO] PASS received.
+[DEBUG] Parsing (NICK f7
+)
+[DEBUG] In is_message().
+[INFO] NICK received.
+[DEBUG] Checking nick correctness
+[DEBUG] Checking nick uniqueness
+[DEBUG] Parsing (USER u i o q
+)
+[DEBUG] In is_message().
+[INFO] USER received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 001 f7 :Welcome to the Internet Relay Network f7!u@127.0.0.1)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 002 f7 :Your host is marvin@serverirc.42.fr, running version v0.0)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 003 f7 :This server was created 21/06/2025)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 004 f7 :marvin@serverirc.42.fr v0.0 o iklot)
+[DEBUG] Parsing (JOIN #B,#E
+)
+[DEBUG] In is_message().
+[INFO] JOIN received.
+[INFO] Channel has been created.) (#E)
+[DEBUG] Sending reply (Creating a channel:#E)
+[DEBUG] Sending reply (You've sent aJOINrequest!)
+[INFO] Client disconnected! (7)
+[INFO] User Desstructor called.
+[INFO] Client disconnected! (6)
+[INFO] User Desstructor called.
+[INFO] Server Destructor called.
+[INFO] CommandHandler destructed.
+[INFO] Parser Destructor called.

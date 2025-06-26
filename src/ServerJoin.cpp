@@ -65,7 +65,7 @@ void	Server::addUserToChannel(const std::string& channelName)
 {
 	User*	user = _users[_client_fd];
 
-	_channels[channelName]->addUser(_client_fd, user);
+	_channels[channelName]->addMember(_client_fd, user);
 	user->addChannel(channelName);
 }
 
@@ -77,4 +77,33 @@ bool	Server::isChannelFull(const std::string& channelName)
 bool	Server::doesChannelHaveLimit(const std::string& channelName)
 {
 	return (_channels[channelName]->hasUserLimit());	
+}
+
+void	Server::setUserAsOperator(const std::string& channelName)
+{
+		//std::map<int, User*>					_operatorsFd;
+	User*	user = _users[_client_fd];
+	_channels[channelName]->removeMember(_client_fd);
+	_channels[channelName]->addOperator(_client_fd, user);
+	
+}
+
+bool	Server::isChannelPasswordProtected(const std::string& channelName)
+{
+	return (_channels[channelName]->needsChannelKey());	
+}
+
+bool	Server::isChannelPasswordValid(const std::string& channelName, const std::string& key)
+{
+	return (_channels[channelName]->isKeyValid(key));
+}
+
+bool	Server::isChannelInviteOnly(const std::string& channelName)
+{
+	return (_channels[channelName]->isInviteOnly());
+}
+
+bool	Server::isUserInvited(const std::string& channelName)
+{
+	return (_channels[channelName]->isInvitee(_client_fd));
 }
