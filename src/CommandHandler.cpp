@@ -33,7 +33,7 @@ void	CommandHandler::execute(parsed_message& parsed_msg, int fd)
 	const std::string command =  parsed_msg.command;
 	commands::iterator it = _commands.find(command);
 
-	CommandHandler::setClientFd(fd);
+	// CommandHandler::setClientFd(fd);
 	if (it != _commands.end())
 	{
 		(this->*(it->second))(parsed_msg);
@@ -318,12 +318,12 @@ const std::string CommandHandler::build_reply(const std::string& prefix, const s
 }
 
 
-void	CommandHandler::setClientFd(int fd)
+/*void	CommandHandler::setClientFd(int fd)
 {
 	_fd = fd;
-}
+}*/
 
-int	CommandHandler::getClientFd(void) const
+/*int	CommandHandler::getClientFd(void) const
 {
 	return (_fd);
-}
+}*/

@@ -84,13 +84,13 @@ bool	CommandHandler::processJoinParams(std::string chanParams, std::string keyPa
 		//if the channel isInviteOnly() then don't allow to join
 
 		//if the channel isFull() then don't allow to join
-		if (_srvAPI.doesChannelHaveLimit(*chanIt) && _srvAPI.isChannelFull(*chanIt))
+		/*if (_srvAPI.doesChannelHaveLimit(*chanIt) && _srvAPI.isChannelFull(*chanIt))
 		{
 			_srvAPI.send_reply("Channel is full, sorry!");
 			return (false);	
-		}
-		_srvAPI.addUserToChannel(*chanIt);
-		_srvAPI.send_reply("You were added to " + *chanIt);
+		}*/
+		/*_srvAPI.addUserToChannel(*chanIt);*/
+		/*_srvAPI.send_reply("You were added to " + *chanIt);*/
 		//send notice about available channel command
 			// PRIVMSG to everyone in the channel
 		//send notice of list of users who are on the channel 
