@@ -121,7 +121,7 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 	}
 	if (parsed_msg.params.size() == 0)
 	{
-		replyMessage = build_reply(std::string(SERVER_NAME), std::string(ERR_NOTREGISTERED), userNickname, command, "You have no params.");
+		replyMessage = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, userNickname, command, "Not enough parameters");
 		_srvAPI.send_reply(replyMessage);
 		return ;
 	}
