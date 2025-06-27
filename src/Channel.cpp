@@ -67,7 +67,7 @@ const std::map<int, User*>&	Channel::getMembers() const
 	return(_members);	
 }
 
-const std::map<int, User*>&	Channel::getChops() const
+const std::map<int, User*>&	Channel::getOperators() const
 {
 	return(_operators);	
 }
@@ -211,22 +211,40 @@ bool	Channel::isKeyValid(const std::string& key) const
 	return (_key == key);
 }
 
-const std::string	Channel::getUsersList() const
+const std::string	Channel::getUsersList(int fd) const
 {
 	std::string	list = "";
+	std::string	user;
+
 
 	for (std::map<int, User*>::const_iterator it = _members.begin(); it != _members.end(); it++)
 	{
-		list += it->second->getNickname();
-		list += " ";
+		if (it->first != fd)
+		{
+			list += " ";
+			list += it->second->getNickname();
+		}
+		else
+		{
+			user = it->second->getNickname();
+		}
 	}
 
 	for (std::map<int, User*>::const_iterator it = _operators.begin(); it != _operators.end(); it++)
 	{
-		list += "@";
-		list += it->second->getNickname();
-		list += " ";
+		
+		if (it->first != fd)
+		{
+			list += " ";
+			list += "@";
+			list += it->second->getNickname();
+		}
+		else
+		{
+			user = "@";
+			user += it->second->getNickname();
+		}
 	}
 	
-	return list;
+	return user + list;
 }

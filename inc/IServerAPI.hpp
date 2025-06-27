@@ -18,6 +18,7 @@ public:
 	virtual void	send_reply(const std::string& message) = 0;
 	virtual void	sendToAll(const std::string& message) = 0;
 	virtual void	sendToUser(const std::string& message, std::string& nick) = 0;
+	virtual	void	sendMessageToChannel(const std::string& channelName, const std::string& message) = 0;
 	virtual bool	isPasswordValid(const std::string& password) = 0;
 	virtual void	disconnectUser(void) = 0;
 	
@@ -52,13 +53,13 @@ public:
 	virtual const std::string&	getChannelTopic(const std::string& channelName) = 0;
 	virtual const std::string	getChannelUsersList(const std::string& channelName) = 0;
 	virtual bool				isChannelUser(const std::string& channelName) = 0;
+//	virtual chanIt				getChannelsBegin(void) = 0;
+//	virtual chanIt				getChannelsEnd(void) = 0;
 /*
 	// Channel actions relatedc
 	virtual void addChannel(const std::string& name) = 0;
 	virtual void removeChannel(const std::string& name) = 0;
 
-	virtual chanIt		getChannelsBegin(void) = 0;
-	virtual chanIt		getChannelsEnd(void) = 0;
 	virtual User*		getUser(const int fd) = 0;
 
 */

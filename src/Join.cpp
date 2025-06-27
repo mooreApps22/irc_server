@@ -109,7 +109,8 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 				_srvAPI.setUserAsOperator(*chIt);
 			// _srvAPI.send_reply("You were added to " + *chIt);
 			replyMessage = build_reply(userID, command, *chIt);
-			_srvAPI.send_reply(replyMessage); // TODO send to all members in the channel including user i.e. _srvAPI.sendToAllUsersInChannel(*chIt, replyMessage);
+			_srvAPI.send_reply(replyMessage);
+			_srvAPI.sendMessageToChannel(*chIt, replyMessage);
 
 			if (!_srvAPI.isChannelTopicSet(*chIt))
 				replyMessage = build_reply(SERVER_NAME, RPL_NOTOPIC, userNickname, *chIt, "No topic is set");
@@ -117,7 +118,7 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 				replyMessage = build_reply(SERVER_NAME, RPL_TOPIC, userNickname, *chIt, _srvAPI.getChannelTopic(*chIt));
 			_srvAPI.send_reply(replyMessage);
 
-			std::string message = _srvAPI.getChannelUsersList(*chIt); // TODO get all members but the user and append to the user nick name as it seems that should be the first in the list i.e. std::string message = userNickname + _srvAPI.getChannelOtherUsersList(*chIt);
+			std::string message = _srvAPI.getChannelUsersList(*chIt);
 			replyMessage = build_reply(SERVER_NAME, RPL_NAMREPLY, userNickname, "=", *chIt, message);
 			_srvAPI.send_reply(replyMessage);
 
