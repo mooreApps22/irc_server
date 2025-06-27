@@ -15,38 +15,6 @@
 	Server Method Specific to the JOIN command 
 */													
 
-/*
-int	Server::getUserFd(const std::string& nick)
-{
-	std::map<int, User*>::iterator	it;
-
-	for (it = _users.begin(); it != _users.end(); ++it)
-	{
-		if (it->second->getNickname() == nick)
-		{
-			Logger::log(INFO, "Got FD from User.");
-			return (it->first);
-		}
-	}
-	Logger::log(ERROR, "Failed to get FD from User.");
-	return (-1);
-}
-*/
-
-Channel*	Server::getChannel(const std::string& channelName)
-{
-	std::map<std::string, Channel*>::iterator it = _channels.find(channelName);
-
-	if (it != _channels.end())
-	{
-		Logger::log(INFO, "The JOIN command got the " + channelName);
-		return (it->second);
-	}
-	Logger::log(ERROR, "The JOIN command failed to get the " + channelName);
-	return (NULL);
-}
-
-///void	Server::addUserToChannel(std::string& channelName)
 bool	Server::doesChannelExist(const std::string& channelName)
 {
 	for (chanIt it = _channels.begin(); it != _channels.end(); it++)
@@ -82,11 +50,9 @@ bool	Server::doesChannelHaveLimit(const std::string& channelName)
 
 void	Server::setUserAsOperator(const std::string& channelName)
 {
-		//std::map<int, User*>					_operatorsFd;
 	User*	user = _users[_client_fd];
 	_channels[channelName]->removeMember(_client_fd);
 	_channels[channelName]->addOperator(_client_fd, user);
-	
 }
 
 bool	Server::isChannelPasswordProtected(const std::string& channelName)

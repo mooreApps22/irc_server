@@ -269,7 +269,7 @@ void	Server::sendToUser(const std::string& message, std::string& nickname)
 void	Server::disconnectUser(void)
 {
 	close(_client_fd);
-	// TODO delete user from all channels 
+	// TODO delete user from all channels (membership and invites)
 	delete _users[_client_fd];
 	_users.erase(_client_fd);
 }

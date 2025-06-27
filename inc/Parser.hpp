@@ -28,10 +28,6 @@ class Parser
 {
     private:
 		std::string::iterator		_it;
-		// std::string					_prefix;
-		// std::string					_command;
-		// std::vector<std::string>		_params;
-		// std::string					_trailing;
 
 		bool is_message(parsed_message& parsed_msg);
 		bool is_colon();

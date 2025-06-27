@@ -13,7 +13,6 @@ class IServerAPI
 public:
 	virtual ~IServerAPI() {}
 	
-
 	// Server API
 	// Server actions related
 	virtual void	send_reply(const std::string& message) = 0;
@@ -22,7 +21,6 @@ public:
 	virtual bool	isPasswordValid(const std::string& password) = 0;
 	virtual void	disconnectUser(void) = 0;
 	
-
 	// User actions related
 	virtual void				setUserNick(const std::string& nickname) = 0;
 	virtual const std::string&	getUserNick() = 0;

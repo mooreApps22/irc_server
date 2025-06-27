@@ -13,17 +13,17 @@ class CommandHandler
 		commands	_commands;
 		
 		// Function pointers
-		void		_inviteFp(parsed_message& parsed_msg);
-		void		_joinFp(parsed_message& parsed_msg);
-		void		_kickFp(parsed_message& parsed_msg);
-		void		_modeFp(parsed_message& parsed_msg);
-		void		_nickFp(parsed_message& parsed_msg);
-		void		_passFp(parsed_message& parsed_msg);
-		void		_pingFp(parsed_message& parsed_msg);
-		void		_privMsgFp(parsed_message& parsed_msg);
-		void		_realFp(parsed_message& parsed_msg);
-		void		_topicFp(parsed_message& parsed_msg);
-		void		_userFp(parsed_message& parsed_msg);
+		void	_inviteFp(parsed_message& parsed_msg);
+		void	_joinFp(parsed_message& parsed_msg);
+		void	_kickFp(parsed_message& parsed_msg);
+		void	_modeFp(parsed_message& parsed_msg);
+		void	_nickFp(parsed_message& parsed_msg);
+		void	_passFp(parsed_message& parsed_msg);
+		void	_pingFp(parsed_message& parsed_msg);
+		void	_privMsgFp(parsed_message& parsed_msg);
+		void	_realFp(parsed_message& parsed_msg);
+		void	_topicFp(parsed_message& parsed_msg);
+		void	_userFp(parsed_message& parsed_msg);
 
 		// Utils
 		bool				isNickUnique(const std::string nick);
@@ -32,15 +32,8 @@ class CommandHandler
 		const std::string	build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string arg, const std::string message);
 		const std::string 	build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string arg, const std::string arg2, const std::string message);
 
-
-		//Join Utils
-		bool				processJoinParams(std::string chanParams, std::string keyParams); // TODO: delete
-		bool				isChString(std::string::iterator it);		// TODO: delete (we have the same method in Parse)
-		bool				isValidChannelName(std::string& channel);	// TODO: Same as above
-
     public:
 		CommandHandler(IServerAPI& srvAPI);
         ~CommandHandler();
-		// void				execute(void);
 		void				execute(parsed_message& parsed_msg);
 };

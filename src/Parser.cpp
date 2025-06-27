@@ -328,20 +328,20 @@ bool	Parser::is_chstring(std::string::iterator it)
 // msgto      =  channel / ( user [ "%" host ] "@" servername )
 // msgto      =/ ( user "%" host ) / targetmask
 // msgto      =/ nickname / ( nickname "!" user "@" host )
-std::vector<std::string> Parser::splitParam(const std::string& msgtarget, char c)
+std::vector<std::string> Parser::splitParam(const std::string& msgtarget, char delimiter)
 {
-	std::vector<std::string>	targets;
-	std::string					msgto;
+	std::vector<std::string>	splitted;
+	std::string					element;
 	std::string::size_type		start = 0;
 	std::string::size_type		end;
 
-	while ((end = msgtarget.find(c, start)) != std::string::npos)
+	while ((end = msgtarget.find(delimiter, start)) != std::string::npos)
 	{
-		msgto = msgtarget.substr(start, end - start);
-		targets.push_back(msgto);
+		element = msgtarget.substr(start, end - start);
+		splitted.push_back(element);
 		start = end + 1;
 	}
-	msgto = msgtarget.substr(start, end - start);
-	targets.push_back(msgto);
-	return (targets);
+	element = msgtarget.substr(start, end - start);
+	splitted.push_back(element);
+	return (splitted);
 }

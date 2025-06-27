@@ -18,21 +18,6 @@
 	   RPL_NAMREPLY), which must include the user joining.
 */
 
-std::vector<std::string>	mySplit(const std::string& str, char delimiter)
-{
-	std::vector<std::string>	split;
-	std::string::size_type		start = 0;
-	std::string::size_type		end;
-
-	while ((end = str.find(delimiter, start)) != std::string::npos)
-	{
-		split.push_back(str.substr(start, end - start));
-		start = end + 1;
-	}
-	split.push_back(str.substr(start));
-	return (split);
-}
-
 void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
@@ -58,8 +43,8 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 
 	std::string channelParam = parsed_msg.params[0];
 	std::string keyParam = (parsed_msg.params.size() > 1) ? parsed_msg.params[1] : "";
-	std::vector<std::string> channelNames = mySplit(channelParam, ','); // TODO Refactor yo Parser
-	std::vector<std::string> keyNames = mySplit(keyParam, ','); // TODO Refactor yo Parser
+	std::vector<std::string> channelNames = Parser::splitParam(channelParam, ',');
+	std::vector<std::string> keyNames = Parser::splitParam(keyParam, ',');
 
 	if (keyParam.empty())
 		keyNames.clear();
