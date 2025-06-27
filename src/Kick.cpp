@@ -5,44 +5,70 @@
 #include <vector>
 #include <string>
 
+	/*
+		KICK <channel>,<channel> <user>,<user> [comment]
+	*/
+
 void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
-
-	/*
-		KICK <channel>,<channel> <user>,<user> [comment]
-			replyMessage = build_reply(SERVER_NAME, RPL_ENDOFNAMES, userNickname, *chIt, "End of NAMES list");
-			_srvAPI.send_reply(replyMessage);
-		}
-		
-	*/
 
 	std::string	replyMessage;
 	std::string	userNickname = _srvAPI.getUserNick();
 	std::string	command = parsed_msg.command;	
 	std::string	userID = _srvAPI.getUserIdentifier();
 
+	if (!_srvAPI.isUserRegistered())
+	{
+		replyMessage = build_reply(SERVER_NAME, ERR_NOTREGISTERED, userNickname, command, "You have not registered");
+		_srvAPI.send_reply(replyMessage);
+		return ;
+	}
+	if (parsed_msg.params.size() < 2)
+	{
+		replyMessage = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, userNickname, command, "Not enough parameters");
+		_srvAPI.send_reply(replyMessage);
+		return ;
+	}
+
 	std::string channelParam = parsed_msg.params[0];
 	std::vector<std::string> channelNames = Parser::splitParam(channelParam, ',');
+	std::string userParam = parsed_msg.params[1];
+	std::vector<std::string> userNames = Parser::splitParam(userParam, ',');
+	std::string	reason;
+	if (parsed_msg.params.size() > 2)
+		reason = parsed_msg.params[2];
+	else
+		reason = userNickname;
 
-
+	//Channel Loop
 	for (paramsIt chIt = channelNames.begin(); chIt != channelNames.end(); ++chIt)
 	{
-		if (_srvAPI.doesChannelExist(*chIt))
+		if (!_srvAPI.doesChannelExist(*chIt))
 		{
-			std::string userParam = parsed_msg.params[0];
-			std::vector<std::string> userNames = Parser::splitParam(userParam, ',');
-
-			for (paramsIt userIt = userNames.begin(); userIt != userNames.end(); ++userIt)
-			{
-				if (_srvAPI.isUserInChannel(*chIt, *userIt))
-					_srvAPI.removeUserFromChannel(*chIt, *userIt);
-			}
+			replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, userNickname, *chIt, "No such channel");
+			_srvAPI.send_reply(replyMessage);
+			continue ;	
 		}
-
-	
-
-	_srvAPI.send_reply("You've sent a " +  parsed_msg.command + " request!");
+		if (_srvAPI.isChannelUser(*chIt) || _srvAPI.isUserChannelOperator(*chIt, userNickname))
+		{
+			replyMessage = build_reply(SERVER_NAME, "482", userNickname, *chIt, "You're not a channel operator");
+			_srvAPI.send_reply(replyMessage);
+			continue ;
+		}
+		// User Loop
+		for (paramsIt userIt = userNames.begin(); userIt != userNames.end(); ++userIt)
+		{
+			if (!_srvAPI.isUserInChannel(*chIt, *userIt))
+			{
+				replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHNICK, userNickname, *userIt, "User not in channel");
+				_srvAPI.send_reply(replyMessage);
+				continue ;
+			}
+			std::string kickMessage = build_reply(userID, "KICK", *chIt, *userIt, reason);
+			_srvAPI.sendMessageToChannel(*chIt, kickMessage);
+			_srvAPI.removeUserFromChannel(*chIt, *userIt);
+		}
 	}
 }
 

@@ -81,5 +81,6 @@ class Server: public IServerAPI
 
 		//Kick
 		bool				isUserInChannel(const std::string& channelName, const std::string& nick);
-		void				removeUserFromChannel(const std::string& channelName, const std::string& nick, const std::string& comment = "");
+		void				removeUserFromChannel(const std::string& channelName, const std::string& nick);
+		bool				isUserChannelOperator(const std::string& channelName, const std::string& nick);
 };

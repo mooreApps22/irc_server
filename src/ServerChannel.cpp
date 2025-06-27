@@ -109,7 +109,7 @@ void	Server::sendMessageToChannel(const std::string& channelName, const std::str
 	}
 }
 
-void	Server::removeUserFromChannel(const std::string& channelName, const std::string& nick, const std::string& comment)
+void	Server::removeUserFromChannel(const std::string& channelName, const std::string& nick)
 {
 	int		fd = Server::getUserFd(nick);
 
@@ -117,10 +117,6 @@ void	Server::removeUserFromChannel(const std::string& channelName, const std::st
 		_channels[channelName]->removeMember(fd);
 	else if (_channels[channelName]->isOperator(fd))
 		_channels[channelName]->removeOperator(fd);
-	if (!comment.empty())
-		sendToUser(comment, fd);
-	else
-		sendToUser("You have been kicked out of channel: " + channelName, fd);
 }
 
 bool	Server::isUserInChannel(const std::string& channelName, const std::string& nick)
@@ -128,4 +124,13 @@ bool	Server::isUserInChannel(const std::string& channelName, const std::string& 
 	int		fd = Server::getUserFd(nick);
 
 	return (_channels[channelName]->isMember(fd) || _channels[channelName]->isOperator(fd));
+}
+
+bool	Server::isUserChannelOperator(const std::string& channelName, const std::string& nick)
+{
+	int fd = getUserFd(nick);	
+
+	if (_channels.find(channelName) == _channels.end())
+		return (false);
+	return (_channels[channelName]->isOperator(fd));
 }
