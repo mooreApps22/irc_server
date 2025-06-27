@@ -410,69 +410,41 @@ bool	CommandHandler::isNickUnique(const std::string nick)
 	return true;
 }
 
-const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& command, const std::string message)
+const std::string CommandHandler::build_reply(const std::string& arg1, const std::string& arg2, const std::string& arg3, const std::string arg4, const std::string arg5, const std::string arg6)
 {
 	std::string reply_message = COLON;
-	reply_message += prefix;
-	reply_message += SPACE;
-	reply_message += command;
-	reply_message += SPACE;
-	reply_message += COLON;
-	reply_message += message;
+	reply_message += arg1;
 
-	std::cout << "Built message: " << reply_message << std::endl;
-	return reply_message;
-}
-
-const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string message)
-{
-	std::string reply_message = COLON;
-	reply_message += prefix;
-	reply_message += SPACE;
-	reply_message += code;
-	reply_message += SPACE;
-	reply_message += dest;
-	reply_message += SPACE;
-	reply_message += COLON;
-	reply_message += message;
-
-	std::cout << "Built message: " << reply_message << std::endl;
-	return reply_message;
-}
-
-const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string arg, const std::string message)
-{
-	std::string reply_message = COLON;
-	reply_message += prefix;
-	reply_message += SPACE;
-	reply_message += code;
-	reply_message += SPACE;
-	reply_message += dest;
-	reply_message += SPACE;
-	reply_message += arg;
-	reply_message += SPACE;
-	reply_message += COLON;
-	reply_message += message;
-
-	std::cout << "Built message: " << reply_message << std::endl;
-	return reply_message;
-}
-
-const std::string CommandHandler::build_reply(const std::string& prefix, const std::string& code, const std::string& dest, const std::string arg, const std::string arg2, const std::string message)
-{
-	std::string reply_message = COLON;
-	reply_message += prefix;
-	reply_message += SPACE;
-	reply_message += code;
-	reply_message += SPACE;
-	reply_message += dest;
-	reply_message += SPACE;
-	reply_message += arg;
 	reply_message += SPACE;
 	reply_message += arg2;
+	
 	reply_message += SPACE;
-	reply_message += COLON;
-	reply_message += message;
+	if (arg4.size() == 0)
+		reply_message += COLON;
+	reply_message += arg3;
+	
+	if (arg4.size() > 0)
+	{
+		reply_message += SPACE;
+		if (arg5.size() == 0)
+			reply_message += COLON;
+		reply_message += arg4;
+	}
+
+	if (arg5.size() > 0)
+	{
+		reply_message += SPACE;
+		if (arg6.size() == 0)
+			reply_message += COLON;
+		reply_message += arg5;
+	}
+	
+	if (arg6.size() > 0)
+	{
+		reply_message += SPACE;
+		reply_message += COLON;
+		reply_message += arg6;
+	}
 
 	std::cout << "Built message: " << reply_message << std::endl;
 	return reply_message;
