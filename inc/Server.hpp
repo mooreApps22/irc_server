@@ -61,7 +61,6 @@ class Server: public IServerAPI
 		User*				getUser(void);
 		
 		//Channel
-		Channel*			getChannel(const std::string& channelName);
 		bool				doesChannelExist(const std::string& channelName);
 		void				addChannel(const std::string& channelName);
 		void				addUserToChannel(const std::string& channelName);

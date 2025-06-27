@@ -37,7 +37,6 @@ public:
 
 	virtual	User*				getUser(void) = 0;
 
-	virtual Channel*			getChannel(const std::string& channelName) = 0;
 	virtual bool				doesChannelExist(const std::string& channelName) = 0;
 	virtual void				addChannel(const std::string& channelName) = 0;
 	virtual void				addUserToChannel(const std::string& channelName) = 0;
