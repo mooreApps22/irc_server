@@ -87,6 +87,24 @@ const std::string&	Server::getChannelTopic(const std::string& channelName)
 
 const std::string	Server::getChannelUsersList(const std::string& channelName)
 {
-	return (_channels[channelName]->getUsersList());
+	return (_channels[channelName]->getUsersList(_client_fd));
 }
 
+bool	Server::isChannelUser(const std::string& channelName)
+{
+	return (_channels[channelName]->isMember(_client_fd) || _channels[channelName]->isOperator(_client_fd));
+}
+
+void	Server::sendMessageToChannel(const std::string& channelName, const std::string& message)
+{
+	for (std::map<int, User*>::const_iterator	it = _channels[channelName]->getMembers().begin(); it != _channels[channelName]->getMembers().end(); it++)
+	{
+		if (it->first != _client_fd)
+			sendToUser(message, it->first);
+	}
+	for (std::map<int, User*>::const_iterator	it = _channels[channelName]->getOperators().begin(); it != _channels[channelName]->getOperators().end(); it++)
+	{
+		if (it->first != _client_fd)
+			sendToUser(message, it->first);
+	}
+}

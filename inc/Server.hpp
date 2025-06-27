@@ -41,6 +41,9 @@ class Server: public IServerAPI
 		void	send_reply(const std::string& reply);
 		void	sendToAll(const std::string& message);
 		void	sendToUser(const std::string& message, std::string& nick);
+		void	sendMessageToChannel(const std::string& channelName, const std::string& message);
+		chanIt	getChannelsBegin(void);
+		chanIt	getChannelsEnd(void);
 		bool 	isPasswordValid(const std::string& password);
 		void	disconnectUser(void);
 
@@ -74,4 +77,5 @@ class Server: public IServerAPI
 		bool				isUserInvited(const std::string& channelName);
 		const std::string&	getChannelTopic(const std::string& channelName);
 		const std::string	getChannelUsersList(const std::string& channelName);
+		bool				isChannelUser(const std::string& channelName);
 };

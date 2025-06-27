@@ -61,30 +61,12 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 			continue ;
 		}
 		//if channel (aka *it) doesnt't exist, create it and make the user the operator
+		bool new_channel = false;
 		if (!_srvAPI.doesChannelExist(*chIt))
 		{
 			_srvAPI.addChannel(*chIt);
 			_srvAPI.send_reply("Creating a channel:" + *chIt);
-			_srvAPI.addUserToChannel(*chIt);
-			_srvAPI.setUserAsOperator(*chIt);
-			// _srvAPI.send_reply("You were added to " + *chIt);
-			replyMessage = build_reply(userID, command, *chIt);
-			_srvAPI.send_reply(replyMessage);
-
-			if (!_srvAPI.isChannelTopicSet(*chIt))
-				replyMessage = build_reply(SERVER_NAME, RPL_NOTOPIC, userNickname, *chIt, "No topic is set");
-			else
-				replyMessage = build_reply(SERVER_NAME, RPL_TOPIC, userNickname, *chIt, _srvAPI.getChannelTopic(*chIt));
-			_srvAPI.send_reply(replyMessage);
-
-			std::string message = _srvAPI.getChannelUsersList(*chIt);
-			replyMessage = build_reply(SERVER_NAME, RPL_NAMREPLY, userNickname, "=", *chIt, message);
-			_srvAPI.send_reply(replyMessage);
-
-			replyMessage = build_reply(SERVER_NAME, RPL_ENDOFNAMES, userNickname, *chIt, "End of NAMES list");
-			_srvAPI.send_reply(replyMessage);
-
-			continue ;
+			new_channel = true;
 		}
 
 		//if key is set the key must match (if a key is used it must be iterated)
@@ -119,23 +101,30 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 			_srvAPI.send_reply(replyMessage);
 			continue ;
 		}
-		_srvAPI.addUserToChannel(*chIt);
-		replyMessage = build_reply(userID, command, *chIt);
-		_srvAPI.send_reply(replyMessage);
 
-		if (!_srvAPI.isChannelTopicSet(*chIt))
-			replyMessage = build_reply(SERVER_NAME, RPL_NOTOPIC, userNickname, *chIt, "No topic is set");
-		else
-			replyMessage = build_reply(SERVER_NAME, RPL_TOPIC, userNickname, *chIt, _srvAPI.getChannelTopic(*chIt));
-		_srvAPI.send_reply(replyMessage);
+		if (!_srvAPI.isChannelUser(*chIt))
+		{
+			_srvAPI.addUserToChannel(*chIt);
+			if (new_channel)
+				_srvAPI.setUserAsOperator(*chIt);
+			// _srvAPI.send_reply("You were added to " + *chIt);
+			replyMessage = build_reply(userID, command, *chIt);
+			_srvAPI.send_reply(replyMessage);
+			_srvAPI.sendMessageToChannel(*chIt, replyMessage);
 
-		std::string message = _srvAPI.getChannelUsersList(*chIt);
-		replyMessage = build_reply(SERVER_NAME, RPL_NAMREPLY, userNickname, "=", *chIt, message);
-		_srvAPI.send_reply(replyMessage);
+			if (!_srvAPI.isChannelTopicSet(*chIt))
+				replyMessage = build_reply(SERVER_NAME, RPL_NOTOPIC, userNickname, *chIt, "No topic is set");
+			else
+				replyMessage = build_reply(SERVER_NAME, RPL_TOPIC, userNickname, *chIt, _srvAPI.getChannelTopic(*chIt));
+			_srvAPI.send_reply(replyMessage);
 
-		replyMessage = build_reply(SERVER_NAME, RPL_ENDOFNAMES, userNickname, *chIt, "End of NAMES list");
-		_srvAPI.send_reply(replyMessage);
+			std::string message = _srvAPI.getChannelUsersList(*chIt);
+			replyMessage = build_reply(SERVER_NAME, RPL_NAMREPLY, userNickname, "=", *chIt, message);
+			_srvAPI.send_reply(replyMessage);
 
-
+			replyMessage = build_reply(SERVER_NAME, RPL_ENDOFNAMES, userNickname, *chIt, "End of NAMES list");
+			_srvAPI.send_reply(replyMessage);
+		}
 	}
 }
+

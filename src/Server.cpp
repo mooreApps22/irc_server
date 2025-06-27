@@ -279,7 +279,6 @@ bool 	Server::isPasswordValid(const std::string& password)
 	return _password == password;
 }
 
-
 /*
 	API methods related to user actions
 */
@@ -343,7 +342,6 @@ usrsIt	Server::getUsersEnd(void)
 {
 	return _users.end();
 }
-
 
 User*	Server::getUser()
 {

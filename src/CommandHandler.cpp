@@ -310,12 +310,17 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 		}
 		else if (Parser::is_channel(*msgto))
 		{
-			// if (*msgto !exists)
-			// {
-			// 	reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, *msgto, "No such nick/channel");
-			// 	_srvAPI.send_reply(reply_message);
-			// 	return ;
-			// }
+			if (_srvAPI.isChannelUser(*msgto))
+			{
+				reply_message = build_reply(user_identifier, command, *msgto, message);
+				_srvAPI.sendMessageToChannel(*msgto, reply_message);
+			}
+			else
+			{
+				reply_message = build_reply(SERVER_NAME,
+					ERR_CANNOTSENDTOCHAN, user_nickname, *msgto, "Cannot send to channel");
+				_srvAPI.send_reply(reply_message);
+			}
 		}
 		else
 		{

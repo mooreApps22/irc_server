@@ -32,9 +32,9 @@ class Channel
 		bool						isTopicSet() const;
 		bool						isKeyValid(const std::string& key) const;
 		size_t						getUserLimit() const;
-		const std::string			getUsersList() const;
+		const std::string			getUsersList(int fd) const;
 		const std::map<int, User*>&	getMembers() const;
-		const std::map<int, User*>&	getChops() const;
+		const std::map<int, User*>&	getOperators() const;
 		const std::map<int, User*>&	getInvitees() const;
 		bool						isInviteOnly() const;
 		bool						isTopicRestricted() const;
