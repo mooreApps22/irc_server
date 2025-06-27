@@ -108,3 +108,24 @@ void	Server::sendMessageToChannel(const std::string& channelName, const std::str
 			sendToUser(message, it->first);
 	}
 }
+
+void	Server::removeUserFromChannel(const std::string& channelName, const std::string& nick, const std::string& comment)
+{
+	int		fd = Server::getUserFd(nick);
+
+	if (_channels[channelName]->isMember(fd))
+		_channels[channelName]->removeMember(fd);
+	else if (_channels[channelName]->isOperator(fd))
+		_channels[channelName]->removeOperator(fd);
+	if (!comment.empty())
+		sendToUser(comment, fd);
+	else
+		sendToUser("You have been kicked out of channel: " + channelName, fd);
+}
+
+bool	Server::isUserInChannel(const std::string& channelName, const std::string& nick)
+{
+	int		fd = Server::getUserFd(nick);
+
+	return (_channels[channelName]->isMember(fd) || _channels[channelName]->isOperator(fd));
+}

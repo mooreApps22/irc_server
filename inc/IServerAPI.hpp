@@ -41,11 +41,14 @@ public:
 	virtual bool				doesChannelExist(const std::string& channelName) = 0;
 	virtual void				addChannel(const std::string& channelName) = 0;
 	virtual void				addUserToChannel(const std::string& channelName) = 0;
+	virtual void				removeUserFromChannel(const std::string& channelName, const std::string& nick, const std::string& comment = "") = 0;
 	virtual bool				isChannelFull(const std::string& channelName) = 0;
 	virtual bool				doesChannelHaveLimit(const std::string& channelName) = 0;
 	virtual void				setUserAsOperator(const std::string& channelName) = 0;
 	virtual bool				isChannelPasswordProtected(const std::string& channelName) = 0;
 	virtual bool				isChannelPasswordValid(const std::string& channelName, const std::string&  key) = 0;
+
+	virtual bool				isUserInChannel(const std::string& channelName, const std::string& nick) = 0;
 
 	virtual bool				isChannelInviteOnly(const std::string& channelName) = 0;
 	virtual bool				isUserInvited(const std::string& channelName) = 0;
@@ -53,6 +56,7 @@ public:
 	virtual const std::string&	getChannelTopic(const std::string& channelName) = 0;
 	virtual const std::string	getChannelUsersList(const std::string& channelName) = 0;
 	virtual bool				isChannelUser(const std::string& channelName) = 0;
+
 //	virtual chanIt				getChannelsBegin(void) = 0;
 //	virtual chanIt				getChannelsEnd(void) = 0;
 /*

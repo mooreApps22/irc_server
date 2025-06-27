@@ -78,4 +78,8 @@ class Server: public IServerAPI
 		const std::string&	getChannelTopic(const std::string& channelName);
 		const std::string	getChannelUsersList(const std::string& channelName);
 		bool				isChannelUser(const std::string& channelName);
+
+		//Kick
+		bool				isUserInChannel(const std::string& channelName, const std::string& nick);
+		void				removeUserFromChannel(const std::string& channelName, const std::string& nick, const std::string& comment = "");
 };
