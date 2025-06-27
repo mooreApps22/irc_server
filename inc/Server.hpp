@@ -74,4 +74,5 @@ class Server: public IServerAPI
 		bool				isUserInvited(const std::string& channelName);
 		const std::string&	getChannelTopic(const std::string& channelName);
 		const std::string	getChannelUsersList(const std::string& channelName);
+		bool				isChannelUser(const std::string& channelName);
 };

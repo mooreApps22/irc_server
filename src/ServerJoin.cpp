@@ -90,3 +90,7 @@ const std::string	Server::getChannelUsersList(const std::string& channelName)
 	return (_channels[channelName]->getUsersList());
 }
 
+bool	Server::isChannelUser(const std::string& channelName)
+{
+	return (_channels[channelName]->isMember(_client_fd) || _channels[channelName]->isMember(_client_fd));
+}
