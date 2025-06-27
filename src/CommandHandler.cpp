@@ -41,7 +41,12 @@ void	CommandHandler::execute(parsed_message& parsed_msg)
 	else
 	{
 		Logger::log(INFO, "Unknown Command.", command);
-		// TODO Send code repy
+
+		std::string reply_message;
+		std::string user_nickname = _srvAPI.getUserNick();
+
+		reply_message = build_reply(SERVER_NAME, ERR_UNKNOWNCOMMAND, user_nickname, command, "Unknown command");
+		_srvAPI.send_reply(reply_message);
 	}
 }
 
