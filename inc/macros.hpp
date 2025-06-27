@@ -30,6 +30,8 @@
 // Error replies
 #define ERR_NOSUCHNICK			"401"	// "<nickname> :No such nick/channel"
 #define ERR_NOSUCHCHANNEL 		"403"	// "<channel name> :No such channel"
+#define ERR_CANNOTSENDTOCHAN	"404"	// "<channel name> :Cannot send to channel"
+                        
 #define ERR_TOOMANYCHANNELS 	"405"	// "<channel name> :You have joined too many channels"
 #define ERR_TOOMANYTARGETS		"407"	// "<target> :Duplicate recipients. No message delivered"
 #define ERR_NORECIPIENT			"411"	// ":No recipient given (<command>)"

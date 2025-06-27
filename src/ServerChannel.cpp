@@ -92,7 +92,7 @@ const std::string	Server::getChannelUsersList(const std::string& channelName)
 
 bool	Server::isChannelUser(const std::string& channelName)
 {
-	return (_channels[channelName]->isMember(_client_fd) || _channels[channelName]->isMember(_client_fd));
+	return (_channels[channelName]->isMember(_client_fd) || _channels[channelName]->isOperator(_client_fd));
 }
 
 void	Server::sendMessageToChannel(const std::string& channelName, const std::string& message)
