@@ -51,7 +51,7 @@ bool Parser::is_message(parsed_message& parsed_msg)
 
 	if (!is_command(parsed_msg))
 		return false;
-	
+
 	begin = _it;
 	if (!is_params(parsed_msg))
 		_it = begin;
@@ -85,11 +85,14 @@ bool Parser::is_command(parsed_message& parsed_msg)
 	std::string::iterator begin = _it;
 
 	while(std::isalpha(*_it))
+	{
+		*_it = std::toupper(*_it);
 		_it++;
+	}
 	if (_it > begin)
 	{
 		std::string command(begin, _it);
-		 parsed_msg.command = command;
+		parsed_msg.command = command;
 		// Logger::log(DEBUG, "Command",  parsed_msg.command);
 		return true;
 	}

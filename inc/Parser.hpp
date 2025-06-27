@@ -29,24 +29,24 @@ class Parser
     private:
 		std::string::iterator		_it;
 
-		bool is_message(parsed_message& parsed_msg);
-		bool is_colon();
-		bool is_prefix(parsed_message& parsed_msg);
-		bool is_servername();
-		bool is_nickname();
-		bool is_space();
-		bool is_command(parsed_message& parsed_msg);
-		bool is_params(parsed_message& parsed_msg);
-		bool is_middle(parsed_message& parsed_msg);
-		bool is_nospcrlfcl();
-		bool is_null();
-		bool is_cr();
-		bool is_lf();
-		bool is_crlf();
-		bool is_trailing(parsed_message& parsed_msg);
+		bool		is_message(parsed_message& parsed_msg);
+		bool		is_colon();
+		bool		is_prefix(parsed_message& parsed_msg);
+		bool		is_servername();
+		bool		is_nickname();
+		bool		is_space();
+		bool		is_command(parsed_message& parsed_msg);
+		bool		is_params(parsed_message& parsed_msg);
+		bool		is_middle(parsed_message& parsed_msg);
+		bool		is_nospcrlfcl();
+		bool		is_null();
+		bool		is_cr();
+		bool		is_lf();
+		bool		is_crlf();
+		bool		is_trailing(parsed_message& parsed_msg);
 
-		static bool		is_special(std::string::iterator it);
-		static bool		is_chstring(std::string::iterator it);
+		static bool	is_special(std::string::iterator it);
+		static bool	is_chstring(std::string::iterator it);
 
     public:
         Parser();

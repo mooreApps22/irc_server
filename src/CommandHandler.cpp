@@ -39,7 +39,10 @@ void	CommandHandler::execute(parsed_message& parsed_msg)
 		(this->*(it->second))(parsed_msg);
 	}
 	else
+	{
 		Logger::log(INFO, "Unknown Command.", command);
+		// TODO Send code repy
+	}
 }
 
 void	CommandHandler::_inviteFp(parsed_message& parsed_msg)
