@@ -31,11 +31,19 @@ void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 		return ;
 	}
 
-	std::string channelParam = parsed_msg.params[0];
-	std::vector<std::string> channelNames = Parser::splitParam(channelParam, ',');
-	std::string userParam = parsed_msg.params[1];
-	std::vector<std::string> userNames = Parser::splitParam(userParam, ',');
+	std::vector<std::string> channelNames = Parser::splitParam(parsed_msg.params[0], ',');
+	std::vector<std::string> userNames = Parser::splitParam(parsed_msg.params[1], ',');
+
+	if (userNames.size() < channelNames.size())
+	{
+		replyMessage = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, userNickname, command, "Can't have more channel params than user params");
+		_srvAPI.send_reply(replyMessage);
+		return ;
+	}
+
+
 	std::string	reason;
+
 	if (parsed_msg.params.size() > 2)
 		reason = parsed_msg.params[2];
 	else
