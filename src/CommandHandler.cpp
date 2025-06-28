@@ -18,7 +18,6 @@ CommandHandler::CommandHandler(IServerAPI& srvAPI)
 	_commands["PASS"]		= &CommandHandler::_passFp;
 	_commands["PING"]		= &CommandHandler::_pingFp;
 	_commands["PRIVMSG"]	= &CommandHandler::_privMsgFp;
-	_commands["REAL"] 		= &CommandHandler::_realFp;
 	_commands["TOPIC"] 		= &CommandHandler::_topicFp;
 	_commands["USER"] 		= &CommandHandler::_userFp;
 }
@@ -58,11 +57,11 @@ void	CommandHandler::execute(parsed_message& parsed_msg)
    the INVITE command (See "IRC Client Protocol" [IRC-CLIENT]) to
    channel operators.
 */
-// void	CommandHandler::_inviteFp(parsed_message& parsed_msg)
-// {
-// 	Logger::log(INFO,  parsed_msg.command + " received.");
+void	CommandHandler::_inviteFp(parsed_message& parsed_msg)
+{
+	Logger::log(INFO,  parsed_msg.command + " received.");
 	
-// }
+}
 
 
 /*void	CommandHandler::_modeFp(parsed_message& parsed_msg)
@@ -304,6 +303,7 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 			{
 				reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, *msgto, "No such nick/channel");
 				_srvAPI.send_reply(reply_message);
+				continue;
 			}
 			if (*msgto != user_nickname)
 			{
@@ -313,17 +313,25 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 		}
 		else if (Parser::is_channel(*msgto))
 		{
-			if (_srvAPI.isChannelUser(*msgto))
+			if (!_srvAPI.doesChannelExist(*msgto))
 			{
-				reply_message = build_reply(user_identifier, command, *msgto, message);
-				_srvAPI.sendMessageToChannel(*msgto, reply_message);
-			}
-			else
-			{
-				reply_message = build_reply(SERVER_NAME,
-					ERR_CANNOTSENDTOCHAN, user_nickname, *msgto, "Cannot send to channel");
+				reply_message = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, user_nickname, *msgto, "No such channel");
 				_srvAPI.send_reply(reply_message);
+				continue ;
 			}
+			reply_message = build_reply(user_identifier, command, *msgto, message);
+			_srvAPI.sendMessageToChannel(*msgto, reply_message);
+			// if (_srvAPI.isChannelUser(*msgto))
+			// {
+			// 	reply_message = build_reply(user_identifier, command, *msgto, message);
+			// 	_srvAPI.sendMessageToChannel(*msgto, reply_message);
+			// }
+			// else
+			// {
+			// 	reply_message = build_reply(SERVER_NAME,
+			// 		ERR_CANNOTSENDTOCHAN, user_nickname, *msgto, "Cannot send to channel");
+			// 	_srvAPI.send_reply(reply_message);
+			// }
 		}
 		else
 		{
@@ -333,19 +341,6 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 	}
 }
 
-void	CommandHandler::_realFp(parsed_message& parsed_msg)
-{
-	Logger::log(INFO,  parsed_msg.command + " received.");
-	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
-}
-
-/*
-void	CommandHandler::_topicFp(parsed_message& parsed_msg)
-{
-	Logger::log(INFO,  parsed_msg.command + " received.");
-	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
-}
-*/
 void	CommandHandler::_userFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");

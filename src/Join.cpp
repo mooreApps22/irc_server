@@ -41,6 +41,7 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 		_srvAPI.send_reply(replyMessage);
 		return ;
 	}
+	
 	if (parsed_msg.params.size() == 0)
 	{
 		replyMessage = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, userNickname, command, "Not enough parameters");
