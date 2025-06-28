@@ -4,6 +4,7 @@
 # include <map>
 # include "User.hpp"
 # include "Logger.hpp"
+# include <vector>
 
 enum Membership
 {
@@ -19,10 +20,7 @@ class Channel
 		std::string				_topic;
 		std::string				_key; 					// (channel password)
 		size_t					_user_limit;
-		std::map<int, Membership>	_users;	//
-		std::map<int, User*>	_members;
-		std::map<int, User*>	_operators;
-		std::map<int, User*>	_invitees;
+		std::map<int, std::pair<User*, Membership> >	_users;	//
 		bool					_mode_invite_only;		// i: set/remove Invite-only channel
 		bool					_mode_topic_restricted; // t: set/remove the restrictions of the topic command to ch-ops
 		bool					_mode_has_key;			// k: set/remove the channel key (password)
@@ -41,9 +39,7 @@ class Channel
 		bool						isKeyValid(const std::string& key) const;
 		size_t						getUserLimit() const;
 		const std::string			getUsersList(int fd) const;
-		const std::map<int, User*>&	getMembers() const;
-		const std::map<int, User*>&	getOperators() const;
-		const std::map<int, User*>&	getInvitees() const;
+		const std::vector<int>		getUsers() const;
 		bool						isInviteOnly() const;
 		bool						isTopicRestricted() const;
 		bool						needsChannelKey() const;
@@ -61,20 +57,20 @@ class Channel
 	
 		// Membership
 		void						addMember(int userFd, User* user);
-		void						removeMember(int userFd);
 		bool						isMember(int userFd);
 	
 		// Operators
-		void						addOperator(int userFd, User* user);
-		void						removeOperator(int userFd);
+		void						promoteMember(int userFd);
+		void						demoteOperator(int userFd);
 		bool						isOperator(int userFd);
 	
 		// Invitations
 		void						addInvitee(int userFd, User* user);
-		void						removeInvitee(int userFd);
+		void						promoteInvitee(int userFd);
 		bool						isInvitee(int userFd);
 
-
+		void						removeUser(int userFd);
+		
 		class hashSymbolException : public std::exception
 		{
 			public:

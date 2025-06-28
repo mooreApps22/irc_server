@@ -58,11 +58,11 @@ void	CommandHandler::execute(parsed_message& parsed_msg)
    the INVITE command (See "IRC Client Protocol" [IRC-CLIENT]) to
    channel operators.
 */
-void	CommandHandler::_inviteFp(parsed_message& parsed_msg)
-{
-	Logger::log(INFO,  parsed_msg.command + " received.");
+// void	CommandHandler::_inviteFp(parsed_message& parsed_msg)
+// {
+// 	Logger::log(INFO,  parsed_msg.command + " received.");
 	
-}
+// }
 
 void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 {

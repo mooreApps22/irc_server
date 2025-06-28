@@ -69,7 +69,7 @@ class Server: public IServerAPI
 		void				addUserToChannel(const std::string& channelName);
 		bool				isChannelFull(const std::string& channelName);
 		bool				doesChannelHaveLimit(const std::string& channelName);
-		void				setUserAsOperator(const std::string& channelName);
+		void				promoteChannelMember(const std::string& channelName);
 		bool				isChannelPasswordProtected(const std::string& channelName);
 		bool				isChannelPasswordValid(const std::string& channelName, const std::string& key);
 		bool				isChannelInviteOnly(const std::string& channelName);
@@ -78,9 +78,11 @@ class Server: public IServerAPI
 		const std::string&	getChannelTopic(const std::string& channelName);
 		const std::string	getChannelUsersList(const std::string& channelName);
 		bool				isChannelUser(const std::string& channelName);
+		bool				isTargetInChannel(const std::string& channelName, const std::string& nick);
 		bool				isChannelTopicProtected(const std::string& channelName); //
 		bool				isUserChannelOperator(const std::string& channelName); //
 		void				setChannelInviteOnly(const std::string& channelName, bool status); //
 		void 				setChannelTopicRestricted(const std::string& channelName, bool status); //
+		void				addInviteeToChannel(const std::string& channelName, const std::string& nickname);
 
 };

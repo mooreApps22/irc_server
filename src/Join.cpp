@@ -35,7 +35,6 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 	std::string	command = parsed_msg.command;	
 	std::string	userID = _srvAPI.getUserIdentifier();
 
-
 	if (!_srvAPI.isUserRegistered())
 	{
 		replyMessage = build_reply(std::string(SERVER_NAME), std::string(ERR_NOTREGISTERED), userNickname, command, "You have not registered");
@@ -114,8 +113,8 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 		{
 			_srvAPI.addUserToChannel(*chIt);
 			if (new_channel)
-				_srvAPI.setUserAsOperator(*chIt);
-			// _srvAPI.send_reply("You were added to " + *chIt);
+				_srvAPI.promoteChannelMember(*chIt);
+
 			replyMessage = build_reply(userID, command, *chIt);
 			_srvAPI.send_reply(replyMessage);
 			_srvAPI.sendMessageToChannel(*chIt, replyMessage);
