@@ -244,7 +244,15 @@ void	CommandHandler::_passFp(parsed_message& parsed_msg)
 void	CommandHandler::_pingFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
-	_srvAPI.send_reply("PONG");
+
+	std::string replyMessage;
+	std::string userNickname = _srvAPI.getUserNick();
+
+	if (parsed_msg.params.size() == 0)
+		replyMessage = build_reply(SERVER_NAME, ERR_NOORIGIN, userNickname, "No origin specified");
+	else
+		replyMessage = build_reply(SERVER_NAME, "PONG", SERVER_NAME, parsed_msg.params.at(0));
+	_srvAPI.send_reply(replyMessage);
 }
 
 void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
