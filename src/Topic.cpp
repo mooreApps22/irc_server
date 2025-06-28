@@ -6,25 +6,24 @@
 #include <string>
 
 	/*
-		TOPIC <channel> [topic]
+			TOPIC <channel> [topic]
 
-		 The TOPIC command is used to change or view the topic of a channel.
-   The topic for channel <channel> is returned if there is no <topic>
-   given.  If the <topic> parameter is present, the topic for that
-   channel will be changed, if this action is allowed for the user
-   requesting it.  If the <topic> parameter is an empty string, the
-   topic for that channel will be removed.
-   
-	TOPIC #c :new topic
-	:al!~a@C453D4D.74B8F9F9.CB7972B2.IP TOPIC #c :new topic
-	->>		<userID> <command> <channelName> <topic>
-	TOPIC
-	:Rubicon.GeekShed.net 461 al TOPIC :Not enough parameters
-	TOPIC #c
-	:Rubicon.GeekShed.net 332 al #c :new topic
-	->>		SERVERNAME RPL_TOPIC userNickname channelName topic
-	:Rubicon.GeekShed.net 333 al #c al 1751132903
-
+			 The TOPIC command is used to change or view the topic of a channel.
+		   The topic for channel <channel> is returned if there is no <topic>
+		   given.  If the <topic> parameter is present, the topic for that
+		   channel will be changed, if this action is allowed for the user
+		   requesting it.  If the <topic> parameter is an empty string, the
+		   topic for that channel will be removed.
+	   
+		TOPIC #c :new topic
+		:al!~a@C453D4D.74B8F9F9.CB7972B2.IP TOPIC #c :new topic
+		->>		<userID> <command> <channelName> <topic>
+		TOPIC
+		:Rubicon.GeekShed.net 461 al TOPIC :Not enough parameters
+		TOPIC #c
+		:Rubicon.GeekShed.net 332 al #c :new topic
+		->>		SERVERNAME RPL_TOPIC userNickname channelName topic
+		:Rubicon.GeekShed.net 333 al #c al 1751132903
 	*/
 
 void	CommandHandler::_topicFp(parsed_message& parsed_msg)
@@ -74,5 +73,3 @@ void	CommandHandler::_topicFp(parsed_message& parsed_msg)
 		}
 	}
 }
-
-
