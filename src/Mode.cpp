@@ -125,50 +125,14 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 				status = false;
 			else if (*it == 'i')
 				_srvAPI.setChannelInviteOnly(channel, status);
-			// else if (*it == 'l')
-			// {
-			// 	if (!status)
-			// 		_srvAPI.setChannelHasLimit(channel, false);
-			// 	else
-			// 	{
-			// 		if (paramIt == parsed_msg.params.end())
-			// 			continue;
-			// 		modes.limitString = *paramIt;
-			// 		const char *num = (*paramIt).c_str();
-			// 		modes.limit = atoi(num);
-			// 		paramIt++;					
-			// 		_srvAPI.setChannelLimit(channel, modes.limit);
-			// 	}
-			// }
-			// else if (*it == 'o')
-			// {
-			// 	if (paramIt == parsed_msg.params.end())
-			// 		continue;
-			// 	std::string targetNickname = *paramIt;
-			// 	paramIt++;
-				
-			// 	if (_srvAPI.isUserChannelMember(channel, targetNickname) && status && !_srvAPI.isUserChannelOperator(channel, targetNickname))
-			// 	{
-			// 		_srvAPI.setUserAsOperator(channel, targetNickname);
-			// 		modes.opSigns.push_back("+o");
-			// 		modes.targetNicknames.push_back(targetNickname);
-			// 	}
-			// 	else if (_srvAPI.isUserChannelOperator(channel, targetNickname) && !status)
-			// 	{
-			// 		_srvAPI.demoteOperator(channel, targetNickname);
-			// 		modes.opSigns.push_back("-o");
-			// 		modes.targetNicknames.push_back(targetNickname);
-			// 	}
-			// }
-			// else if (*it == 't')
-			// 	_srvAPI.setChannelTopicRestricted(channel, status);
+			else if (*it == 't')
+				_srvAPI.setChannelTopicRestricted(channel, status);
 			else
 			{
 				reply_message = build_reply(SERVER_NAME, ERR_UMODEUNKNOWNFLAG, user_nickname, "Unknown MODE flag");
 				_srvAPI.send_reply(reply_message);
 			}
 		}	
-
 	}
 	else
 	{

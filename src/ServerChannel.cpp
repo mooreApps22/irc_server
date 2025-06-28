@@ -124,3 +124,8 @@ void	Server::setChannelInviteOnly(const std::string& channelName, bool status)
 {
 	_channels[channelName]->setInviteOnly(status);
 }
+
+void	Server::setChannelTopicRestricted(const std::string& channelName, bool status)
+{
+	_channels[channelName]->setTopicRestricted(status);
+}

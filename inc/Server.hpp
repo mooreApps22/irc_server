@@ -81,4 +81,6 @@ class Server: public IServerAPI
 		bool				isChannelTopicProtected(const std::string& channelName); //
 		bool				isUserChannelOperator(const std::string& channelName); //
 		void				setChannelInviteOnly(const std::string& channelName, bool status); //
+		void 				setChannelTopicRestricted(const std::string& channelName, bool status); //
+
 };
