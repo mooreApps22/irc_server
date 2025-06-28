@@ -21,7 +21,7 @@ void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 
 	if (!_srvAPI.isUserRegistered())
 	{
-		replyMessage = build_reply(SERVER_NAME, ERR_NOTREGISTERED, userNickname, command, "You have not registered");
+		replyMessage = build_reply(SERVER_NAME, ERR_NOTREGISTERED, userNickname, command, "Not enough parameters");
 		_srvAPI.send_reply(replyMessage);
 		return ;
 	}
@@ -37,9 +37,9 @@ void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 	std::vector<std::string> channelNames = Parser::splitParam(parsed_msg.params[0], ',');
 	std::vector<std::string> userNames = Parser::splitParam(parsed_msg.params[1], ',');
 
-	if (userNames.size() > channelNames.size())
+	if ((channelNames.size() != userNames.size()) && !(channelNames.size() == 1 && userNames.size() > 0))
 	{
-		replyMessage = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, userNickname, command, "Can't have more channel params than user params");
+		replyMessage = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, userNickname, command, "Not enough parameters");
 		_srvAPI.send_reply(replyMessage);
 		std::cout << "Users: " << userNames.size() << "Channels: " << channelNames.size() << std::endl;
 		return ;
