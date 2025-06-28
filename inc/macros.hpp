@@ -22,6 +22,7 @@
 #define RPL_CHANNELMODEIS		"324"	// "<channel> <mode> <mode params>"
 #define	RPL_NOTOPIC				"331"	// "<channel> :No topic is set"
 #define RPL_TOPIC				"332"	// "<channel> :<topic>"
+#define RPL_INVITING			"341"	// "<channel> <nick>"
 #define	RPL_NAMREPLY			"353"	// "( "=" / "*" / "@" ) <channel>
 										// :[ "@" / "+" ] <nick> *( " " [ "@" / "+" ] <nick> )
 										// - "@" is used for secret channels, "*" for private
@@ -41,6 +42,8 @@
 #define ERR_NONICKNAMEGIVEN		"431"	// ":No nickname given"
 #define ERR_ERRONEUSNICKNAME	"432"	// "<nick> :Erroneous nickname"
 #define ERR_NICKNAMEINUSE		"433"	// "<nick> :Nickname is already in use"
+#define ERR_NOTONCHANNEL		"442"	// "<channel> :You're not on that channel"
+#define ERR_USERONCHANNEL		"443"	// "<user> <channel> :is already on channel"
 #define ERR_NOTREGISTERED		"451"	// ":You have not registered"
 #define ERR_NEEDMOREPARAMS		"461"	// "<command> :Not enough parameters"
 #define ERR_ALREADYREGISTRED 	"462" 	// ":Unauthorized command (already registered)"

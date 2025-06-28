@@ -50,6 +50,11 @@ const std::string&	Channel::getTopic() const
 	return(_topic);	
 }
 
+bool	Channel::isTopicSet() const
+{
+	return (_topic.size() > 0);
+}
+
 /*
 std::string	Channel::getKey() const
 {
@@ -57,29 +62,49 @@ std::string	Channel::getKey() const
 }
 */
 
+bool	Channel::isKeyValid(const std::string& key) const
+{
+	return (_key == key);
+}
+
 size_t	Channel::getUserLimit() const
 {
 	return(_user_limit);	
 }
 
-const std::map<int, User*>&	Channel::getMembers() const
+const std::string	Channel::getUsersList(int fd) const
 {
-	return(_members);	
+	std::string	list = "";
+	std::string	user = "";
+
+	for(std::map<int, std::pair<User*, Membership> >::const_iterator it = _users.begin(); it != _users.end(); it++)
+	{
+		if (it->first != fd && it->second.second > INVITEE)
+		{
+			list += " ";
+			if (it->second.second == OPERATOR)
+				list += "@";
+			list += it->second.first->getNickname();
+		}
+		else
+		{
+			if (it->second.second == OPERATOR)
+				user+= "@";
+			user += it->second.first->getNickname();
+		}
+	}	
+	return user + list;
 }
 
-const std::map<int, User*>&	Channel::getOperators() const
+const std::vector<int>	Channel::getUsers() const
 {
-	return(_operators);	
-}
-
-const std::map<int, User*>&	Channel::getInvitees() const
-{
-	return(_invitees);	
-}
-
-bool	Channel::isTopicSet() const
-{
-	return (_topic.size() > 0);
+	std::vector<int>	users;
+	for(std::map<int, std::pair<User*, Membership> >::const_iterator it = _users.begin(); it != _users.end(); it++)
+	{
+		if(it->second.second > INVITEE)
+			users.push_back(it->first);
+	}
+	return (users);
 }
 
 bool	Channel::isInviteOnly() const
@@ -102,10 +127,15 @@ bool	Channel::hasUserLimit() const
 	return (_mode_has_limit);	
 }
 
-
 bool	Channel::isFull() const
 {
-	return (_members.size() + _operators.size() == _user_limit);
+	size_t count = 0;
+	for(std::map<int, std::pair<User*, Membership> >::const_iterator it = _users.begin(); it != _users.end(); it++)
+	{
+		if (it->second.second > INVITEE)
+			count++;
+	}
+	return (count > 0 && count >= _user_limit);
 }
 
 // Setters
@@ -150,56 +180,51 @@ void	Channel::clearUserLimit()
 }
 
 // Membership
-// void	Channel::addUser(User* user, const std::string& name)
-// {
-// 	_members.insert(std::pair<std::string, User*>(name, user));
-// }
-
 void	Channel::addMember(int user_fd, User* user)
 {
-	_members.insert(std::pair<int, User*>(user_fd, user));
-}
-
-void	Channel::removeMember(int userFd)
-{
-	_members.erase(userFd);
+	_users[user_fd] = std::pair<User*, Membership>(user, MEMBER);
 }
 
 bool	Channel::isMember(int userFd)
 {
-	return (_members.find(userFd) != _members.end());
+	return (_users[userFd].second == MEMBER);
 }
 
 // Operators
-void	Channel::addOperator(int userFd , User* user)
+void	Channel::promoteMember(int userFd)
 {
-	_operators.insert(std::pair<int, User*>(userFd, user));
+	_users[userFd].second = OPERATOR;
 }
 
-void	Channel::removeOperator(int userFd)
+void	Channel::demoteOperator(int userFd)
 {
-	_operators.erase(userFd);
+	_users[userFd].second = MEMBER;
 }
 
 bool	Channel::isOperator(int userFd)
 {
-	return (_operators.find(userFd) != _operators.end());
+	return (_users[userFd].second == OPERATOR);
 }
 
 // Invitations
 void	Channel::addInvitee(int userFd, User* user)
 {
-	_invitees.insert(std::pair<int, User*>(userFd, user));
+	_users[userFd] = std::pair<User*, Membership>(user, INVITEE);
 }
 
-void	Channel::removeInvitee(int userFd)
+void	Channel::promoteInvitee(int userFd)
 {
-	_invitees.erase(userFd);
+	_users[userFd].second = MEMBER;
 }
 
 bool	Channel::isInvitee(int userFd)
 {
-	return (_invitees.find(userFd) != _invitees.end());
+	return (_users[userFd].second == INVITEE);
+}
+
+void	Channel::removeUser(int userFd)
+{
+	_users.erase(userFd);
 }
 
 const char*	Channel::hashSymbolException::what() const throw()
@@ -207,44 +232,3 @@ const char*	Channel::hashSymbolException::what() const throw()
 	return ("Channel names have to begin with a '#'!");
 }
 
-bool	Channel::isKeyValid(const std::string& key) const
-{
-	return (_key == key);
-}
-
-const std::string	Channel::getUsersList(int fd) const
-{
-	std::string	list = "";
-	std::string	user;
-
-
-	for (std::map<int, User*>::const_iterator it = _members.begin(); it != _members.end(); it++)
-	{
-		if (it->first != fd)
-		{
-			list += " ";
-			list += it->second->getNickname();
-		}
-		else
-		{
-			user = it->second->getNickname();
-		}
-	}
-
-	for (std::map<int, User*>::const_iterator it = _operators.begin(); it != _operators.end(); it++)
-	{
-		
-		if (it->first != fd)
-		{
-			list += " ";
-			list += "@";
-			list += it->second->getNickname();
-		}
-		else
-		{
-			user = "@";
-			user += it->second->getNickname();
-		}
-	}
-	return user + list;
-}
