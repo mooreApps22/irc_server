@@ -18,6 +18,14 @@
 	   RPL_NAMREPLY), which must include the user joining.
 */
 
+/*
+	4.2.2 Invite Only Flag
+   When the channel flag 'i' is set, new members are only accepted if
+   their mask matches Invite-list (See section 4.3.2) or they have been
+   invited by a channel operator.  This flag also restricts the usage of
+   the INVITE command (See "IRC Client Protocol" [IRC-CLIENT]) to
+   channel operators.
+*/
 void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");

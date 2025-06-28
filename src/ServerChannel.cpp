@@ -125,10 +125,25 @@ bool	Server::isTargetInChannel(const std::string& channelName, const std::string
 
 	return (_channels[channelName]->isMember(fd) || _channels[channelName]->isOperator(fd));
 }
+//
+bool	Server::isChannelTopicProtected(const std::string& channelName)
+{
+	return _channels[channelName]->isTopicRestricted();
+}
 
 bool	Server::isUserChannelOperator(const std::string& channelName)
 {
 	if (_channels.find(channelName) == _channels.end())
 		return (false);
 	return (_channels[channelName]->isOperator(_client_fd));
+}
+
+void	Server::setChannelInviteOnly(const std::string& channelName, bool status)
+{
+	_channels[channelName]->setInviteOnly(status);
+}
+
+void	Server::setChannelTopicRestricted(const std::string& channelName, bool status)
+{
+	_channels[channelName]->setTopicRestricted(status);
 }
