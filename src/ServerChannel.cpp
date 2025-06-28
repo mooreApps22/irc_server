@@ -147,3 +147,9 @@ void	Server::setChannelTopicRestricted(const std::string& channelName, bool stat
 {
 	_channels[channelName]->setTopicRestricted(status);
 }
+
+void	Server::setNewTopic(const std::string& channelName, const std::string& topic)
+{
+	Logger::log(DEBUG, "is setNewTopic() being called?");
+	_channels[channelName]->setTopic(topic);
+}

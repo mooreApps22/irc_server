@@ -14,6 +14,16 @@
    channel will be changed, if this action is allowed for the user
    requesting it.  If the <topic> parameter is an empty string, the
    topic for that channel will be removed.
+   
+	TOPIC #c :new topic
+	:al!~a@C453D4D.74B8F9F9.CB7972B2.IP TOPIC #c :new topic
+	->>		<userID> <command> <channelName> <topic>
+	TOPIC
+	:Rubicon.GeekShed.net 461 al TOPIC :Not enough parameters
+	TOPIC #c
+	:Rubicon.GeekShed.net 332 al #c :new topic
+	->>		SERVERNAME RPL_TOPIC userNickname channelName topic
+	:Rubicon.GeekShed.net 333 al #c al 1751132903
 
 	*/
 
@@ -34,7 +44,7 @@ void	CommandHandler::_topicFp(parsed_message& parsed_msg)
 		return ;
 	}
 	Logger::log(INFO, "TOPIC: user is registered");
-	if (parsed_msg.params.size() < 2)
+	if (parsed_msg.params.size() != 1 && parsed_msg.params.size() != 2)
 	{
 		replyMessage = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, userNickname, command, "Not enough parameters");
 		_srvAPI.send_reply(replyMessage);
@@ -42,59 +52,25 @@ void	CommandHandler::_topicFp(parsed_message& parsed_msg)
 	}
 	Logger::log(INFO, "TOPIC: has enough params");
 
-	std::vector<std::string> channelNames = Parser::splitParam(parsed_msg.params[0], ',');
-	std::vector<std::string> userNames = Parser::splitParam(parsed_msg.params[1], ',');
+	std::string channelName = parsed_msg.params[0];
 
-	if ((channelNames.size() != userNames.size()) && !(channelNames.size() == 1 && userNames.size() > 0))
+	if (parsed_msg.params.size() == 1)
 	{
-		replyMessage = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, userNickname, command, "Not enough parameters");
+		Logger::log(INFO, "TOPIC: ready to get topic");
+		replyMessage = build_reply(SERVER_NAME, RPL_TOPIC, userNickname, channelName, _srvAPI.getChannelTopic(channelName));
 		_srvAPI.send_reply(replyMessage);
-		std::cout << "Users: " << userNames.size() << "Channels: " << channelNames.size() << std::endl;
-		return ;
 	}
-	Logger::log(INFO, "TOPIC: users >= channels");
-
-
-	std::string	reason;
-
-	if (parsed_msg.params.size() > 2)
-		reason = parsed_msg.params[2];
-	else
-		reason = userNickname;
-
-	//Channel Loop
-	for (paramsIt chIt = channelNames.begin(); chIt != channelNames.end(); ++chIt)
+	else if (parsed_msg.params.size() == 2)
 	{
-		Logger::log(INFO, "TOPIC: Made it to the outer loop.");
-		if (!_srvAPI.doesChannelExist(*chIt))
+		Logger::log(INFO, "TOPIC: ready to set topic");
+		if (!_srvAPI.isChannelTopicProtected(channelName) || _srvAPI.isUserChannelOperator(channelName))
 		{
-			replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, userNickname, *chIt, "No such channel");
+			std::string topic = parsed_msg.params[1];
+
+			_srvAPI.setNewTopic(channelName, topic);
+			replyMessage = build_reply(userID, command, channelName, topic);
 			_srvAPI.send_reply(replyMessage);
-			continue ;	
-		}
-		Logger::log(INFO, "TOPIC: channel param exist");
-		if (!_srvAPI.isUserChannelOperator(*chIt))
-		{
-			replyMessage = build_reply(SERVER_NAME, "482", userNickname, *chIt, "You're not a channel operator");
-			_srvAPI.send_reply(replyMessage);
-			continue ;
-		}
-		Logger::log(INFO, "TOPIC: Kicker is Channel Operator");
-		// User Loop
-		for (paramsIt userIt = userNames.begin(); userIt != userNames.end(); ++userIt)
-		{
-			Logger::log(INFO, "TOPIC: made it to the inner loop");
-			if (!_srvAPI.isTargetInChannel(*chIt, *userIt))
-			{
-				replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHNICK, userNickname, *userIt, "User not in channel");
-				_srvAPI.send_reply(replyMessage);
-				continue ;
-			}
-			Logger::log(INFO, "TOPIC: the target user is in the channel");
-			std::string kickMessage = build_reply(userID, "TOPIC", *chIt, *userIt, reason);
-			_srvAPI.sendMessageToChannel(*chIt, kickMessage);
-			_srvAPI.removeUserFromChannel(*chIt, *userIt);
-			std::cout << *userIt << " was kicked the fuck out by " << userNickname << std::endl;
+			_srvAPI.sendMessageToChannel(channelName, replyMessage);
 		}
 	}
 }

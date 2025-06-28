@@ -111,6 +111,7 @@ bool	Channel::isFull() const
 // Setters
 void	Channel::setTopic(const std::string& topic)
 {
+	Logger::log(DEBUG, "is setTopic() being called?");
 	_topic = topic;
 }
 

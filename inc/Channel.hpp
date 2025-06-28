@@ -15,19 +15,19 @@ enum Membership
 class Channel
 {
     private:
-        const std::string		_name;
-		std::string				_topic;
-		std::string				_key; 					// (channel password)
-		size_t					_user_limit;
-		std::map<int, Membership>	_users;	//
-		std::map<int, User*>	_members;
-		std::map<int, User*>	_operators;
-		std::map<int, User*>	_invitees;
-		bool					_mode_invite_only;		// i: set/remove Invite-only channel
-		bool					_mode_topic_restricted; // t: set/remove the restrictions of the topic command to ch-ops
-		bool					_mode_has_key;			// k: set/remove the channel key (password)
-		bool					_mode_has_limit;		// l: set/remove the userlimit
-														// o: give/take chop privilege
+        const std::string			_name;
+		std::string					_topic;
+		std::string					_key; 					// (channel password)
+		size_t						_user_limit;
+		std::map<int, Membership>	_users;
+		std::map<int, User*>		_members;
+		std::map<int, User*>		_operators;
+		std::map<int, User*>		_invitees;
+		bool						_mode_invite_only;		// i: set/remove Invite-only channel
+		bool						_mode_topic_restricted; // t: set/remove the restrictions of the topic command to ch-ops
+		bool						_mode_has_key;			// k: set/remove the channel key (password)
+		bool						_mode_has_limit;		// l: set/remove the userlimit
+															// o: give/take chop privilege
     public:
 		//Special Users
         Channel(const std::string& name);
