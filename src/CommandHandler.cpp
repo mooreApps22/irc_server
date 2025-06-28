@@ -330,12 +330,13 @@ void	CommandHandler::_realFp(parsed_message& parsed_msg)
 	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
 }
 
+/*
 void	CommandHandler::_topicFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
 	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
 }
-
+*/
 void	CommandHandler::_userFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
