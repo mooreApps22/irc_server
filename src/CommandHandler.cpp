@@ -425,13 +425,18 @@ const std::string CommandHandler::build_reply(const std::string& arg1, const std
 	reply_message += arg1;
 
 	reply_message += SPACE;
-	reply_message += arg2;
-	
-	reply_message += SPACE;
-	if (arg4.size() == 0)
+	if (arg2.size() == 0)
 		reply_message += COLON;
-	reply_message += arg3;
-	
+	reply_message += arg2;
+
+	if (arg3.size() > 0)
+	{
+		reply_message += SPACE;
+		if (arg4.size() == 0)
+			reply_message += COLON;
+		reply_message += arg3;
+	}
+
 	if (arg4.size() > 0)
 	{
 		reply_message += SPACE;
