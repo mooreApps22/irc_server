@@ -5,6 +5,13 @@
 # include "User.hpp"
 # include "Logger.hpp"
 
+enum Membership
+{
+	INVITEE,
+	MEMBER,
+	OPERATOR
+};
+
 class Channel
 {
     private:
@@ -12,6 +19,7 @@ class Channel
 		std::string				_topic;
 		std::string				_key; 					// (channel password)
 		size_t					_user_limit;
+		std::map<int, Membership>	_users;	//
 		std::map<int, User*>	_members;
 		std::map<int, User*>	_operators;
 		std::map<int, User*>	_invitees;

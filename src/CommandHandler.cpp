@@ -50,10 +50,18 @@ void	CommandHandler::execute(parsed_message& parsed_msg)
 	}
 }
 
+/*
+	4.2.2 Invite Only Flag
+   When the channel flag 'i' is set, new members are only accepted if
+   their mask matches Invite-list (See section 4.3.2) or they have been
+   invited by a channel operator.  This flag also restricts the usage of
+   the INVITE command (See "IRC Client Protocol" [IRC-CLIENT]) to
+   channel operators.
+*/
 void	CommandHandler::_inviteFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
-	_srvAPI.send_reply("You've sent a" +  parsed_msg.command + "request!");
+	
 }
 
 void	CommandHandler::_kickFp(parsed_message& parsed_msg)
@@ -62,7 +70,7 @@ void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 	_srvAPI.send_reply("You've sent a " +  parsed_msg.command + " request!");
 }
 
-void	CommandHandler::_modeFp(parsed_message& parsed_msg)
+/*void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
 	std::string user_nickname = _srvAPI.getUserNick();
@@ -143,7 +151,7 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 	}
 
 	
-}
+}*/
 
 void	CommandHandler::_nickFp(parsed_message& parsed_msg)
 {

@@ -63,4 +63,7 @@ public:
 	virtual User*		getUser(const int fd) = 0;
 
 */
+	virtual bool				isChannelTopicProtected(const std::string& channelName) = 0; //
+	virtual bool				isUserChannelOperator(const std::string& channelName) = 0; //
+	virtual void 				setChannelInviteOnly(const std::string& channelName, bool status) = 0; //
 };

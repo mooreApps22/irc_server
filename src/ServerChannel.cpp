@@ -108,3 +108,19 @@ void	Server::sendMessageToChannel(const std::string& channelName, const std::str
 			sendToUser(message, it->first);
 	}
 }
+
+//
+bool	Server::isChannelTopicProtected(const std::string& channelName)
+{
+	return _channels[channelName]->isTopicRestricted();
+}
+
+bool	Server::isUserChannelOperator(const std::string& channelName)
+{
+	return _channels[channelName]->isOperator(_client_fd);
+}
+
+void	Server::setChannelInviteOnly(const std::string& channelName, bool status)
+{
+	_channels[channelName]->setInviteOnly(status);
+}

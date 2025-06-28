@@ -19,6 +19,7 @@
 #define	RPL_CREATED				"003"	// "This server was created <date>"
 #define RPL_MYINFO				"004"	// "<servername> <version> <available user modes> <available channel modes>"
 #define RPL_UMODEIS				"221"	// "<user mode string>"
+#define RPL_CHANNELMODEIS		"324"	// "<channel> <mode> <mode params>"
 #define	RPL_NOTOPIC				"331"	// "<channel> :No topic is set"
 #define RPL_TOPIC				"332"	// "<channel> :<topic>"
 #define	RPL_NAMREPLY			"353"	// "( "=" / "*" / "@" ) <channel>
@@ -47,5 +48,6 @@
 #define ERR_CHANNELISFULL 		"471"	// "<channel> :Cannot join channel (+l)"
 #define ERR_INVITEONLYCHAN 		"473"	// "<channel> :Cannot join channel (+i)"
 #define ERR_BADCHANNELKEY 		"475"	// "<channel> :Cannot join channel (+k)"
+#define ERR_CHANOPRIVSNEEDED	"482"	// "<channel> :You're not channel operator"
 #define ERR_UMODEUNKNOWNFLAG	"501"	// ":Unknown MODE flag"
 #define ERR_USERSDONTMATCH 		"502"	// ":Cannot change mode for other users"
