@@ -81,6 +81,7 @@ void Server::run(void)
 
 	setup();
 
+	Logger::log(DEBUG, "run() called.");
 	while (!sig::stop)	
 	{
 		n_events = epoll_wait(_epoll_fd, events, MAX_EVENTS, 0);
@@ -101,6 +102,7 @@ void Server::run(void)
 
 					if (_parser.parse_message(message, parsed_msg))
 					{
+						Logger::log(DEBUG, "execute() called with the command: ", parsed_msg.command);
 						_ch.execute(parsed_msg);
 					}
 					else

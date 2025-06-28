@@ -245,6 +245,5 @@ const std::string	Channel::getUsersList(int fd) const
 			user += it->second->getNickname();
 		}
 	}
-	
 	return user + list;
 }

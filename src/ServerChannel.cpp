@@ -119,18 +119,16 @@ void	Server::removeUserFromChannel(const std::string& channelName, const std::st
 		_channels[channelName]->removeOperator(fd);
 }
 
-bool	Server::isUserInChannel(const std::string& channelName, const std::string& nick)
+bool	Server::isTargetInChannel(const std::string& channelName, const std::string& nick)
 {
 	int		fd = Server::getUserFd(nick);
 
 	return (_channels[channelName]->isMember(fd) || _channels[channelName]->isOperator(fd));
 }
 
-bool	Server::isUserChannelOperator(const std::string& channelName, const std::string& nick)
+bool	Server::isUserChannelOperator(const std::string& channelName)
 {
-	int fd = getUserFd(nick);	
-
 	if (_channels.find(channelName) == _channels.end())
 		return (false);
-	return (_channels[channelName]->isOperator(fd));
+	return (_channels[channelName]->isOperator(_client_fd));
 }

@@ -48,7 +48,7 @@ public:
 	virtual bool				isChannelPasswordProtected(const std::string& channelName) = 0;
 	virtual bool				isChannelPasswordValid(const std::string& channelName, const std::string&  key) = 0;
 
-	virtual bool				isUserInChannel(const std::string& channelName, const std::string& nick) = 0;
+	virtual bool				isTargetInChannel(const std::string& channelName, const std::string& nick) = 0;
 
 	virtual bool				isChannelInviteOnly(const std::string& channelName) = 0;
 	virtual bool				isUserInvited(const std::string& channelName) = 0;
@@ -57,7 +57,7 @@ public:
 	virtual const std::string	getChannelUsersList(const std::string& channelName) = 0;
 	virtual bool				isChannelUser(const std::string& channelName) = 0;
 
-	virtual bool				isUserChannelOperator(const std::string& channelName, const std::string& nick) = 0;
+	virtual bool				isUserChannelOperator(const std::string& channelName) = 0;
 
 //	virtual chanIt				getChannelsBegin(void) = 0;
 //	virtual chanIt				getChannelsEnd(void) = 0;

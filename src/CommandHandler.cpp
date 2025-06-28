@@ -30,10 +30,10 @@ CommandHandler::~CommandHandler()
 
 void	CommandHandler::execute(parsed_message& parsed_msg)
 {
+	Logger::log(INFO, "execute() called.");
 	const std::string command =  parsed_msg.command;
 	commands::iterator it = _commands.find(command);
 
-	// CommandHandler::setClientFd(fd);
 	if (it != _commands.end())
 	{
 		(this->*(it->second))(parsed_msg);

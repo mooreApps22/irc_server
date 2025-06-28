@@ -12,6 +12,7 @@
 void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
+	std::cout << "KICK command is parsing." << std::endl;
 
 	std::string	replyMessage;
 	std::string	userNickname = _srvAPI.getUserNick();
@@ -24,22 +25,26 @@ void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 		_srvAPI.send_reply(replyMessage);
 		return ;
 	}
+	Logger::log(INFO, "KICK: user is registered");
 	if (parsed_msg.params.size() < 2)
 	{
 		replyMessage = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, userNickname, command, "Not enough parameters");
 		_srvAPI.send_reply(replyMessage);
 		return ;
 	}
+	Logger::log(INFO, "KICK: has enough params");
 
 	std::vector<std::string> channelNames = Parser::splitParam(parsed_msg.params[0], ',');
 	std::vector<std::string> userNames = Parser::splitParam(parsed_msg.params[1], ',');
 
-	if (userNames.size() < channelNames.size())
+	if (userNames.size() > channelNames.size())
 	{
 		replyMessage = build_reply(SERVER_NAME, ERR_NEEDMOREPARAMS, userNickname, command, "Can't have more channel params than user params");
 		_srvAPI.send_reply(replyMessage);
+		std::cout << "Users: " << userNames.size() << "Channels: " << channelNames.size() << std::endl;
 		return ;
 	}
+	Logger::log(INFO, "KICK: users >= channels");
 
 
 	std::string	reason;
@@ -52,30 +57,36 @@ void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 	//Channel Loop
 	for (paramsIt chIt = channelNames.begin(); chIt != channelNames.end(); ++chIt)
 	{
+		Logger::log(INFO, "KICK: Made it to the outer loop.");
 		if (!_srvAPI.doesChannelExist(*chIt))
 		{
 			replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, userNickname, *chIt, "No such channel");
 			_srvAPI.send_reply(replyMessage);
 			continue ;	
 		}
-		if (_srvAPI.isChannelUser(*chIt) || _srvAPI.isUserChannelOperator(*chIt, userNickname))
+		Logger::log(INFO, "KICK: channel param exist");
+		if (!_srvAPI.isUserChannelOperator(*chIt))
 		{
 			replyMessage = build_reply(SERVER_NAME, "482", userNickname, *chIt, "You're not a channel operator");
 			_srvAPI.send_reply(replyMessage);
 			continue ;
 		}
+		Logger::log(INFO, "KICK: Kicker is Channel Operator");
 		// User Loop
 		for (paramsIt userIt = userNames.begin(); userIt != userNames.end(); ++userIt)
 		{
-			if (!_srvAPI.isUserInChannel(*chIt, *userIt))
+			Logger::log(INFO, "KICK: made it to the inner loop");
+			if (!_srvAPI.isTargetInChannel(*chIt, *userIt))
 			{
 				replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHNICK, userNickname, *userIt, "User not in channel");
 				_srvAPI.send_reply(replyMessage);
 				continue ;
 			}
+			Logger::log(INFO, "KICK: the target user is in the channel");
 			std::string kickMessage = build_reply(userID, "KICK", *chIt, *userIt, reason);
 			_srvAPI.sendMessageToChannel(*chIt, kickMessage);
 			_srvAPI.removeUserFromChannel(*chIt, *userIt);
+			std::cout << *userIt << " was kicked the fuck out by " << userNickname << std::endl;
 		}
 	}
 }
