@@ -69,6 +69,7 @@ class Server: public IServerAPI
 		bool				doesChannelExist(const std::string& channelId);
 		void				addUserToChannel(const std::string& channelId);
 		bool				isChannelFull(const std::string& channelId);
+		bool				isChannelEmpty(const std::string& channelId);
 		bool				doesChannelHaveLimit(const std::string& channelId);
 		void				promoteChannelMember(const std::string& channelId);
 		void				promoteChannelMember(const std::string& channelId, const std::string& nickname);

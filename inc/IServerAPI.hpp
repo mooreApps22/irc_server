@@ -46,6 +46,7 @@ public:
 	virtual void				addInviteeToChannel(const std::string& channelId, const std::string& nickname) = 0;
 	virtual void				removeUserFromChannel(const std::string& channelId, const std::string& nick) = 0;
 	virtual bool				isChannelFull(const std::string& channelId) = 0;
+	virtual bool				isChannelEmpty(const std::string& channelId) = 0;
 	virtual bool				doesChannelHaveLimit(const std::string& channelId) = 0;
 	virtual void				promoteChannelMember(const std::string& channelId) = 0;
 	virtual void				promoteChannelMember(const std::string& channelId, const std::string& nickname) = 0;
