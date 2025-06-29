@@ -20,6 +20,7 @@ CommandHandler::CommandHandler(IServerAPI& srvAPI)
 	_commands["PRIVMSG"]	= &CommandHandler::_privMsgFp;
 	_commands["TOPIC"] 		= &CommandHandler::_topicFp;
 	_commands["USER"] 		= &CommandHandler::_userFp;
+	_commands["PART"] 		= &CommandHandler::_partFp;
 }
 
 CommandHandler::~CommandHandler()

@@ -24,6 +24,7 @@ class CommandHandler
 		void	_realFp(parsed_message& parsed_msg);
 		void	_topicFp(parsed_message& parsed_msg);
 		void	_userFp(parsed_message& parsed_msg);
+		void	_partFp(parsed_message& parsed_msg);
 
 		// Utils
 		bool				isNickUnique(const std::string nick);
