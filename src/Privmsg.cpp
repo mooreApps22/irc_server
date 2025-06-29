@@ -52,6 +52,8 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 	targets = Parser::splitParam(parsed_msg.params.at(0), ',');
 	message = parsed_msg.params.at(1);
 
+	std::string channelId;
+	std::string channelName;
 	for (std::vector<std::string>::iterator msgto = targets.begin(); msgto != targets.end(); msgto++)
 	{
 		Logger::log(DEBUG, parsed_msg.command + " Target: ", *msgto);
@@ -71,14 +73,18 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 		}
 		else if (Parser::is_channel(*msgto))
 		{
-			if (!_srvAPI.doesChannelExist(*msgto))
+			channelId = Parser::toLower(*msgto);
+			if (!_srvAPI.doesChannelExist(channelId))
 			{
 				reply_message = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, user_nickname, *msgto, "No such channel");
 				_srvAPI.send_reply(reply_message);
 				continue ;
 			}
-			reply_message = build_reply(user_identifier, command, *msgto, message);
-			_srvAPI.sendMessageToChannel(*msgto, reply_message);
+
+			channelName = _srvAPI.getChannelName(channelId);
+
+			reply_message = build_reply(user_identifier, command, channelName, message);
+			_srvAPI.sendMessageToChannel(channelId, reply_message);
 			// if (_srvAPI.isChannelUser(*msgto))
 			// {
 			// 	reply_message = build_reply(user_identifier, command, *msgto, message);
@@ -93,7 +99,7 @@ void	CommandHandler::_privMsgFp(parsed_message& parsed_msg)
 		}
 		else
 		{
-			reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, *msgto, "No such nick/channel");
+			reply_message = build_reply(SERVER_NAME, ERR_NOSUCHNICK, user_nickname, channelName, "No such nick/channel");
 			_srvAPI.send_reply(reply_message);
 		}
 	}

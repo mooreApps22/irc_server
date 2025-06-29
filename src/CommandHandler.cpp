@@ -49,8 +49,11 @@ void	CommandHandler::execute(parsed_message& parsed_msg)
 	}
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> main
 void	CommandHandler::_passFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");

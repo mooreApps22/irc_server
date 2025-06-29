@@ -31,8 +31,8 @@ class User
 		const std::string	get_partial_message();
 		bool				getPasswordStatus() const;
 		void				setPasswordStatus(const bool state);
-		void				addChannel(const std::string& channelName);
-		void				removeChannel(const std::string& channelName);
+		void				addChannel(const std::string& channelId);
+		void				removeChannel(const std::string& channelId);
 };
 
 #endif

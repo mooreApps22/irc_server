@@ -18,7 +18,7 @@ public:
 	virtual void	send_reply(const std::string& message) = 0;
 	virtual void	sendToAll(const std::string& message) = 0;
 	virtual void	sendToUser(const std::string& message, std::string& nick) = 0;
-	virtual	void	sendMessageToChannel(const std::string& channelName, const std::string& message) = 0;
+	virtual	void	sendMessageToChannel(const std::string& channelId, const std::string& message) = 0;
 	virtual bool	isPasswordValid(const std::string& password) = 0;
 	virtual void	disconnectUser(void) = 0;
 	
@@ -39,54 +39,44 @@ public:
 
 	virtual	User*				getUser(void) = 0;
 
-	virtual bool				doesChannelExist(const std::string& channelName) = 0;
+	virtual const std::string&	getChannelName(const std::string& channelId) = 0;
 	virtual void				addChannel(const std::string& channelName) = 0;
-	virtual void				addUserToChannel(const std::string& channelName) = 0;
-	virtual void				addInviteeToChannel(const std::string& channelName, const std::string& nickname) = 0;
-	virtual void				removeUserFromChannel(const std::string& channelName, const std::string& nick) = 0;
-	virtual bool				isChannelFull(const std::string& channelName) = 0;
-	virtual bool				doesChannelHaveLimit(const std::string& channelName) = 0;
-	virtual int					getChannelLimit(const std::string& channelName) = 0;
-	virtual void				promoteChannelMember(const std::string& channelName) = 0;
-	virtual void				promoteChannelMember(const std::string& channelName, const std::string& nickname) = 0;
-	virtual void				demoteChannelOperator(const std::string& channelName, const std::string& nickname) = 0;
-	virtual void				promoteChannelInvitee(const std::string& channelName) = 0;
+	virtual int					getChannelLimit(const std::string& channelName) = 0; //
+	virtual void				setChannelPassword(const std::string& channelName, const std::string&  key) = 0; //
+	virtual void				clearChannelPassword(const std::string& channelName) = 0; //
+	virtual const std::string&	getChannelPassword(const std::string& channelName) = 0; //
+	virtual bool				doesChannelExist(const std::string& channelId) = 0;
+	virtual void				addUserToChannel(const std::string& channelId) = 0;
+	virtual void				addInviteeToChannel(const std::string& channelId, const std::string& nickname) = 0;
+	virtual void				removeUserFromChannel(const std::string& channelId, const std::string& nick) = 0;
+	virtual bool				isChannelFull(const std::string& channelId) = 0;
+	virtual bool				doesChannelHaveLimit(const std::string& channelId) = 0;
+	virtual void				promoteChannelMember(const std::string& channelId) = 0;
+	virtual void				promoteChannelMember(const std::string& channelId, const std::string& nickname) = 0;
+	virtual void				demoteChannelOperator(const std::string& channelId, const std::string& nickname) = 0;
+	virtual void				promoteChannelInvitee(const std::string& channelId) = 0;
+	virtual bool				isChannelPasswordProtected(const std::string& channelId) = 0;
+	virtual bool				isChannelPasswordValid(const std::string& channelId, const std::string&  key) = 0;
 
-	// passwords
-	virtual bool				isChannelPasswordProtected(const std::string& channelName) = 0;
-	virtual bool				isChannelPasswordValid(const std::string& channelName, const std::string&  key) = 0;
-	virtual void				setChannelPassword(const std::string& channelName, const std::string&  key) = 0;
-	virtual void				clearChannelPassword(const std::string& channelName) = 0;
-	virtual const std::string&	getChannelPassword(const std::string& channelName) = 0;
+	virtual bool				isChannelInviteOnly(const std::string& channelId) = 0;
+	virtual bool				isUserInvited(const std::string& channelId) = 0;
+	virtual bool				isChannelTopicSet(const std::string& channelId) = 0;	
+	virtual const std::string&	getChannelTopic(const std::string& channelId) = 0;
+	virtual const std::string	getChannelUsersList(const std::string& channelId) = 0;
+	virtual bool				isChannelUser(const std::string& channelId) = 0;
+	virtual bool				isTargetInChannel(const std::string& channelId, const std::string& nickname) = 0;
 
-	virtual bool				isChannelInviteOnly(const std::string& channelName) = 0;
-	virtual bool				isUserInvited(const std::string& channelName) = 0;
-	virtual bool				isChannelTopicSet(const std::string& channelName) = 0;	
-	virtual const std::string&	getChannelTopic(const std::string& channelName) = 0;
-	virtual const std::string	getChannelUsersList(const std::string& channelName) = 0;
-	virtual bool				isChannelUser(const std::string& channelName) = 0;
-	virtual bool				isTargetInChannel(const std::string& channelName, const std::string& nickname) = 0;
+	virtual bool				isUserChannelOperator(const std::string& channelId) = 0;
 
-	virtual bool				isUserChannelOperator(const std::string& channelName) = 0;
 
-//	virtual chanIt				getChannelsBegin(void) = 0;
-//	virtual chanIt				getChannelsEnd(void) = 0;
-/*
-	// Channel actions relatedc
-	virtual void addChannel(const std::string& name) = 0;
-	virtual void removeChannel(const std::string& name) = 0;
+	virtual bool				isChannelTopicProtected(const std::string& channelId) = 0; //
+	virtual void 				setChannelInviteOnly(const std::string& channelId, bool status) = 0; //
+	virtual void 				setChannelTopicRestricted(const std::string& channelId, bool status) = 0; //
+	virtual void				setNewTopic(const std::string& channelId, const std::string& topic) = 0;
 
-	virtual User*		getUser(const int fd) = 0;
-
-*/
-	virtual bool				isChannelTopicProtected(const std::string& channelName) = 0; //
-	virtual void 				setChannelInviteOnly(const std::string& channelName, bool status) = 0; //
-	virtual void 				setChannelTopicRestricted(const std::string& channelName, bool status) = 0; //
-	virtual void				setNewTopic(const std::string& channelName, const std::string& topic) = 0;
-
-	virtual void 				setChannelHasLimit(const std::string& channelName, bool status) = 0;
-	virtual void 				setChannelLimit(const std::string& channelName, int limit) = 0;
-	virtual bool				isTargetChannelMember(const std::string& channelName, std::string& userNickname) = 0;
-	virtual bool				isTargetChannelOperator(const std::string& channelName, std::string& userNickname) = 0;
+	virtual void 				setChannelHasLimit(const std::string& channelId, bool status) = 0;
+	virtual void 				setChannelLimit(const std::string& channelId, int limit) = 0;
+	virtual bool				isTargetChannelMember(const std::string& channelId, std::string& userNickname) = 0;
+	virtual bool				isTargetChannelOperator(const std::string& channelId, std::string& userNickname) = 0;
 
 };

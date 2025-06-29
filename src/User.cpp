@@ -87,12 +87,12 @@ void User::setPasswordStatus(const bool state)
 	_password = state;
 }
 
-void	User::addChannel(const std::string& channelName)
+void	User::addChannel(const std::string& channelId)
 {
-	_channels.insert(channelName);
+	_channels.insert(channelId);
 }
 
-void	User::removeChannel(const std::string& channelName)
+void	User::removeChannel(const std::string& channelId)
 {
-	_channels.erase(channelName);
+	_channels.erase(channelId);
 }

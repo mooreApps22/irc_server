@@ -38,7 +38,7 @@ void	CommandHandler::_topicFp(parsed_message& parsed_msg)
 
 	if (!_srvAPI.isUserRegistered())
 	{
-		replyMessage = build_reply(SERVER_NAME, ERR_NOTREGISTERED, userNickname, command, "Not enough parameters");
+		replyMessage = build_reply(SERVER_NAME, ERR_NOTREGISTERED, userNickname, command, "You have not registered");
 		_srvAPI.send_reply(replyMessage);
 		return ;
 	}
@@ -52,6 +52,16 @@ void	CommandHandler::_topicFp(parsed_message& parsed_msg)
 	Logger::log(INFO, "TOPIC: has enough params");
 
 	std::string channelName = parsed_msg.params[0];
+	std::string channelId = Parser::toLower(channelName);
+
+	if (!_srvAPI.doesChannelExist(channelId))
+	{
+		replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, userNickname, channelName, "No such channel");
+		_srvAPI.send_reply(replyMessage);
+		return;
+	}
+
+	channelName = _srvAPI.getChannelName(channelId);
 
 	if (parsed_msg.params.size() == 1)
 	{
@@ -62,14 +72,14 @@ void	CommandHandler::_topicFp(parsed_message& parsed_msg)
 	else if (parsed_msg.params.size() == 2)
 	{
 		Logger::log(INFO, "TOPIC: ready to set topic");
-		if (!_srvAPI.isChannelTopicProtected(channelName) || _srvAPI.isUserChannelOperator(channelName))
+		if (!_srvAPI.isChannelTopicProtected(channelId) || _srvAPI.isUserChannelOperator(channelId))
 		{
 			std::string topic = parsed_msg.params[1];
 
-			_srvAPI.setNewTopic(channelName, topic);
+			_srvAPI.setNewTopic(channelId, topic);
 			replyMessage = build_reply(userID, command, channelName, topic);
 			_srvAPI.send_reply(replyMessage);
-			_srvAPI.sendMessageToChannel(channelName, replyMessage);
+			_srvAPI.sendMessageToChannel(channelId, replyMessage);
 		}
 	}
 }

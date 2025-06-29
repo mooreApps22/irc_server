@@ -33,7 +33,7 @@ class Channel
         Channel& operator=(const Channel& other);
 
 		// Getters
-		const std::string			getName() const;
+		const std::string&			getName() const;
 		const std::string&			getTopic() const;
 		const std::string&			getKey() const;
 		bool						isTopicSet() const;

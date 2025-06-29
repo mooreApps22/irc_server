@@ -348,3 +348,13 @@ std::vector<std::string> Parser::splitParam(const std::string& msgtarget, char d
 	splitted.push_back(element);
 	return (splitted);
 }
+
+const std::string Parser::toLower(const std::string& string)
+{
+	std::string toLower;
+	toLower.empty();
+
+	for (std::string::const_iterator it = string.begin(); it != string.end(); it++)
+		toLower.push_back(std::tolower(*it));
+	return (toLower);
+}

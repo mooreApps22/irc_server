@@ -15,111 +15,116 @@
 	Server Method Specific to the JOIN command 
 */													
 
-bool	Server::doesChannelExist(const std::string& channelName)
+bool	Server::doesChannelExist(const std::string& channelId)
 {
 	for (chanIt it = _channels.begin(); it != _channels.end(); it++)
 	{
-		if (it->first == channelName)		
+		if (it->first == channelId)
 			return (true);
 	}
 	return (false);
 }
 
-void	Server::addChannel(const std::string& channelName)
+const std::string&	Server::getChannelName(const std::string& channelId)
 {
-	_channels[channelName] = new Channel(channelName);
+	return (_channels[channelId]->getName());
 }
 
-void	Server::addUserToChannel(const std::string& channelName)
+void	Server::addChannel(const std::string& channelName)
+{
+	std::string channelId = Parser::toLower(channelName);
+	_channels[channelId] = new Channel(channelName);
+}
+
+void	Server::addUserToChannel(const std::string& channelId)
 {
 	User*	user = _users[_client_fd];
 
-	_channels[channelName]->addMember(_client_fd, user);
-	user->addChannel(channelName);
+	_channels[channelId]->addMember(_client_fd, user);
+	user->addChannel(channelId);
 }
 
-bool	Server::isChannelFull(const std::string& channelName)
+bool	Server::isChannelFull(const std::string& channelId)
 {
-	return (_channels[channelName]->isFull());	
+	return (_channels[channelId]->isFull());	
 }
 
-bool	Server::doesChannelHaveLimit(const std::string& channelName)
+bool	Server::doesChannelHaveLimit(const std::string& channelId)
 {
-
-	return (_channels[channelName]->hasUserLimit());	
+	return (_channels[channelId]->hasUserLimit());	
 }
 
-void	Server::promoteChannelMember(const std::string& channelName)
+void	Server::promoteChannelMember(const std::string& channelId)
 {
-	_channels[channelName]->promoteMember(_client_fd);
+	_channels[channelId]->promoteMember(_client_fd);
 }
 
-void	Server::promoteChannelMember(const std::string& channelName, const std::string& nickname)
-{
-	int targetFd = getUserFd(nickname);
-	_channels[channelName]->promoteMember(targetFd);
-}
-
-void	Server::demoteChannelOperator(const std::string& channelName, const std::string& nickname)
+void	Server::promoteChannelMember(const std::string& channelId, const std::string& nickname)
 {
 	int targetFd = getUserFd(nickname);
-	_channels[channelName]->demoteOperator(targetFd);
+	_channels[channelId]->promoteMember(targetFd);
 }
 
-void	Server::promoteChannelInvitee(const std::string& channelName)
+void	Server::demoteChannelOperator(const std::string& channelId, const std::string& nickname)
 {
-	_channels[channelName]->promoteInvitee(_client_fd);
+	int targetFd = getUserFd(nickname);
+	_channels[channelId]->demoteOperator(targetFd);
 }
 
-bool	Server::isChannelPasswordProtected(const std::string& channelName)
+void	Server::promoteChannelInvitee(const std::string& channelId)
 {
-	return (_channels[channelName]->needsChannelKey());	
+	_channels[channelId]->promoteInvitee(_client_fd);
 }
 
-bool	Server::isChannelPasswordValid(const std::string& channelName, const std::string& key)
+bool	Server::isChannelPasswordProtected(const std::string& channelId)
 {
-	return (_channels[channelName]->isKeyValid(key));
+	return (_channels[channelId]->needsChannelKey());	
 }
 
-bool	Server::isChannelInviteOnly(const std::string& channelName)
+bool	Server::isChannelPasswordValid(const std::string& channelId, const std::string& key)
 {
-	return (_channels[channelName]->isInviteOnly());
+	return (_channels[channelId]->isKeyValid(key));
 }
 
-bool	Server::isUserInvited(const std::string& channelName)
+bool	Server::isChannelInviteOnly(const std::string& channelId)
 {
-	return (_channels[channelName]->isInvitee(_client_fd));
+	return (_channels[channelId]->isInviteOnly());
 }
 
-bool	Server::isChannelTopicSet(const std::string& channelName)
+bool	Server::isUserInvited(const std::string& channelId)
 {
-	return (_channels[channelName]->isTopicSet());
+	return (_channels[channelId]->isInvitee(_client_fd));
 }
 
-const std::string&	Server::getChannelTopic(const std::string& channelName)
+bool	Server::isChannelTopicSet(const std::string& channelId)
 {
-	return (_channels[channelName]->getTopic());
+	return (_channels[channelId]->isTopicSet());
 }
 
-const std::string	Server::getChannelUsersList(const std::string& channelName)
+const std::string&	Server::getChannelTopic(const std::string& channelId)
 {
-	return (_channels[channelName]->getUsersList(_client_fd));
+	return (_channels[channelId]->getTopic());
 }
 
-bool	Server::isChannelUser(const std::string& channelName)
+const std::string	Server::getChannelUsersList(const std::string& channelId)
 {
-	return (_channels[channelName]->isMember(_client_fd) || _channels[channelName]->isOperator(_client_fd));
+	return (_channels[channelId]->getUsersList(_client_fd));
 }
 
-bool	Server::isTargetInChannel(const std::string& channelName, const std::string& nick)
+bool	Server::isChannelUser(const std::string& channelId)
+{
+	return (_channels[channelId]->isMember(_client_fd) || _channels[channelId]->isOperator(_client_fd));
+}
+
+bool	Server::isTargetInChannel(const std::string& channelId, const std::string& nick)
 {
 	int		fd = Server::getUserFd(nick);
-	return (_channels[channelName]->isMember(fd) || _channels[channelName]->isOperator(fd));
+	return (_channels[channelId]->isMember(fd) || _channels[channelId]->isOperator(fd));
 }
 
-void	Server::sendMessageToChannel(const std::string& channelName, const std::string& message)
+void	Server::sendMessageToChannel(const std::string& channelId, const std::string& message)
 {
-	std::vector<int> users = _channels[channelName]->getUsers();
+	std::vector<int> users = _channels[channelId]->getUsers();
 	for (std::vector<int>::const_iterator it = users.begin(); it != users.end(); it++)
 	{
 		if (*it != _client_fd)
@@ -127,58 +132,62 @@ void	Server::sendMessageToChannel(const std::string& channelName, const std::str
 	}
 }
 
-void	Server::removeUserFromChannel(const std::string& channelName, const std::string& nick)
+void	Server::removeUserFromChannel(const std::string& channelId, const std::string& nick)
 {
 	int		fd = Server::getUserFd(nick);
 
-	_channels[channelName]->removeUser(fd);
+	_channels[channelId]->removeUser(fd);
 }
 
 
-//
-bool	Server::isChannelTopicProtected(const std::string& channelName)
+bool	Server::isChannelTopicProtected(const std::string& channelId)
 {
-	return _channels[channelName]->isTopicRestricted();
+	return _channels[channelId]->isTopicRestricted();
 }
 
-bool	Server::isUserChannelOperator(const std::string& channelName)
+bool	Server::isUserChannelOperator(const std::string& channelId)
 {
-	if (_channels.find(channelName) == _channels.end())
+	if (_channels.find(channelId) == _channels.end())
 		return (false);
-	return (_channels[channelName]->isOperator(_client_fd));
+	return (_channels[channelId]->isOperator(_client_fd));
 }
 
-void	Server::setChannelInviteOnly(const std::string& channelName, bool status)
+void	Server::setChannelInviteOnly(const std::string& channelId, bool status)
 {
-	_channels[channelName]->setInviteOnly(status);
+	_channels[channelId]->setInviteOnly(status);
 }
 
-void	Server::setChannelTopicRestricted(const std::string& channelName, bool status)
+void	Server::setChannelTopicRestricted(const std::string& channelId, bool status)
 {
-	_channels[channelName]->setTopicRestricted(status);
+	_channels[channelId]->setTopicRestricted(status);
 }
 
-void	Server::addInviteeToChannel(const std::string& channelName, const std::string& nickname)
+void	Server::addInviteeToChannel(const std::string& channelId, const std::string& nickname)
 {
 	int		userFd = getUserFd(nickname);
 	User* user = _users[getUserFd(nickname)];
-	_channels[channelName]->addInvitee(userFd, user);
+	_channels[channelId]->addInvitee(userFd, user);
 }
 
-void	Server::setNewTopic(const std::string& channelName, const std::string& topic)
+void	Server::setNewTopic(const std::string& channelId, const std::string& topic)
 {
 	Logger::log(DEBUG, "is setNewTopic() being called?");
-	_channels[channelName]->setTopic(topic);
+	_channels[channelId]->setTopic(topic);
 }
 
-void	Server::setChannelHasLimit(const std::string& channelName, bool status)
+void	Server::setChannelHasLimit(const std::string& channelId, bool status)
 {
-	_channels[channelName]->setHasLimit(status);
+	_channels[channelId]->setHasLimit(status);
 }
 
-void	Server::setChannelLimit(const std::string& channelName, int limit)
+void	Server::setChannelLimit(const std::string& channelId, int limit)
 {
-	_channels[channelName]->setUserLimit(limit);
+	_channels[channelId]->setUserLimit(limit);
+}
+
+int	Server::getChannelLimit(const std::string& channelName) //
+{
+	return _channels[channelName]->getUserLimit();
 }
 
 int	Server::getChannelLimit(const std::string& channelName)
@@ -186,15 +195,14 @@ int	Server::getChannelLimit(const std::string& channelName)
 	return _channels[channelName]->getUserLimit();
 }
 
-bool	Server::isTargetChannelMember(const std::string& channelName, std::string& userNickname)
+bool	Server::isTargetChannelMember(const std::string& channelId, std::string& userNickname)
 {
-	
-	return (_channels[channelName]->isMember(getUserFd(userNickname)));
+	return (_channels[channelId]->isMember(getUserFd(userNickname)));
 }
 
-bool	Server::isTargetChannelOperator(const std::string& channelName, std::string& userNickname)
+bool	Server::isTargetChannelOperator(const std::string& channelId, std::string& userNickname)
 {
-	return (_channels[channelName]->isOperator(getUserFd(userNickname)));
+	return (_channels[channelId]->isOperator(getUserFd(userNickname)));
 }
 
 
