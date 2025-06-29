@@ -137,19 +137,19 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 				mode += "l";
 			if (_srvAPI.isChannelInviteOnly(channelId))
 				mode += "i";
-			if (_srvAPI.isChannelTopicProtected(channel))
+			if (_srvAPI.isChannelTopicProtected(channelId))
 				mode += "t";
-			if (_srvAPI.isChannelPasswordProtected(channel))
+			if (_srvAPI.isChannelPasswordProtected(channelId))
 				mode += "k";
-			if (_srvAPI.doesChannelHaveLimit(channel))
+			if (_srvAPI.doesChannelHaveLimit(channelId))
 			{
 				std::stringstream ss;
-    			ss << _srvAPI.getChannelLimit(channel);
+    			ss << _srvAPI.getChannelLimit(channelId);
 				mode += " " + ss.str();
 			}
-			if (_srvAPI.isChannelPasswordProtected(channel))
-				mode += " " + _srvAPI.getChannelPassword(channel);
-			reply_message = build_reply(SERVER_NAME, RPL_CHANNELMODEIS, user_nickname, channel, mode);
+			if (_srvAPI.isChannelPasswordProtected(channelId))
+				mode += " " + _srvAPI.getChannelPassword(channelId);
+			reply_message = build_reply(SERVER_NAME, RPL_CHANNELMODEIS, user_nickname, channelName, mode);
 			/*if (_srvAPI.isChannelPasswordProtected(channelId))
 				mode += "k";
 			if (_srvAPI.isChannelTopicProtected(channelId))
@@ -185,7 +185,7 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 			{
 				if (!status)
 				{
-					_srvAPI.setChannelLimit(channel, 0);
+					_srvAPI.setChannelLimit(channelId, 0);
 					_srvAPI.setChannelHasLimit(channelId, false);
 				}
 				else
@@ -194,14 +194,14 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 						continue;
 					modes.limitString = *paramIt;
 					const char *num = (*paramIt).c_str();
+					paramIt++;					
 					modes.limit = atoi(num);
 					if (modes.limit == 0)
 					{
-						_srvAPI.setChannelLimit(channel, 0);
-						_srvAPI.setChannelHasLimit(channel, false);
+						_srvAPI.setChannelLimit(channelId, 0);
+						_srvAPI.setChannelHasLimit(channelId, false);
 						continue;
 					}
-					paramIt++;					
 					_srvAPI.setChannelLimit(channelId, modes.limit);
 				}
 			}
@@ -241,12 +241,12 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 				{
 					std::string newPassword = *paramIt;
 					paramIt++;
-					_srvAPI.setChannelPassword(channel, newPassword);
+					_srvAPI.setChannelPassword(channelId, newPassword);
 				}
 				else
 				{
-					modes.password = _srvAPI.getChannelPassword(channel);
-					_srvAPI.clearChannelPassword(channel);
+					modes.password = _srvAPI.getChannelPassword(channelId);
+					_srvAPI.clearChannelPassword(channelId);
 				}
 			}
 			else if (*it == 't')
@@ -309,10 +309,9 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 		{
 			params.push_back(join_strings(modes.targetNicknames, " "));
 		}
-<<<<<<< HEAD
 		if (modes.passChanged)
 		{
-			if (modes.k != _srvAPI.isChannelPasswordProtected(channel))
+			if (modes.k != _srvAPI.isChannelPasswordProtected(channelId))
 			{
 				if (modes.k == true)
 				{
@@ -326,25 +325,23 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 					if (!plus || message.size() == 0)
 						message += "+";
 					message += "k";
-					params.push_back(_srvAPI.getChannelPassword(channel));
+					params.push_back(_srvAPI.getChannelPassword(channelId));
 				}
 			}
 		}
 		if (params.size() > 0)
 			message = join_strings(message, params, " ");
 		// std::cout << message << std::endl;
-		reply_message = build_reply(user_identifier, command, channel, message);
+		reply_message = build_reply(user_identifier, command, channelName, message);
 		// std::string targets = join_strings(modes.targetNicknames, " ");
 		if (message.size() > 0)
 		{
-			_srvAPI.sendMessageToChannel(channel, reply_message);
+			_srvAPI.sendMessageToChannel(channelId, reply_message);
 			_srvAPI.send_reply(reply_message);
 		}
-=======
-		reply_message = build_reply(user_identifier, command, channelName, message);
-		std::string targets = join_strings(modes.targetNicknames, " ");
-		_srvAPI.sendMessageToChannel(channelId, reply_message);
->>>>>>> main
+		// reply_message = build_reply(user_identifier, command, channelName, message);
+		// std::string targets = join_strings(modes.targetNicknames, " ");
+		// _srvAPI.sendMessageToChannel(channelId, reply_message);
 	}
 	else
 	{

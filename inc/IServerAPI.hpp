@@ -41,10 +41,10 @@ public:
 
 	virtual const std::string&	getChannelName(const std::string& channelId) = 0;
 	virtual void				addChannel(const std::string& channelName) = 0;
-	virtual int					getChannelLimit(const std::string& channelName) = 0; //
-	virtual void				setChannelPassword(const std::string& channelName, const std::string&  key) = 0; //
-	virtual void				clearChannelPassword(const std::string& channelName) = 0; //
-	virtual const std::string&	getChannelPassword(const std::string& channelName) = 0; //
+	virtual int					getChannelLimit(const std::string& channelId) = 0; //
+	virtual void				setChannelPassword(const std::string& channelId, const std::string&  key) = 0; //
+	virtual void				clearChannelPassword(const std::string& channelId) = 0; //
+	virtual const std::string&	getChannelPassword(const std::string& channelId) = 0; //
 	virtual bool				doesChannelExist(const std::string& channelId) = 0;
 	virtual void				addUserToChannel(const std::string& channelId) = 0;
 	virtual void				addInviteeToChannel(const std::string& channelId, const std::string& nickname) = 0;

@@ -185,14 +185,9 @@ void	Server::setChannelLimit(const std::string& channelId, int limit)
 	_channels[channelId]->setUserLimit(limit);
 }
 
-int	Server::getChannelLimit(const std::string& channelName) //
+int	Server::getChannelLimit(const std::string& channelId)
 {
-	return _channels[channelName]->getUserLimit();
-}
-
-int	Server::getChannelLimit(const std::string& channelName)
-{
-	return _channels[channelName]->getUserLimit();
+	return _channels[channelId]->getUserLimit();
 }
 
 bool	Server::isTargetChannelMember(const std::string& channelId, std::string& userNickname)
