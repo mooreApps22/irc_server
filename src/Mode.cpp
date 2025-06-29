@@ -150,11 +150,6 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 			if (_srvAPI.isChannelPasswordProtected(channelId))
 				mode += " " + _srvAPI.getChannelPassword(channelId);
 			reply_message = build_reply(SERVER_NAME, RPL_CHANNELMODEIS, user_nickname, channelName, mode);
-			/*if (_srvAPI.isChannelPasswordProtected(channelId))
-				mode += "k";
-			if (_srvAPI.isChannelTopicProtected(channelId))
-				mode += "t";
-			reply_message = build_reply(SERVER_NAME, RPL_CHANNELMODEIS, user_nickname, channelName, mode);*/
 			_srvAPI.send_reply(reply_message);
 			return ;
 		}
@@ -229,14 +224,11 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 			}
 			else if (*it == 'k')
 			{
-				if (status == _srvAPI.isChannelPasswordProtected(channelId))
+				if (status == _srvAPI.isChannelPasswordProtected(channelId)  || modes.passChanged)
 					continue;
-				if ((paramIt == parsed_msg.params.end() && status) || modes.passChanged)
-				{
-					modes.passChanged = true;
-					continue;
-				}
 				modes.passChanged = true;
+				if (paramIt == parsed_msg.params.end() && status)
+					continue;
 				if (status)
 				{
 					std::string newPassword = *paramIt;
@@ -331,17 +323,13 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 		}
 		if (params.size() > 0)
 			message = join_strings(message, params, " ");
-		// std::cout << message << std::endl;
+		std::cout << message << std::endl;
 		reply_message = build_reply(user_identifier, command, channelName, message);
-		// std::string targets = join_strings(modes.targetNicknames, " ");
 		if (message.size() > 0)
 		{
 			_srvAPI.sendMessageToChannel(channelId, reply_message);
 			_srvAPI.send_reply(reply_message);
 		}
-		// reply_message = build_reply(user_identifier, command, channelName, message);
-		// std::string targets = join_strings(modes.targetNicknames, " ");
-		// _srvAPI.sendMessageToChannel(channelId, reply_message);
 	}
 	else
 	{
