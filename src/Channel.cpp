@@ -50,6 +50,11 @@ const std::string&	Channel::getTopic() const
 	return(_topic);	
 }
 
+const std::string&	Channel::getKey() const
+{
+	return(_key);	
+}
+
 bool	Channel::isTopicSet() const
 {
 	return (_topic.size() > 0);

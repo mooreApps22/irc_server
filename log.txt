@@ -1,0 +1,117 @@
+[INFO] ircserv compiled.
+[INFO] port and password validated.
+[INFO] Parser Constructor called.
+[INFO] CommandHandler constructed.
+[INFO] Server Constructor called.
+[INFO] Server Setup called.
+[INFO] TCP/IP data stored.
+[INFO] _server_fd assigned.
+[INFO] _server_fd bind()ed to port.
+[INFO] Server is listening to port.
+[INFO] Event poll created.
+[INFO] Listener registered to the event poll.
+[DEBUG] run() called.
+[INFO] Client connected! fd (6)
+[INFO] User Constructor called.
+[DEBUG] Parsing (CAP LS
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (CAP)
+[INFO] execute() called.
+[INFO] Unknown Command. (CAP)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 421 * CAP :Unknown command)
+[DEBUG] Parsing (PASS p
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (PASS)
+[INFO] execute() called.
+[INFO] PASS received.
+[DEBUG] Parsing (NICK a
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (NICK)
+[INFO] execute() called.
+[INFO] NICK received.
+[DEBUG] Checking nick correctness
+[DEBUG] Checking nick uniqueness
+[DEBUG] Parsing (USER samoore samoore localhost :Samuel Moore
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (USER)
+[INFO] execute() called.
+[INFO] USER received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 001 a :Welcome to the Internet Relay Network a!samoore@127.0.0.1)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 002 a :Your host is marvin@serverirc.42.fr, running version v0.0)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 003 a :This server was created 21/06/2025)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 004 a :marvin@serverirc.42.fr v0.0 o iklot)
+[DEBUG] Parsing (MODE a +i
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (MODE)
+[INFO] execute() called.
+[INFO] MODE received.
+[DEBUG] Sending reply (:a MODE a :+i)
+[DEBUG] Parsing (PING marvin
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (PING)
+[INFO] execute() called.
+[INFO] PING received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[INFO] Client connected! fd (7)
+[INFO] User Constructor called.
+[DEBUG] Parsing (CAP LS
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (CAP)
+[INFO] execute() called.
+[INFO] Unknown Command. (CAP)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 421 * CAP :Unknown command)
+[DEBUG] Parsing (PASS p
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (PASS)
+[INFO] execute() called.
+[INFO] PASS received.
+[DEBUG] Parsing (NICK b
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (NICK)
+[INFO] execute() called.
+[INFO] NICK received.
+[DEBUG] Checking nick correctness
+[DEBUG] Checking nick uniqueness
+[DEBUG] Parsing (USER samoore samoore localhost :Samuel Moore
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (USER)
+[INFO] execute() called.
+[INFO] USER received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 001 b :Welcome to the Internet Relay Network b!samoore@127.0.0.1)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 002 b :Your host is marvin@serverirc.42.fr, running version v0.0)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 003 b :This server was created 21/06/2025)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 004 b :marvin@serverirc.42.fr v0.0 o iklot)
+[DEBUG] Parsing (MODE b +i
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (MODE)
+[INFO] execute() called.
+[INFO] MODE received.
+[DEBUG] Sending reply (:b MODE b :+i)
+[DEBUG] Parsing (PING marvin
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (PING)
+[INFO] execute() called.
+[INFO] PING received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[DEBUG] Parsing (JOIN #a
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (JOIN)
+[INFO] execute() called.
+[INFO] JOIN received.
+[INFO] Channel has been created.) (#a)
+[DEBUG] Sending reply (Creating a channel:#a)
+[DEBUG] Sending reply (:a!samoore@127.0.0.1 JOIN :#a)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 331 a #a :No topic is set)

@@ -35,6 +35,7 @@ class Channel
 		// Getters
 		const std::string			getName() const;
 		const std::string&			getTopic() const;
+		const std::string&			getKey() const;
 		bool						isTopicSet() const;
 		bool						isKeyValid(const std::string& key) const;
 		size_t						getUserLimit() const;

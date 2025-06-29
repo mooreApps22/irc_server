@@ -18,6 +18,7 @@ typedef struct modes
 	std::string	limitString;
 	std::vector<std::string> opSigns;
 	std::vector<std::string> targetNicknames;
+	std::string	oldKey;
 } t_modes;
 
 std::string join_strings(const std::vector<std::string>& elements, const std::string& separator = " ")
@@ -182,11 +183,6 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 					continue;
 				std::string targetNickname = *paramIt;
 				paramIt++;
-				Logger::log(INFO,  "entering o");
-				Logger::log(INFO,  "channel " + channel);
-				Logger::log(INFO,  "nick " + targetNickname);
-				Logger::log(INFO,  "isUserChannelMember " + std::string(_srvAPI.isTargetChannelMember(channel, targetNickname) ? "true" : "false"));
-				Logger::log(INFO,  "isUserChannelOperator " + std::string(_srvAPI.isTargetChannelOperator(channel, targetNickname) ? "true" : "false"));
 				if (_srvAPI.isTargetChannelMember(channel, targetNickname) && status && !_srvAPI.isTargetChannelOperator(channel, targetNickname))
 				{
 					Logger::log(INFO,  "upgrading "+ targetNickname);
@@ -204,19 +200,24 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 			}
 			else if (*it == 'k')
 			{
-				if ((status && _srvAPI.isChannelPasswordProtected(channel))
-				|| (!status && !_srvAPI.isChannelPasswordProtected(channel)))
+				if (status == _srvAPI.isChannelPasswordProtected(channel))
 					continue;
 				if ((paramIt == parsed_msg.params.end() && status) || modes.passChanged)
 				{
 					modes.passChanged = true;
 					continue;
 				}
+				modes.passChanged = true;
 				if (status)
 				{
-					std::string targetNickname = *paramIt;
+					std::string newPassword = *paramIt;
 					paramIt++;
-					// _srvAPI.se
+					_srvAPI.setChannelPassword(channel, newPassword);
+				}
+				else
+				{
+					modes.password = _srvAPI.getChannelPassword(channel);
+					_srvAPI.clearChannelPassword(channel);
 				}
 			}
 			else if (*it == 't')
@@ -233,6 +234,7 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 		std::string pluses = "+";
 		std::string minuses = "-";
 		std::vector<std::string> params;
+		bool	plus = true;
 		
 		if (modes.i != _srvAPI.isChannelInviteOnly(channel))
 		{
@@ -263,29 +265,42 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 		if (pluses.size() > 1)
 			message += pluses;
 		if (minuses.size() > 1)
+		{
 			message += minuses;
+			plus = false;
+		}
+		if (modes.opSigns.size() > 0 && ((plus && modes.opSigns.at(0).at(0) == '+')
+		|| (!plus && modes.opSigns.at(0).at(0) == '-')))
+			modes.opSigns.at(0).erase(0, 1);
 		message = join_strings(message, modes.opSigns, "");
 		message = join_strings(message, params, " ");
+		if (modes.passChanged)
+		{
+			if (_srvAPI.isChannelPasswordProtected(channel))
+			{
+				if (modes.k != _srvAPI.isChannelPasswordProtected(channel))
+				{
+					if (modes.k == false)
+					{
+						message += "-k";
+						params.push_back(modes.password);
+					}
+					else
+					{
+						message += "+k";
+						params.push_back(_srvAPI.getChannelPassword(channel));
+					}
+				}
+			}
+		}
 		if (modes.opSigns.size() > 0)
 		{
 			message = join_strings(message, modes.targetNicknames, " ");
 		}
 		reply_message = build_reply(user_identifier, command, channel, message);
 		std::string targets = join_strings(modes.targetNicknames, " ");
-		// reply_message += targets;
-		// _srvAPI.sendMessageToUser(channel, reply_message);
+		
 		_srvAPI.sendMessageToChannel(channel, reply_message);
-		// if (kStatus != _srvAPI.isChannelPasswordProtected(channel))
-		// {
-
-		// }
-
-		// if changing mode, check if is channel operator. if not:
-		// if operator:
-		// :norbac!~a@C453D4D.74B8F9F9.CB7972B2.IP MODE #myhome +i 
-
-		// :Defiant.GeekShed.net 472 norbac 4 :is unknown mode char to me
-		// 
 	}
 	else
 	{

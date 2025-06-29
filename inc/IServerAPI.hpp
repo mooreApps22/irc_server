@@ -50,9 +50,13 @@ public:
 	virtual void				promoteChannelMember(const std::string& channelName, const std::string& nickname) = 0;
 	virtual void				demoteChannelOperator(const std::string& channelName, const std::string& nickname) = 0;
 	virtual void				promoteChannelInvitee(const std::string& channelName) = 0;
+
+	// passwords
 	virtual bool				isChannelPasswordProtected(const std::string& channelName) = 0;
 	virtual bool				isChannelPasswordValid(const std::string& channelName, const std::string&  key) = 0;
-
+	virtual void				setChannelPassword(const std::string& channelName, const std::string&  key) = 0;
+	virtual void				clearChannelPassword(const std::string& channelName) = 0;
+	virtual const std::string&	getChannelPassword(const std::string& channelName) = 0;
 
 	virtual bool				isChannelInviteOnly(const std::string& channelName) = 0;
 	virtual bool				isUserInvited(const std::string& channelName) = 0;

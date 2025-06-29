@@ -190,3 +190,20 @@ bool	Server::isTargetChannelOperator(const std::string& channelName, std::string
 {
 	return (_channels[channelName]->isOperator(getUserFd(userNickname)));
 }
+
+
+void	Server::setChannelPassword(const std::string& channelName, const std::string&  key)
+{
+	_channels[channelName]->setKey(key);
+}
+
+const std::string&	Server::getChannelPassword(const std::string& channelName)
+{
+	return (_channels[channelName]->getKey());
+}
+
+void	Server::clearChannelPassword(const std::string& channelName)
+{
+	_channels[channelName]->clearKey();
+}
+	
