@@ -1,0 +1,45 @@
+[INFO] ircserv compiled.
+[INFO] port and password validated.
+[INFO] Parser Constructor called.
+[INFO] CommandHandler constructed.
+[INFO] Server Constructor called.
+[INFO] Server Setup called.
+[INFO] TCP/IP data stored.
+[INFO] _server_fd assigned.
+[INFO] _server_fd bind()ed to port.
+[INFO] Server is listening to port.
+[INFO] Event poll created.
+[INFO] Listener registered to the event poll.
+[DEBUG] run() called.
+[INFO] Client connected! fd (6)
+[INFO] User Constructor called.
+[DEBUG] Parsing (pass p
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (PASS)
+[INFO] execute() called.
+[INFO] PASS received.
+[DEBUG] Parsing (nick abe
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (NICK)
+[INFO] execute() called.
+[INFO] NICK received.
+[DEBUG] Checking nick correctness
+[DEBUG] Checking nick uniqueness
+[DEBUG] Parsing (user a v v v
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (USER)
+[INFO] execute() called.
+[INFO] USER received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 001 abe :Welcome to the Internet Relay Network abe!a@127.0.0.1)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 002 abe :Your host is marvin@serverirc.42.fr, running version v0.0)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 003 abe :This server was created 21/06/2025)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 004 abe :marvin@serverirc.42.fr v0.0 o iklot)
+[DEBUG] Parsing (join #oh
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (JOIN)
+[INFO] execute() called.
+[INFO] JOIN received.

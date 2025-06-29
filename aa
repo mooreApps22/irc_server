@@ -1,0 +1,23 @@
+ERR_NEEDMOREPARAMS
+first check if at least 2 params
+
+parse if channel or user
+
+
+
+if 
+
+
+
+RPL_CHANNELMODEIS
+ERR_CHANOPRIVSNEEDED
+ERR_NOSUCHNICK
+ERR_NOTONCHANNEL
+ERR_KEYSET
+RPL_BANLIST
+RPL_ENDOFBANLIST
+ERR_UNKNOWNMODE		472	"<char> :is unknown mode char to me"
+ERR_NOSUCHCHANNEL
+ERR_USERSDONTMATCH	502	":Cant change mode for other users"
+RPL_UMODEIS
+ERR_UMODEUNKNOWNFLAG	501	":Unknown MODE flag"
