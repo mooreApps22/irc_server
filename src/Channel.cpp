@@ -40,7 +40,7 @@ Channel& Channel::operator=(const Channel& other)
 }
 
 // Getters
-const std::string	Channel::getName() const
+const std::string&	Channel::getName() const
 {
 	return(_name);	
 }

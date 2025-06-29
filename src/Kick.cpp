@@ -21,7 +21,7 @@ void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 
 	if (!_srvAPI.isUserRegistered())
 	{
-		replyMessage = build_reply(SERVER_NAME, ERR_NOTREGISTERED, userNickname, command, "Not enough parameters");
+		replyMessage = build_reply(SERVER_NAME, ERR_NOTREGISTERED, userNickname, command, "You have not registered");
 		_srvAPI.send_reply(replyMessage);
 		return ;
 	}
@@ -57,17 +57,23 @@ void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 	//Channel Loop
 	for (paramsIt chIt = channelNames.begin(); chIt != channelNames.end(); ++chIt)
 	{
+		std::string channelId = Parser::toLower(*chIt);
+
 		Logger::log(INFO, "KICK: Made it to the outer loop.");
-		if (!_srvAPI.doesChannelExist(*chIt))
+
+		if (!_srvAPI.doesChannelExist(channelId))
 		{
 			replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, userNickname, *chIt, "No such channel");
 			_srvAPI.send_reply(replyMessage);
 			continue ;	
 		}
+
+		std::string channelName = _srvAPI.getChannelName(channelId);
+
 		Logger::log(INFO, "KICK: channel param exist");
-		if (!_srvAPI.isUserChannelOperator(*chIt))
+		if (!_srvAPI.isUserChannelOperator(channelId))
 		{
-			replyMessage = build_reply(SERVER_NAME, "482", userNickname, *chIt, "You're not a channel operator");
+			replyMessage = build_reply(SERVER_NAME, "482", userNickname, channelName, "You're not a channel operator");
 			_srvAPI.send_reply(replyMessage);
 			continue ;
 		}
@@ -76,16 +82,16 @@ void	CommandHandler::_kickFp(parsed_message& parsed_msg)
 		for (paramsIt userIt = userNames.begin(); userIt != userNames.end(); ++userIt)
 		{
 			Logger::log(INFO, "KICK: made it to the inner loop");
-			if (!_srvAPI.isTargetInChannel(*chIt, *userIt))
+			if (!_srvAPI.isTargetInChannel(channelId, *userIt))
 			{
 				replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHNICK, userNickname, *userIt, "User not in channel");
 				_srvAPI.send_reply(replyMessage);
 				continue ;
 			}
 			Logger::log(INFO, "KICK: the target user is in the channel");
-			std::string kickMessage = build_reply(userID, "KICK", *chIt, *userIt, reason);
-			_srvAPI.sendMessageToChannel(*chIt, kickMessage);
-			_srvAPI.removeUserFromChannel(*chIt, *userIt);
+			std::string kickMessage = build_reply(userID, "KICK", channelName, *userIt, reason);
+			_srvAPI.sendMessageToChannel(channelId, kickMessage);
+			_srvAPI.removeUserFromChannel(channelId, *userIt);
 			std::cout << *userIt << " was kicked the fuck out by " << userNickname << std::endl;
 		}
 	}

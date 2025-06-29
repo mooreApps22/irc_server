@@ -37,28 +37,32 @@ void	CommandHandler::_inviteFp(parsed_message& parsed_msg)
 	}
 
 	std::string channelName = parsed_msg.params.at(1);
-	if (!_srvAPI.doesChannelExist(channelName))
+	std::string channelId = Parser::toLower(channelName);
+	
+	if (!_srvAPI.doesChannelExist(channelId))
 	{
 		replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, userNickname, channelName, "No such channel");
 		_srvAPI.send_reply(replyMessage);
 		return;
 	}
 
-	if (!_srvAPI.isChannelUser(channelName))
+	channelName = _srvAPI.getChannelName(channelId);
+
+	if (!_srvAPI.isChannelUser(channelId))
 	{
 		replyMessage = build_reply(SERVER_NAME, ERR_NOTONCHANNEL, userNickname, channelName, "You're not on that channel");
 		_srvAPI.send_reply(replyMessage);
 		return;
 	}
 
-	if (_srvAPI.isTargetInChannel(channelName, target))
+	if (_srvAPI.isTargetInChannel(channelId, target))
 	{
 		replyMessage = build_reply(SERVER_NAME, ERR_USERONCHANNEL, target, channelName, "is already on channel");
 		_srvAPI.send_reply(replyMessage);
 		return;
 	}
 
-	if (_srvAPI.isChannelInviteOnly(channelName) && !_srvAPI.isUserChannelOperator(channelName))
+	if (_srvAPI.isChannelInviteOnly(channelId) && !_srvAPI.isUserChannelOperator(channelId))
 	{
 			replyMessage = build_reply(SERVER_NAME, ERR_CHANOPRIVSNEEDED, userNickname, channelName, "You're not channel operator");
 			_srvAPI.send_reply(replyMessage);
@@ -72,7 +76,7 @@ void	CommandHandler::_inviteFp(parsed_message& parsed_msg)
 	_srvAPI.sendToUser(replyMessage, target);
 
 
-	if (_srvAPI.isUserChannelOperator(channelName))
-		_srvAPI.addInviteeToChannel(channelName, target);
+	if (_srvAPI.isUserChannelOperator(channelId))
+		_srvAPI.addInviteeToChannel(channelId, target);
 	
 }

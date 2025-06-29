@@ -26,7 +26,7 @@
 [DEBUG] execute() called with the command:  (PASS)
 [INFO] execute() called.
 [INFO] PASS received.
-[DEBUG] Parsing (NICK abe
+[DEBUG] Parsing (NICK adam
 )
 [DEBUG] In is_message().
 [DEBUG] execute() called with the command:  (NICK)
@@ -40,17 +40,17 @@
 [DEBUG] execute() called with the command:  (USER)
 [INFO] execute() called.
 [INFO] USER received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 001 abe :Welcome to the Internet Relay Network abe!srodrigo@127.0.0.1)
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 002 abe :Your host is marvin@serverirc.42.fr, running version v0.0)
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 003 abe :This server was created 21/06/2025)
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 004 abe :marvin@serverirc.42.fr v0.0 o iklot)
-[DEBUG] Parsing (MODE abe +i
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 001 adam :Welcome to the Internet Relay Network adam!srodrigo@127.0.0.1)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 002 adam :Your host is marvin@serverirc.42.fr, running version v0.0)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 003 adam :This server was created 21/06/2025)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 004 adam :marvin@serverirc.42.fr v0.0 o iklot)
+[DEBUG] Parsing (MODE adam +i
 )
 [DEBUG] In is_message().
 [DEBUG] execute() called with the command:  (MODE)
 [INFO] execute() called.
 [INFO] MODE received.
-[DEBUG] Sending reply (:abe MODE abe :+i)
+[DEBUG] Sending reply (:adam MODE adam :+i)
 [DEBUG] Parsing (PING marvin
 )
 [DEBUG] In is_message().
@@ -58,6 +58,80 @@
 [INFO] execute() called.
 [INFO] PING received.
 [DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[DEBUG] Parsing (JOIN #AsDf
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (JOIN)
+[INFO] execute() called.
+[INFO] JOIN received.
+[INFO] Channel has been created.) (#AsDf)
+[DEBUG] Sending reply (:adam!srodrigo@127.0.0.1 JOIN :#AsDf)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 331 adam #AsDf :No topic is set)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 353 adam = #AsDf :@adam)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 366 adam #AsDf :End of NAMES list)
+[DEBUG] Parsing (MODE #AsDf
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (MODE)
+[INFO] execute() called.
+[INFO] MODE received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 324 adam #AsDf :+)
+[DEBUG] Parsing (WHO #AsDf
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (WHO)
+[INFO] execute() called.
+[INFO] Unknown Command. (WHO)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 421 adam WHO :Unknown command)
+[DEBUG] Parsing (PING marvin
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (PING)
+[INFO] execute() called.
+[INFO] PING received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[DEBUG] Parsing (PING marvin
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (PING)
+[INFO] execute() called.
+[INFO] PING received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[DEBUG] Parsing (WHO #AsDf
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (WHO)
+[INFO] execute() called.
+[INFO] Unknown Command. (WHO)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 421 adam WHO :Unknown command)
+[DEBUG] Parsing (MODE #AsDf
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (MODE)
+[INFO] execute() called.
+[INFO] MODE received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 324 adam #AsDf :+)
+[DEBUG] Parsing (PING marvin
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (PING)
+[INFO] execute() called.
+[INFO] PING received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[DEBUG] Parsing (PING marvin
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (PING)
+[INFO] execute() called.
+[INFO] PING received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[DEBUG] Parsing (MODE #AsDf b
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (MODE)
+[INFO] execute() called.
+[INFO] MODE received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 501 adam :Unknown MODE flag)
 [INFO] Client connected! fd (7)
 [INFO] User Constructor called.
 [DEBUG] Parsing (CAP LS
@@ -73,7 +147,7 @@
 [DEBUG] execute() called with the command:  (PASS)
 [INFO] execute() called.
 [INFO] PASS received.
-[DEBUG] Parsing (NICK bill
+[DEBUG] Parsing (NICK adam
 )
 [DEBUG] In is_message().
 [DEBUG] execute() called with the command:  (NICK)
@@ -81,58 +155,9 @@
 [INFO] NICK received.
 [DEBUG] Checking nick correctness
 [DEBUG] Checking nick uniqueness
-[DEBUG] Parsing (USER srodrigo srodrigo localhost :Sergio Rodrigo De Los Rios
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (USER)
-[INFO] execute() called.
-[INFO] USER received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 001 bill :Welcome to the Internet Relay Network bill!srodrigo@127.0.0.1)
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 002 bill :Your host is marvin@serverirc.42.fr, running version v0.0)
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 003 bill :This server was created 21/06/2025)
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 004 bill :marvin@serverirc.42.fr v0.0 o iklot)
-[DEBUG] Parsing (MODE bill +i
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (MODE)
-[INFO] execute() called.
-[INFO] MODE received.
-[DEBUG] Sending reply (:bill MODE bill :+i)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PRIVMSG abe :hello
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PRIVMSG)
-[INFO] execute() called.
-[INFO] PRIVMSG received.
-[DEBUG] PRIVMSG Parsing targets:  (abe)
-[DEBUG] PRIVMSG Target:  (abe)
-[DEBUG] Sending message to user (:bill!srodrigo@127.0.0.1 PRIVMSG abe :hello)
-[DEBUG] Sending message to user (:bill!srodrigo@127.0.0.1 PRIVMSG abe :hello)
-[DEBUG] Parsing (PRIVMSG bill :hi bill!
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PRIVMSG)
-[INFO] execute() called.
-[INFO] PRIVMSG received.
-[DEBUG] PRIVMSG Parsing targets:  (bill)
-[DEBUG] PRIVMSG Target:  (bill)
-[DEBUG] Sending message to user (:abe!srodrigo@127.0.0.1 PRIVMSG bill :hi bill!)
-[DEBUG] Sending message to user (:abe!srodrigo@127.0.0.1 PRIVMSG bill :hi bill!)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[INFO] Client connected! fd (8)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 433 * adam :Nickname is already in use)
+[INFO] User Desstructor called.
+[INFO] Client connected! fd (7)
 [INFO] User Constructor called.
 [DEBUG] Parsing (CAP LS
 )
@@ -147,7 +172,7 @@
 [DEBUG] execute() called with the command:  (PASS)
 [INFO] execute() called.
 [INFO] PASS received.
-[DEBUG] Parsing (NICK carol
+[DEBUG] Parsing (NICK ben
 )
 [DEBUG] In is_message().
 [DEBUG] execute() called with the command:  (NICK)
@@ -161,17 +186,17 @@
 [DEBUG] execute() called with the command:  (USER)
 [INFO] execute() called.
 [INFO] USER received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 001 carol :Welcome to the Internet Relay Network carol!srodrigo@127.0.0.1)
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 002 carol :Your host is marvin@serverirc.42.fr, running version v0.0)
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 003 carol :This server was created 21/06/2025)
-[DEBUG] Sending reply (:marvin@serverirc.42.fr 004 carol :marvin@serverirc.42.fr v0.0 o iklot)
-[DEBUG] Parsing (MODE carol +i
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 001 ben :Welcome to the Internet Relay Network ben!srodrigo@127.0.0.1)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 002 ben :Your host is marvin@serverirc.42.fr, running version v0.0)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 003 ben :This server was created 21/06/2025)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 004 ben :marvin@serverirc.42.fr v0.0 o iklot)
+[DEBUG] Parsing (MODE ben +i
 )
 [DEBUG] In is_message().
 [DEBUG] execute() called with the command:  (MODE)
 [INFO] execute() called.
 [INFO] MODE received.
-[DEBUG] Sending reply (:carol MODE carol :+i)
+[DEBUG] Sending reply (:ben MODE ben :+i)
 [DEBUG] Parsing (PING marvin
 )
 [DEBUG] In is_message().
@@ -179,6 +204,31 @@
 [INFO] execute() called.
 [INFO] PING received.
 [DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[DEBUG] Parsing (JOIN #asdf
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (JOIN)
+[INFO] execute() called.
+[INFO] JOIN received.
+[DEBUG] Sending reply (:ben!srodrigo@127.0.0.1 JOIN :#AsDf)
+[DEBUG] Sending message to user (:ben!srodrigo@127.0.0.1 JOIN :#AsDf)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 331 ben #AsDf :No topic is set)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 353 ben = #AsDf :ben @adam)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 366 ben #AsDf :End of NAMES list)
+[DEBUG] Parsing (MODE #AsDf
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (MODE)
+[INFO] execute() called.
+[INFO] MODE received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 324 ben #AsDf :+)
+[DEBUG] Parsing (WHO #AsDf
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (WHO)
+[INFO] execute() called.
+[INFO] Unknown Command. (WHO)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 421 ben WHO :Unknown command)
 [DEBUG] Parsing (PING marvin
 )
 [DEBUG] In is_message().
@@ -186,78 +236,60 @@
 [INFO] execute() called.
 [INFO] PING received.
 [DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PRIVMSG abe :hi abe it's carol here!
+[DEBUG] Parsing (PRIVMSG #AsDf :hello
 )
 [DEBUG] In is_message().
 [DEBUG] execute() called with the command:  (PRIVMSG)
 [INFO] execute() called.
 [INFO] PRIVMSG received.
-[DEBUG] PRIVMSG Parsing targets:  (abe)
-[DEBUG] PRIVMSG Target:  (abe)
-[DEBUG] Sending message to user (:carol!srodrigo@127.0.0.1 PRIVMSG abe :hi abe it's carol here!)
-[DEBUG] Sending message to user (:carol!srodrigo@127.0.0.1 PRIVMSG abe :hi abe it's carol here!)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PRIVMSG abe ::I need to talk to you guys!
+[DEBUG] PRIVMSG Parsing targets:  (#AsDf)
+[DEBUG] PRIVMSG Target:  (#AsDf)
+[DEBUG] Sending message to user (:ben!srodrigo@127.0.0.1 PRIVMSG #AsDf :hello)
+[DEBUG] Parsing (PRIVMSG #AsDf :motherfucke, about time!
 )
 [DEBUG] In is_message().
 [DEBUG] execute() called with the command:  (PRIVMSG)
 [INFO] execute() called.
 [INFO] PRIVMSG received.
-[DEBUG] PRIVMSG Parsing targets:  (abe)
-[DEBUG] PRIVMSG Target:  (abe)
-[DEBUG] Sending message to user (:carol!srodrigo@127.0.0.1 PRIVMSG abe ::I need to talk to you guys!)
-[DEBUG] Sending message to user (:carol!srodrigo@127.0.0.1 PRIVMSG abe ::I need to talk to you guys!)
-[DEBUG] Parsing (PRIVMSG bill ::I need to talk to you guys!
+[DEBUG] PRIVMSG Parsing targets:  (#AsDf)
+[DEBUG] PRIVMSG Target:  (#AsDf)
+[DEBUG] Sending message to user (:adam!srodrigo@127.0.0.1 PRIVMSG #AsDf :motherfucke, about time!)
+[DEBUG] Parsing (PING marvin
 )
 [DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PRIVMSG)
+[DEBUG] execute() called with the command:  (PING)
 [INFO] execute() called.
-[INFO] PRIVMSG received.
-[DEBUG] PRIVMSG Parsing targets:  (bill)
-[DEBUG] PRIVMSG Target:  (bill)
-[DEBUG] Sending message to user (:carol!srodrigo@127.0.0.1 PRIVMSG bill ::I need to talk to you guys!)
-[DEBUG] Sending message to user (:carol!srodrigo@127.0.0.1 PRIVMSG bill ::I need to talk to you guys!)
+[INFO] PING received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[DEBUG] Parsing (PING marvin
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (PING)
+[INFO] execute() called.
+[INFO] PING received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[DEBUG] Parsing (MODE #AsDf b
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (MODE)
+[INFO] execute() called.
+[INFO] MODE received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 501 adam :Unknown MODE flag)
+[DEBUG] Sending message to user (:adam!srodrigo@127.0.0.1 MODE :#AsDf)
+[DEBUG] Parsing (PING marvin
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (PING)
+[INFO] execute() called.
+[INFO] PING received.
+[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[DEBUG] Parsing (WHO #AsDf
+)
+[DEBUG] In is_message().
+[DEBUG] execute() called with the command:  (WHO)
+[INFO] execute() called.
+[INFO] Unknown Command. (WHO)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 421 ben WHO :Unknown command)
 [DEBUG] Parsing (PING marvin
 )
 [DEBUG] In is_message().
@@ -279,129 +311,13 @@
 [INFO] execute() called.
 [INFO] PING received.
 [DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
+[DEBUG] Parsing (QUIT :leaving
 )
 [DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
+[DEBUG] execute() called with the command:  (QUIT)
 [INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
-[DEBUG] Parsing (PING marvin
-)
-[DEBUG] In is_message().
-[DEBUG] execute() called with the command:  (PING)
-[INFO] execute() called.
-[INFO] PING received.
-[DEBUG] Sending reply (:marvin@serverirc.42.fr PONG marvin@serverirc.42.fr :marvin)
+[INFO] Unknown Command. (QUIT)
+[DEBUG] Sending reply (:marvin@serverirc.42.fr 421 adam QUIT :Unknown command)
+[INFO] Server Destructor called.
+[INFO] CommandHandler destructed.
+[INFO] Parser Destructor called.

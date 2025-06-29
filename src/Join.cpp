@@ -62,6 +62,8 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 	for (paramsIt chIt = channelNames.begin(), keyIt = keyNames.begin();
 		chIt != channelNames.end(); ++chIt)
 	{
+		std::string channelId = Parser::toLower(*chIt);
+		std::string channelName;
 		if (!Parser::is_channel(*chIt))
 		{
 			replyMessage = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, userNickname, *chIt, "No such channel");
@@ -70,67 +72,69 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 		}
 
 		bool new_channel = false;
-		if (!_srvAPI.doesChannelExist(*chIt))
+		if (!_srvAPI.doesChannelExist(channelId))
 		{
 			_srvAPI.addChannel(*chIt);
+
 			new_channel = true;
 		}
-
-		if (_srvAPI.doesChannelHaveLimit(*chIt) && _srvAPI.isChannelFull(*chIt))
+		
+		channelName = _srvAPI.getChannelName(channelId);
+		std::cout << "Name given: " << *chIt << ", ChannelName: " << channelName << ", channelId: " << channelId << std::endl;
+		if (_srvAPI.doesChannelHaveLimit(channelId) && _srvAPI.isChannelFull(channelId))
 		{
-			replyMessage = build_reply(SERVER_NAME, ERR_CHANNELISFULL, userNickname, *chIt, "Cannot join channel (+l)");
+			replyMessage = build_reply(SERVER_NAME, ERR_CHANNELISFULL, userNickname, channelName, "Cannot join channel (+l)");
 			_srvAPI.send_reply(replyMessage);
 			continue ;
 		}
 
-		if (_srvAPI.isChannelPasswordProtected(*chIt))
+		if (_srvAPI.isChannelPasswordProtected(channelId))
 		{
 			bool password = false;
 			if (keyIt != keyNames.end())
 			{
-				password = _srvAPI.isChannelPasswordValid(*chIt, *keyIt);
+				password = _srvAPI.isChannelPasswordValid(channelId, *keyIt);
 				keyIt++;
 			}
 			if (!password)
 			{
-				replyMessage = build_reply(SERVER_NAME, ERR_BADCHANNELKEY, userNickname, *chIt, "Cannot join channel (+k)");
+				replyMessage = build_reply(SERVER_NAME, ERR_BADCHANNELKEY, userNickname, channelName, "Cannot join channel (+k)");
 				_srvAPI.send_reply(replyMessage);
 				continue ;
 			}
 		}
 	
-		if (_srvAPI.isChannelInviteOnly(*chIt) && !_srvAPI.isUserInvited(*chIt))
+		if (_srvAPI.isChannelInviteOnly(channelId) && !_srvAPI.isUserInvited(channelId))
 		{
-			replyMessage = build_reply(SERVER_NAME, ERR_INVITEONLYCHAN, userNickname, *chIt, "Cannot join channel (+i)");
+			replyMessage = build_reply(SERVER_NAME, ERR_INVITEONLYCHAN, userNickname, channelName, "Cannot join channel (+i)");
 			_srvAPI.send_reply(replyMessage);
 			continue ;				
-		} else if (_srvAPI.isUserInvited(*chIt))
+		} else if (_srvAPI.isUserInvited(channelId))
 		{
-			_srvAPI.promoteChannelInvitee(*chIt);
+			_srvAPI.promoteChannelInvitee(channelId);
 		}
 
-		if (!_srvAPI.isChannelUser(*chIt))
+		if (!_srvAPI.isChannelUser(channelId))
 		{
-			_srvAPI.addUserToChannel(*chIt);
+			_srvAPI.addUserToChannel(channelId);
 			if (new_channel)
-				_srvAPI.promoteChannelMember(*chIt);
+				_srvAPI.promoteChannelMember(channelId);
 		}
-		replyMessage = build_reply(userID, command, *chIt);
+		replyMessage = build_reply(userID, command, channelName);
 		_srvAPI.send_reply(replyMessage);
-		_srvAPI.sendMessageToChannel(*chIt, replyMessage);
+		_srvAPI.sendMessageToChannel(channelId, replyMessage);
 
-		if (!_srvAPI.isChannelTopicSet(*chIt))
-			replyMessage = build_reply(SERVER_NAME, RPL_NOTOPIC, userNickname, *chIt, "No topic is set");
+		if (!_srvAPI.isChannelTopicSet(channelId))
+			replyMessage = build_reply(SERVER_NAME, RPL_NOTOPIC, userNickname, channelName, "No topic is set");
 		else
-			replyMessage = build_reply(SERVER_NAME, RPL_TOPIC, userNickname, *chIt, _srvAPI.getChannelTopic(*chIt));
+			replyMessage = build_reply(SERVER_NAME, RPL_TOPIC, userNickname, channelName, _srvAPI.getChannelTopic(channelId));
 		_srvAPI.send_reply(replyMessage);
 
-		std::string message = _srvAPI.getChannelUsersList(*chIt);
-		replyMessage = build_reply(SERVER_NAME, RPL_NAMREPLY, userNickname, "=", *chIt, message);
+		std::string message = _srvAPI.getChannelUsersList(channelId);
+		replyMessage = build_reply(SERVER_NAME, RPL_NAMREPLY, userNickname, "=", channelName, message);
 		_srvAPI.send_reply(replyMessage);
 
-		replyMessage = build_reply(SERVER_NAME, RPL_ENDOFNAMES, userNickname, *chIt, "End of NAMES list");
+		replyMessage = build_reply(SERVER_NAME, RPL_ENDOFNAMES, userNickname, channelName, "End of NAMES list");
 		_srvAPI.send_reply(replyMessage);
 	}
 }
-
