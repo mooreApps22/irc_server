@@ -41,6 +41,7 @@ public:
 
 	virtual const std::string&	getChannelName(const std::string& channelId) = 0;
 	virtual void				addChannel(const std::string& channelName) = 0;
+	virtual void				removeChannel(const std::string& channelId) = 0;
 	virtual int					getChannelLimit(const std::string& channelId) = 0; //
 	virtual void				setChannelPassword(const std::string& channelId, const std::string&  key) = 0; //
 	virtual void				clearChannelPassword(const std::string& channelId) = 0; //

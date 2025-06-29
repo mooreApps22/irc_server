@@ -36,6 +36,12 @@ void	Server::addChannel(const std::string& channelName)
 	_channels[channelId] = new Channel(channelName);
 }
 
+void	Server::removeChannel(const std::string& channelId)
+{
+	delete _channels[channelId];
+	_channels.erase(channelId);
+}
+
 void	Server::addUserToChannel(const std::string& channelId)
 {
 	User*	user = _users[_client_fd];
