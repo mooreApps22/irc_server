@@ -1,6 +1,7 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-SRCS = ./src/Channel.cpp ./src/CommandHandler.cpp ./src/Invite.cpp ./src/Join.cpp ./src/Kick.cpp ./src/Logger.cpp ./src/Mode.cpp ./src/Parser.cpp ./src/Server.cpp ./src/ServerChannel.cpp ./src/Topic.cpp ./src/User.cpp ./src/main.cpp ./src/signal.cpp
-OBJS = ./obj/Channel.o ./obj/CommandHandler.o ./obj/Invite.o ./obj/Join.o ./obj/Kick.o ./obj/Logger.o ./obj/Mode.o ./obj/Parser.o ./obj/Server.o ./obj/ServerChannel.o ./obj/Topic.o ./obj/User.o ./obj/main.o ./obj/signal.o
+SRCS = ./src/Channel.cpp ./src/CommandHandler.cpp ./src/Invite.cpp ./src/Join.cpp ./src/Kick.cpp ./src/Logger.cpp ./src/Mode.cpp ./src/Nick.cpp ./src/Parser.cpp ./src/Privmsg.cpp ./src/Server.cpp ./src/ServerChannel.cpp ./src/Topic.cpp ./src/User.cpp ./src/main.cpp ./src/signal.cpp
+OBJS = ./obj/Channel.o ./obj/CommandHandler.o ./obj/Invite.o ./obj/Join.o ./obj/Kick.o ./obj/Logger.o ./obj/Mode.o ./obj/Nick.o ./obj/Parser.o ./obj/Privmsg.o ./obj/Server.o ./obj/ServerChannel.o ./obj/Topic.o ./obj/User.o ./obj/main.o ./obj/signal.o
+ 
 # GNU Make 4.3
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -8,7 +9,7 @@ OBJS = ./obj/Channel.o ./obj/CommandHandler.o ./obj/Invite.o ./obj/Join.o ./obj/
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Jun 29 14:46:19 2025
+# Make data base, printed on Sun Jun 29 19:30:35 2025
 
 # Variables
 
@@ -101,7 +102,7 @@ MAKEFILE_LIST := Makefile
 # automatic
 @F = $(notdir $@)
 # environment
-VSCODE_PID = 49143
+VSCODE_PID = 64090
 # environment
 KRB5CCNAME = FILE:/tmp/krb5cc_101194_ib6rJc
 # environment
@@ -180,6 +181,7 @@ ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 GNUMAKEFLAGS := 
 # environment
 LOGNAME = samoore
+ 
 # makefile
 .DEFAULT_GOAL := all
 # environment
@@ -241,7 +243,7 @@ VSCODE_ESM_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
 GDMSESSION = ubuntu
 # variable set hash-table stats:
-# Load=114/1024=11%, Rehash=0, Collisions=16/164=10%
+# Load=114/1024=11%, Rehash=0, Collisions=16/175=9%
 
 # Pattern-specific Variable Values
 
@@ -250,12 +252,12 @@ GDMSESSION = ubuntu
 # Directories
 
 # inc (device 2048, inode 153873): 11 files, no impossibilities.
-# src (device 2048, inode 4200103): 17 files, no impossibilities.
-# . (device 2048, inode 8412294): 12 files, no impossibilities.
+# src (device 2048, inode 4200103): 20 files, no impossibilities.
+# . (device 2048, inode 8412294): 13 files, no impossibilities.
 # ./inc (device 2048, inode 153873): 11 files, no impossibilities.
-# ./src (device 2048, inode 4200103): 17 files, no impossibilities.
+# ./src (device 2048, inode 4200103): 20 files, no impossibilities.
 
-# 68 files, no impossibilities in 5 directories.
+# 75 files, no impossibilities in 5 directories.
 
 # Implicit Rules
 
@@ -269,54 +271,41 @@ obj/%.o: src/%.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc
 # 1 implicit rules, 0 (0.0%) terminal.
 # Files
 
-obj/ServerChannel.o: src/ServerChannel.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'ServerChannel'
-#  Last modified 2025-06-29 14:42:30.992670813
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
+# Not a target:
+obj/ServerChannel.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
-obj/Topic.o: src/Topic.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'Topic'
-#  Last modified 2025-06-29 14:42:31.312672043
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
+# Not a target:
+obj/Topic.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/Nick.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 inc/Parser.hpp:
 #  Implicit rule search has been done.
-#  Last modified 2025-06-29 13:08:01.709398504
+#  Last modified 2025-06-29 18:57:23.092094236
 #  File has been updated.
 #  Successfully updated.
 
- 
-obj/main.o: src/main.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'main'
-#  Last modified 2025-06-29 14:42:30.616669368
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
+# Not a target:
+obj/main.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 src/Channel.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2025-06-29 14:42:16.596615815
+#  Last modified 2025-06-29 19:30:13.438151004
 #  File has been updated.
 #  Successfully updated.
 
@@ -330,42 +319,22 @@ Makefile:
 # Not a target:
 inc/IServerAPI.hpp:
 #  Implicit rule search has been done.
-#  Last modified 2025-06-29 14:42:12.420599992
+#  Last modified 2025-06-29 19:30:13.434150976
 #  File has been updated.
 #  Successfully updated.
 
 # Not a target:
 inc/Server.hpp:
 #  Implicit rule search has been done.
-#  Last modified 2025-06-29 14:42:12.420599992
-#  File has been updated.
-#  Successfully updated.
-
-obj/Parser.o: src/Parser.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'Parser'
-#  Last modified 2025-06-29 14:42:30.85667029
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
-
-# Not a target:
-src/main.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 13:08:01.717398553
+#  Last modified 2025-06-29 19:30:13.434150976
 #  File has been updated.
 #  Successfully updated.
 
 # Not a target:
-src/signal.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 13:08:01.717398553
-#  File has been updated.
-#  Successfully updated.
+obj/Parser.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 clean:
 #  Phony target (prerequisite of .PHONY).
@@ -387,21 +356,15 @@ valgrind:
 # Not a target:
 inc/User.hpp:
 #  Implicit rule search has been done.
-#  Last modified 2025-06-29 13:08:01.709398504
+#  Last modified 2025-06-29 18:57:23.092094236
 #  File has been updated.
 #  Successfully updated.
 
-obj/Mode.o: src/Mode.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'Mode'
-#  Last modified 2025-06-29 14:42:30.748669875
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
+# Not a target:
+obj/Mode.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 re: fclean all
 #  Phony target (prerequisite of .PHONY).
@@ -414,7 +377,7 @@ re: fclean all
 
 obj:
 #  Implicit rule search has not been done.
-#  Last modified 2025-06-29 14:42:31.412672428
+#  Last modified 2025-06-29 19:27:21.208923468
 #  File has been updated.
 #  Successfully updated.
 #  recipe to execute (from 'Makefile', line 28):
@@ -429,36 +392,17 @@ inc/CommandHandler.hpp:
 #  File has been updated.
 #  Successfully updated.
 
-obj/Invite.o: src/Invite.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'Invite'
-#  Last modified 2025-06-29 14:42:30.216667831
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
+# Not a target:
+obj/Invite.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
-src/Logger.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 13:08:01.713398529
-#  File has been updated.
-#  Successfully updated.
-
-obj/Join.o: src/Join.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'Join'
-#  Last modified 2025-06-29 14:42:30.328668261
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
+obj/Join.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 .DEFAULT:
@@ -472,7 +416,9 @@ all: obj ircserv
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/11=0%
 
 fclean: clean
 #  Phony target (prerequisite of .PHONY).
@@ -484,50 +430,23 @@ fclean: clean
 	@rm $(NAME)
 	@echo "${GREEN}    $(NAME) successfully deleted.${NORMAL}"
 
-obj/Logger.o: src/Logger.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'Logger'
-#  Last modified 2025-06-29 14:42:30.520668999
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
+# Not a target:
+obj/Logger.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
-src/Invite.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 13:08:01.709398504
-#  File has been updated.
-#  Successfully updated.
-
-obj/Kick.o: src/Kick.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'Kick'
-#  Last modified 2025-06-29 14:42:30.440668692
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
+obj/Privmsg.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
-src/Topic.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 13:08:01.717398553
-#  File has been updated.
-#  Successfully updated.
-
-# Not a target:
-src/CommandHandler.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 14:42:12.420599992
-#  File has been updated.
-#  Successfully updated.
+obj/Kick.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 inc/Logger.hpp:
@@ -537,16 +456,10 @@ inc/Logger.hpp:
 #  Successfully updated.
 
 # Not a target:
-src/Server.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 14:42:16.596615815
-#  File has been updated.
-#  Successfully updated.
-
-# Not a target:
 inc/Channel.hpp:
 #  Implicit rule search has been done.
-#  Last modified 2025-06-29 14:42:12.420599992
+ 
+#  Last modified 2025-06-29 19:30:13.434150976
 #  File has been updated.
 #  Successfully updated.
 
@@ -563,24 +476,10 @@ colors:
 	@echo "${CYAN}xxxx...${NORMAL}"
 
 # Not a target:
-src/User.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 13:08:01.717398553
-#  File has been updated.
-#  Successfully updated.
-
-obj/CommandHandler.o: src/CommandHandler.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'CommandHandler'
-#  Last modified 2025-06-29 14:42:30.112667431
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
- 
+obj/CommandHandler.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 inc/signal.hpp:
@@ -590,48 +489,24 @@ inc/signal.hpp:
 #  Successfully updated.
 
 # Not a target:
-src/Parser.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 13:08:01.717398553
-#  File has been updated.
-#  Successfully updated.
-
-obj/Server.o: src/Server.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'Server'
-#  Last modified 2025-06-29 14:42:31.140671382
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
+obj/Server.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
-src/ServerChannel.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 14:42:16.596615815
-#  File has been updated.
-#  Successfully updated.
-
-obj/signal.o: src/signal.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'signal'
-#  Last modified 2025-06-29 14:42:31.212671658
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
-
-ircserv: obj/Channel.o obj/CommandHandler.o obj/Invite.o obj/Join.o obj/Kick.o obj/Logger.o obj/Mode.o obj/Parser.o obj/Server.o obj/ServerChannel.o obj/Topic.o obj/User.o obj/main.o obj/signal.o
+obj/signal.o:
 #  Implicit rule search has not been done.
-#  Last modified 2025-06-29 14:42:31.464672628
+#  Modification time never checked.
+#  File has not been updated.
+
+ircserv: obj/Channel.o obj/CommandHandler.o obj/Invite.o obj/Join.o obj/Kick.o obj/Logger.o obj/Mode.o obj/Nick.o obj/Parser.o obj/Privmsg.o obj/Server.o obj/ServerChannel.o obj/Topic.o obj/User.o obj/main.o obj/signal.o
+#  Implicit rule search has not been done.
+#  Last modified 2025-06-29 19:30:13.438151004
 #  File has been updated.
-#  Successfully updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/11=0%
 #  recipe to execute (from 'Makefile', line 39):
 	@echo "${YELLOW}Building $(NAME) and linking .o files...${NORMAL}"
 	$(CPP) $(FLAGS) $(OBJS) -o $(NAME)
@@ -640,38 +515,43 @@ ircserv: obj/Channel.o obj/CommandHandler.o obj/Invite.o obj/Join.o obj/Kick.o o
 obj/Channel.o: src/Channel.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: 'Channel'
-#  Last modified 2025-06-29 14:42:29.952666817
+#  Last modified 2025-06-29 19:22:01.88264717
 #  File has been updated.
-#  Successfully updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := obj/Channel.o
+# automatic
+# * := Channel
+# automatic
+# < := src/Channel.cpp
+# automatic
+# + := src/Channel.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
+# automatic
+# % := 
+# automatic
+# ^ := src/Channel.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
+# automatic
+# ? := src/Channel.cpp inc/Channel.hpp inc/IServerAPI.hpp inc/Server.hpp
+# automatic
+# | := 
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/25=4%
 #  recipe to execute (from 'Makefile', line 33):
 	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
 	@mkdir -p $(@D)
 	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
 	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
 
-obj/User.o: src/User.cpp inc/Channel.hpp inc/CommandHandler.hpp inc/IServerAPI.hpp inc/Logger.hpp inc/Parser.hpp inc/Server.hpp inc/User.hpp inc/macros.hpp inc/signal.hpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: 'User'
-#  Last modified 2025-06-29 14:42:31.412672428
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 33):
-	@echo "${YELLOW}Compiling $< into $@...${NORMAL}"
-	@mkdir -p $(@D)
-	@$(CPP) $(FLAGS) -I$(INC_DIR) -c $< -o $@
-	@echo "${GREEN}    $@ successfully compiled.${NORMAL}"
+# Not a target:
+obj/User.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 .PHONY: all clean fclean re
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-
-# Not a target:
-src/Kick.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 13:08:01.713398529
-#  File has been updated.
-#  Successfully updated.
 
 # Not a target:
 inc/macros.hpp:
@@ -687,34 +567,20 @@ gdb:
 #  recipe to execute (from 'Makefile', line 69):
 	@gdb --args ./$(NAME) 6667 password
 
-# Not a target:
-src/Join.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 14:42:16.596615815
-#  File has been updated.
-#  Successfully updated.
-
-# Not a target:
-src/Mode.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2025-06-29 14:42:12.420599992
-#  File has been updated.
-#  Successfully updated.
-
 # files hash-table stats:
-# Load=50/1024=5%, Rehash=0, Collisions=4/380=1%
+# Load=39/1024=4%, Rehash=0, Collisions=7/98=7%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 102 / storage = 1121 B / avg = 10 B
-# current buf: size = 8162 B / used = 1121 B / count = 102 / avg = 10 B
+# strcache buffers: 1 (0) / strings = 82 / storage = 891 B / avg = 10 B
+# current buf: size = 8162 B / used = 891 B / count = 82 / avg = 10 B
 
-# strcache performance: lookups = 401 / hit rate = 74%
+# strcache performance: lookups = 134 / hit rate = 38%
 # hash-table stats:
-# Load=102/8192=1%, Rehash=0, Collisions=0/401=0%
-# Finished Make data base on Sun Jun 29 14:46:19 2025
+# Load=82/8192=1%, Rehash=0, Collisions=0/134=0%
+# Finished Make data base on Sun Jun 29 19:30:35 2025
 
  

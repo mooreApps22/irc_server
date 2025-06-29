@@ -49,6 +49,11 @@ bool	Server::isChannelFull(const std::string& channelId)
 	return (_channels[channelId]->isFull());	
 }
 
+bool	Server::isChannelEmpty(const std::string& channelId)
+{
+	return (_channels[channelId]->isEmpty());	
+}
+
 bool	Server::doesChannelHaveLimit(const std::string& channelId)
 {
 	return (_channels[channelId]->hasUserLimit());	

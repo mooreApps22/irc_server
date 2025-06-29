@@ -1,7 +1,7 @@
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/samoore/irc'
-SRCS = ./src/Channel.cpp ./src/CommandHandler.cpp ./src/Invite.cpp ./src/Join.cpp ./src/Kick.cpp ./src/Logger.cpp ./src/Mode.cpp ./src/Parser.cpp ./src/Server.cpp ./src/ServerChannel.cpp ./src/Topic.cpp ./src/User.cpp ./src/main.cpp ./src/signal.cpp
-OBJS = ./obj/Channel.o ./obj/CommandHandler.o ./obj/Invite.o ./obj/Join.o ./obj/Kick.o ./obj/Logger.o ./obj/Mode.o ./obj/Parser.o ./obj/Server.o ./obj/ServerChannel.o ./obj/Topic.o ./obj/User.o ./obj/main.o ./obj/signal.o
+SRCS = ./src/Channel.cpp ./src/CommandHandler.cpp ./src/Invite.cpp ./src/Join.cpp ./src/Kick.cpp ./src/Logger.cpp ./src/Mode.cpp ./src/Nick.cpp ./src/Parser.cpp ./src/Privmsg.cpp ./src/Server.cpp ./src/ServerChannel.cpp ./src/Topic.cpp ./src/User.cpp ./src/main.cpp ./src/signal.cpp
+OBJS = ./obj/Channel.o ./obj/CommandHandler.o ./obj/Invite.o ./obj/Join.o ./obj/Kick.o ./obj/Logger.o ./obj/Mode.o ./obj/Nick.o ./obj/Parser.o ./obj/Privmsg.o ./obj/Server.o ./obj/ServerChannel.o ./obj/Topic.o ./obj/User.o ./obj/main.o ./obj/signal.o
 echo "\033[0;36mMaking the directory for object files...\033[0m"
 mkdir -p ./obj
 echo "\033[0;32m    ./obj was successfully created.\033[0m"
@@ -26,6 +26,7 @@ echo "\033[0;33mCompiling src/Kick.cpp into obj/Kick.o...\033[0m"
 mkdir -p obj
 c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/Kick.cpp -o obj/Kick.o
 echo "\033[0;32m    obj/Kick.o successfully compiled.\033[0m"
+ 
 echo "\033[0;33mCompiling src/Logger.cpp into obj/Logger.o...\033[0m"
 mkdir -p obj
 c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/Logger.cpp -o obj/Logger.o
@@ -34,10 +35,19 @@ echo "\033[0;33mCompiling src/Mode.cpp into obj/Mode.o...\033[0m"
 mkdir -p obj
 c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/Mode.cpp -o obj/Mode.o
 echo "\033[0;32m    obj/Mode.o successfully compiled.\033[0m"
+echo "\033[0;33mCompiling src/Nick.cpp into obj/Nick.o...\033[0m"
+mkdir -p obj
+c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/Nick.cpp -o obj/Nick.o
+echo "\033[0;32m    obj/Nick.o successfully compiled.\033[0m"
 echo "\033[0;33mCompiling src/Parser.cpp into obj/Parser.o...\033[0m"
+ 
 mkdir -p obj
 c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/Parser.cpp -o obj/Parser.o
 echo "\033[0;32m    obj/Parser.o successfully compiled.\033[0m"
+echo "\033[0;33mCompiling src/Privmsg.cpp into obj/Privmsg.o...\033[0m"
+mkdir -p obj
+c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/Privmsg.cpp -o obj/Privmsg.o
+echo "\033[0;32m    obj/Privmsg.o successfully compiled.\033[0m"
 echo "\033[0;33mCompiling src/Server.cpp into obj/Server.o...\033[0m"
 mkdir -p obj
 c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/Server.cpp -o obj/Server.o
@@ -51,7 +61,6 @@ mkdir -p obj
 c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/Topic.cpp -o obj/Topic.o
 echo "\033[0;32m    obj/Topic.o successfully compiled.\033[0m"
 echo "\033[0;33mCompiling src/User.cpp into obj/User.o...\033[0m"
- 
 mkdir -p obj
 c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/User.cpp -o obj/User.o
 echo "\033[0;32m    obj/User.o successfully compiled.\033[0m"
@@ -64,7 +73,7 @@ mkdir -p obj
 c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/signal.cpp -o obj/signal.o
 echo "\033[0;32m    obj/signal.o successfully compiled.\033[0m"
 echo "\033[0;33mBuilding ircserv and linking .o files...\033[0m"
-c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 ./obj/Channel.o ./obj/CommandHandler.o ./obj/Invite.o ./obj/Join.o ./obj/Kick.o ./obj/Logger.o ./obj/Mode.o ./obj/Parser.o ./obj/Server.o ./obj/ServerChannel.o ./obj/Topic.o ./obj/User.o ./obj/main.o ./obj/signal.o -o ircserv
+c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 ./obj/Channel.o ./obj/CommandHandler.o ./obj/Invite.o ./obj/Join.o ./obj/Kick.o ./obj/Logger.o ./obj/Mode.o ./obj/Nick.o ./obj/Parser.o ./obj/Privmsg.o ./obj/Server.o ./obj/ServerChannel.o ./obj/Topic.o ./obj/User.o ./obj/main.o ./obj/signal.o -o ircserv
 echo "\033[0;32m    ircserv successfully built and .o files linked.\033[0m"
 make: Leaving directory '/home/samoore/irc'
  
