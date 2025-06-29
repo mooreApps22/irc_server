@@ -51,6 +51,7 @@ mkdir -p obj
 c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/Topic.cpp -o obj/Topic.o
 echo "\033[0;32m    obj/Topic.o successfully compiled.\033[0m"
 echo "\033[0;33mCompiling src/User.cpp into obj/User.o...\033[0m"
+ 
 mkdir -p obj
 c++ -Wall -Wextra -Werror -std=c++98 -Wshadow -D_GLIBCXX_USE_CXX11_ABI=0 -g3 -I./inc -c src/User.cpp -o obj/User.o
 echo "\033[0;32m    obj/User.o successfully compiled.\033[0m"
