@@ -40,6 +40,8 @@ void	Server::removeChannel(const std::string& channelId)
 {
 	delete _channels[channelId];
 	_channels.erase(channelId);
+	if (!_channels[channelId])
+		std::cout << "The channel was deleted!!!" << std::endl;
 }
 
 void	Server::addUserToChannel(const std::string& channelId)
