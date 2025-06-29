@@ -46,6 +46,7 @@ public:
 	virtual void				removeUserFromChannel(const std::string& channelName, const std::string& nick) = 0;
 	virtual bool				isChannelFull(const std::string& channelName) = 0;
 	virtual bool				doesChannelHaveLimit(const std::string& channelName) = 0;
+	virtual int					getChannelLimit(const std::string& channelName) = 0;
 	virtual void				promoteChannelMember(const std::string& channelName) = 0;
 	virtual void				promoteChannelMember(const std::string& channelName, const std::string& nickname) = 0;
 	virtual void				demoteChannelOperator(const std::string& channelName, const std::string& nickname) = 0;

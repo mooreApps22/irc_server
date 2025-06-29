@@ -69,6 +69,7 @@ class Server: public IServerAPI
 		void				addUserToChannel(const std::string& channelName);
 		bool				isChannelFull(const std::string& channelName);
 		bool				doesChannelHaveLimit(const std::string& channelName);
+		virtual int			getChannelLimit(const std::string& channelName);
 		void				promoteChannelMember(const std::string& channelName);
 		void				promoteChannelMember(const std::string& channelName, const std::string& nickname);
 		void				demoteChannelOperator(const std::string& channelName, const std::string& nickname);
