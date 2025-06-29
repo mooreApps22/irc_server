@@ -50,6 +50,11 @@ const std::string&	Channel::getTopic() const
 	return(_topic);	
 }
 
+const std::string&	Channel::getKey() const
+{
+	return(_key);	
+}
+
 bool	Channel::isTopicSet() const
 {
 	return (_topic.size() > 0);
@@ -127,7 +132,7 @@ bool	Channel::hasUserLimit() const
 	return (_mode_has_limit);	
 }
 
-bool	Channel::isFull() const
+size_t	Channel::getNumberUsers() const
 {
 	size_t count = 0;
 	for(std::map<int, std::pair<User*, Membership> >::const_iterator it = _users.begin(); it != _users.end(); it++)
@@ -135,7 +140,18 @@ bool	Channel::isFull() const
 		if (it->second.second > INVITEE)
 			count++;
 	}
+	return (count);
+}
+
+bool	Channel::isFull() const
+{
+	size_t count = getNumberUsers();
 	return (count > 0 && count >= _user_limit);
+}
+
+bool	Channel::isEmpty() const
+{
+	return (getNumberUsers() == 0);
 }
 
 // Setters

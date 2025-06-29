@@ -66,9 +66,15 @@ class Server: public IServerAPI
 		//Channel
 		const std::string&	getChannelName(const std::string& channelId);
 		void				addChannel(const std::string& channelName);
+		void				removeChannel(const std::string& channelId);
+		virtual int			getChannelLimit(const std::string& channelId); //
+		void				setChannelPassword(const std::string& channelId, const std::string&  key); //
+		void				clearChannelPassword(const std::string& channelId); //
+		const std::string&	getChannelPassword(const std::string& channelId); //
 		bool				doesChannelExist(const std::string& channelId);
 		void				addUserToChannel(const std::string& channelId);
 		bool				isChannelFull(const std::string& channelId);
+		bool				isChannelEmpty(const std::string& channelId);
 		bool				doesChannelHaveLimit(const std::string& channelId);
 		void				promoteChannelMember(const std::string& channelId);
 		void				promoteChannelMember(const std::string& channelId, const std::string& nickname);

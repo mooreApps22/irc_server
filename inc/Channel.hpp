@@ -26,6 +26,9 @@ class Channel
 		bool					_mode_has_key;			// k: set/remove the channel key (password)
 		bool					_mode_has_limit;		// l: set/remove the userlimit
 														// o: give/take chop privilege
+
+		size_t					getNumberUsers() const;
+	
     public:
 		//Special Users
         Channel(const std::string& name);
@@ -35,6 +38,7 @@ class Channel
 		// Getters
 		const std::string&			getName() const;
 		const std::string&			getTopic() const;
+		const std::string&			getKey() const;
 		bool						isTopicSet() const;
 		bool						isKeyValid(const std::string& key) const;
 		size_t						getUserLimit() const;
@@ -45,6 +49,7 @@ class Channel
 		bool						needsChannelKey() const;
 		bool						hasUserLimit() const;
 		bool						isFull() const;
+		bool						isEmpty() const;
 	
 		// Setters
 		void						setTopic(const std::string& topic);

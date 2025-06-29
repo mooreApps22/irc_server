@@ -36,6 +36,12 @@ void	Server::addChannel(const std::string& channelName)
 	_channels[channelId] = new Channel(channelName);
 }
 
+void	Server::removeChannel(const std::string& channelId)
+{
+	delete _channels[channelId];
+	_channels.erase(channelId);
+}
+
 void	Server::addUserToChannel(const std::string& channelId)
 {
 	User*	user = _users[_client_fd];
@@ -47,6 +53,11 @@ void	Server::addUserToChannel(const std::string& channelId)
 bool	Server::isChannelFull(const std::string& channelId)
 {
 	return (_channels[channelId]->isFull());	
+}
+
+bool	Server::isChannelEmpty(const std::string& channelId)
+{
+	return (_channels[channelId]->isEmpty());	
 }
 
 bool	Server::doesChannelHaveLimit(const std::string& channelId)
@@ -185,6 +196,11 @@ void	Server::setChannelLimit(const std::string& channelId, int limit)
 	_channels[channelId]->setUserLimit(limit);
 }
 
+int	Server::getChannelLimit(const std::string& channelId)
+{
+	return _channels[channelId]->getUserLimit();
+}
+
 bool	Server::isTargetChannelMember(const std::string& channelId, std::string& userNickname)
 {
 	return (_channels[channelId]->isMember(getUserFd(userNickname)));
@@ -193,4 +209,19 @@ bool	Server::isTargetChannelMember(const std::string& channelId, std::string& us
 bool	Server::isTargetChannelOperator(const std::string& channelId, std::string& userNickname)
 {
 	return (_channels[channelId]->isOperator(getUserFd(userNickname)));
+}
+
+void	Server::setChannelPassword(const std::string& channelName, const std::string&  key)
+{
+	_channels[channelName]->setKey(key);
+}
+
+const std::string&	Server::getChannelPassword(const std::string& channelName)
+{
+	return (_channels[channelName]->getKey());
+}
+
+void	Server::clearChannelPassword(const std::string& channelName)
+{
+	_channels[channelName]->clearKey();
 }

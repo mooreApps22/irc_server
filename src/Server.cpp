@@ -346,3 +346,4 @@ User*	Server::getUser()
 {
 	return (_users[_client_fd]);
 }
+	

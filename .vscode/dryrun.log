@@ -1,0 +1,8 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/home/srodrigo/Documents/cursus/rank5/irc_server'
+SRCS = ./src/Channel.cpp ./src/CommandHandler.cpp ./src/Invite.cpp ./src/Join.cpp ./src/Kick.cpp ./src/Logger.cpp ./src/Mode.cpp ./src/Nick.cpp ./src/Parser.cpp ./src/Privmsg.cpp ./src/Server.cpp ./src/ServerChannel.cpp ./src/Topic.cpp ./src/User.cpp ./src/main.cpp ./src/signal.cpp
+OBJS = ./obj/Channel.o ./obj/CommandHandler.o ./obj/Invite.o ./obj/Join.o ./obj/Kick.o ./obj/Logger.o ./obj/Mode.o ./obj/Nick.o ./obj/Parser.o ./obj/Privmsg.o ./obj/Server.o ./obj/ServerChannel.o ./obj/Topic.o ./obj/User.o ./obj/main.o ./obj/signal.o
+ 
+make: Nothing to be done for 'all'.
+make: Leaving directory '/home/srodrigo/Documents/cursus/rank5/irc_server'
+ 
