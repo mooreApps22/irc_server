@@ -40,6 +40,8 @@ void	Server::removeChannel(const std::string& channelId)
 {
 	delete _channels[channelId];
 	_channels.erase(channelId);
+	if (!_channels[channelId])
+		std::cout << "The channel was deleted!!!" << std::endl;
 }
 
 void	Server::addUserToChannel(const std::string& channelId)
@@ -211,7 +213,6 @@ bool	Server::isTargetChannelOperator(const std::string& channelId, std::string& 
 	return (_channels[channelId]->isOperator(getUserFd(userNickname)));
 }
 
-
 void	Server::setChannelPassword(const std::string& channelName, const std::string&  key)
 {
 	_channels[channelName]->setKey(key);
@@ -226,4 +227,3 @@ void	Server::clearChannelPassword(const std::string& channelName)
 {
 	_channels[channelName]->clearKey();
 }
-	

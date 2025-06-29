@@ -1,4 +1,3 @@
 .vscode
 obj
-log.txt
-ircserv
+*.txt
