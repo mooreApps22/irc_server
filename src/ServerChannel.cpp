@@ -53,6 +53,18 @@ void	Server::promoteChannelMember(const std::string& channelName)
 	_channels[channelName]->promoteMember(_client_fd);
 }
 
+void	Server::promoteChannelMember(const std::string& channelName, const std::string& nickname)
+{
+	int targetFd = getUserFd(nickname);
+	_channels[channelName]->promoteMember(targetFd);
+}
+
+void	Server::demoteChannelOperator(const std::string& channelName, const std::string& nickname)
+{
+	int targetFd = getUserFd(nickname);
+	_channels[channelName]->demoteOperator(targetFd);
+}
+
 void	Server::promoteChannelInvitee(const std::string& channelName)
 {
 	_channels[channelName]->promoteInvitee(_client_fd);
@@ -156,4 +168,25 @@ void	Server::setNewTopic(const std::string& channelName, const std::string& topi
 {
 	Logger::log(DEBUG, "is setNewTopic() being called?");
 	_channels[channelName]->setTopic(topic);
+}
+
+void	Server::setChannelHasLimit(const std::string& channelName, bool status)
+{
+	_channels[channelName]->setHasLimit(status);
+}
+
+void	Server::setChannelLimit(const std::string& channelName, int limit)
+{
+	_channels[channelName]->setUserLimit(limit);
+}
+
+bool	Server::isTargetChannelMember(const std::string& channelName, std::string& userNickname)
+{
+	
+	return (_channels[channelName]->isMember(getUserFd(userNickname)));
+}
+
+bool	Server::isTargetChannelOperator(const std::string& channelName, std::string& userNickname)
+{
+	return (_channels[channelName]->isOperator(getUserFd(userNickname)));
 }

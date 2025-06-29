@@ -232,3 +232,7 @@ const char*	Channel::hashSymbolException::what() const throw()
 	return ("Channel names have to begin with a '#'!");
 }
 
+void	Channel::setHasLimit(bool state)
+{
+	_mode_has_limit = state;
+}

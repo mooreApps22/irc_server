@@ -54,6 +54,8 @@ class Channel
 		void						clearKey();
 		void						setUserLimit(size_t limit);
 		void						clearUserLimit();
+		void						setHasLimit(bool state);
+
 	
 		// Membership
 		void						addMember(int userFd, User* user);
