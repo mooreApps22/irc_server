@@ -70,6 +70,7 @@ class Server: public IServerAPI
 		bool				isChannelFull(const std::string& channelName);
 		bool				doesChannelHaveLimit(const std::string& channelName);
 		void				promoteChannelMember(const std::string& channelName);
+		void				promoteChannelInvitee(const std::string& channelName);
 		bool				isChannelPasswordProtected(const std::string& channelName);
 		bool				isChannelPasswordValid(const std::string& channelName, const std::string& key);
 		bool				isChannelInviteOnly(const std::string& channelName);

@@ -53,6 +53,11 @@ void	Server::promoteChannelMember(const std::string& channelName)
 	_channels[channelName]->promoteMember(_client_fd);
 }
 
+void	Server::promoteChannelInvitee(const std::string& channelName)
+{
+	_channels[channelName]->promoteInvitee(_client_fd);
+}
+
 bool	Server::isChannelPasswordProtected(const std::string& channelName)
 {
 	return (_channels[channelName]->needsChannelKey());	

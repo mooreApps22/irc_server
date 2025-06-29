@@ -47,6 +47,7 @@ public:
 	virtual bool				isChannelFull(const std::string& channelName) = 0;
 	virtual bool				doesChannelHaveLimit(const std::string& channelName) = 0;
 	virtual void				promoteChannelMember(const std::string& channelName) = 0;
+	virtual void				promoteChannelInvitee(const std::string& channelName) = 0;
 	virtual bool				isChannelPasswordProtected(const std::string& channelName) = 0;
 	virtual bool				isChannelPasswordValid(const std::string& channelName, const std::string&  key) = 0;
 
