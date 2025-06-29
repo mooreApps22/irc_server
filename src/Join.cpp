@@ -35,6 +35,7 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 	std::string	command = parsed_msg.command;	
 	std::string	userID = _srvAPI.getUserIdentifier();
 
+	
 	if (!_srvAPI.isUserRegistered())
 	{
 		replyMessage = build_reply(std::string(SERVER_NAME), std::string(ERR_NOTREGISTERED), userNickname, command, "You have not registered");
@@ -54,6 +55,7 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 	std::vector<std::string> channelNames = Parser::splitParam(channelParam, ',');
 	std::vector<std::string> keyNames = Parser::splitParam(keyParam, ',');
 
+
 	if (keyParam.empty())
 		keyNames.clear();
 
@@ -71,7 +73,6 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 		if (!_srvAPI.doesChannelExist(*chIt))
 		{
 			_srvAPI.addChannel(*chIt);
-			_srvAPI.send_reply("Creating a channel:" + *chIt);
 			new_channel = true;
 		}
 
@@ -81,7 +82,7 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 			_srvAPI.send_reply(replyMessage);
 			continue ;
 		}
-		
+
 		if (_srvAPI.isChannelPasswordProtected(*chIt))
 		{
 			bool password = false;
@@ -97,14 +98,16 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 				continue ;
 			}
 		}
-
+	
 		if (_srvAPI.isChannelInviteOnly(*chIt) && !_srvAPI.isUserInvited(*chIt))
 		{
 			replyMessage = build_reply(SERVER_NAME, ERR_INVITEONLYCHAN, userNickname, *chIt, "Cannot join channel (+i)");
 			_srvAPI.send_reply(replyMessage);
 			continue ;				
 		} else if (_srvAPI.isUserInvited(*chIt))
+		{
 			_srvAPI.promoteChannelInvitee(*chIt);
+		}
 
 		if (!_srvAPI.isChannelUser(*chIt))
 		{

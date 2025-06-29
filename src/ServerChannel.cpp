@@ -45,6 +45,7 @@ bool	Server::isChannelFull(const std::string& channelName)
 
 bool	Server::doesChannelHaveLimit(const std::string& channelName)
 {
+
 	return (_channels[channelName]->hasUserLimit());	
 }
 
