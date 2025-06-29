@@ -187,7 +187,12 @@ void	Channel::addMember(int user_fd, User* user)
 
 bool	Channel::isMember(int userFd)
 {
-	return (_users[userFd].second == MEMBER);
+	std::map<int, std::pair<User*, Membership> >::iterator it = _users.find(userFd);
+	
+	if (it == _users.end())
+		return (false);
+	else
+		return (it->second.second == MEMBER);
 }
 
 // Operators
@@ -203,7 +208,12 @@ void	Channel::demoteOperator(int userFd)
 
 bool	Channel::isOperator(int userFd)
 {
-	return (_users[userFd].second == OPERATOR);
+	std::map<int, std::pair<User*, Membership> >::iterator it = _users.find(userFd);
+	
+	if (it == _users.end())
+		return (false);
+	else
+		return (it->second.second == OPERATOR);
 }
 
 // Invitations
@@ -219,7 +229,12 @@ void	Channel::promoteInvitee(int userFd)
 
 bool	Channel::isInvitee(int userFd)
 {
-	return (_users[userFd].second == INVITEE);
+	std::map<int, std::pair<User*, Membership> >::iterator it = _users.find(userFd);
+	
+	if (it == _users.end())
+		return (false);
+	else
+		return (it->second.second == INVITEE);
 }
 
 void	Channel::removeUser(int userFd)

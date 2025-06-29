@@ -169,7 +169,7 @@ std::string	Server::get_message()
 
 	user = _users[_client_fd];
 	message = peek();
-		
+
 	if (!message.empty())
 	{			
 		if (_parser.is_partial(message))
@@ -185,12 +185,9 @@ std::string	Server::get_message()
 			message.append(receive(length));
 		}
 	}
-	// else if (bytes_read == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
-	// 	std::cout << "Nothing to read just yet!" << std::endl;
 	else
 	{
 		Logger::log(INFO, "Client disconnected!", _client_fd);
-		// std::cerr << "Client disconnected! fd:" << _client_fd << std::endl;
 		disconnectUser();
 	}
 	return message;
