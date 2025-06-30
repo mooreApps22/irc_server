@@ -91,6 +91,7 @@ class Server: public IServerAPI
 		bool				isTargetInChannel(const std::string& channelId, const std::string& nick);
 
 		//Kick
+		void				removeUserFromChannel(const std::string& channelId);
 		void				removeUserFromChannel(const std::string& channelId, const std::string& nick);
 		bool				isChannelTopicProtected(const std::string& channelId); //
 		bool				isUserChannelOperator(const std::string& channelId); //

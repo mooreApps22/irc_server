@@ -29,7 +29,6 @@ public:
 	virtual const std::string	getUserIdentifier() = 0;
 	virtual void				setUserRegisteredStatus(bool status) = 0;
 	virtual bool				isUserRegistered() = 0;
-	// virtual bool				isUserRegistered(const std::string& nickname) = 0;
 	virtual void				setUserInvisibleMode(bool state) = 0;
 	virtual bool				isUserInvisible() = 0;
 	virtual void				setUserPasswordState(bool state) = 0;
@@ -49,6 +48,7 @@ public:
 	virtual bool				doesChannelExist(const std::string& channelId) = 0;
 	virtual void				addUserToChannel(const std::string& channelId) = 0;
 	virtual void				addInviteeToChannel(const std::string& channelId, const std::string& nickname) = 0;
+	virtual void				removeUserFromChannel(const std::string& channelId) = 0;
 	virtual void				removeUserFromChannel(const std::string& channelId, const std::string& nick) = 0;
 	virtual bool				isChannelFull(const std::string& channelId) = 0;
 	virtual bool				isChannelEmpty(const std::string& channelId) = 0;

@@ -145,10 +145,16 @@ void	Server::sendMessageToChannel(const std::string& channelId, const std::strin
 	}
 }
 
+void	Server::removeUserFromChannel(const std::string& channelId)
+{
+	_users[_client_fd]->removeChannel(channelId);
+	_channels[channelId]->removeUser(_client_fd);
+}
+
 void	Server::removeUserFromChannel(const std::string& channelId, const std::string& nick)
 {
 	int		fd = Server::getUserFd(nick);
-
+	_users[fd]->removeChannel(channelId);
 	_channels[channelId]->removeUser(fd);
 }
 
