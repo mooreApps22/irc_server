@@ -5,27 +5,7 @@
 #include <vector>
 #include <string>
 
-/* 
-		Once a user has joined a channel, they receive notice about all
-	   commands their server receives which affect the channel.  This
-	   includes MODE, KICK, PART, QUIT and of course PRIVMSG/NOTICE.  The
-	   JOIN command needs to be broadcast to all servers so that each server
-	   knows where to find the users who are on the channel.  This allows
-	   optimal delivery of PRIVMSG/NOTICE messages to the channel.
 
-	   If a JOIN is successful, the user is then sent the channel's topic
-	   (using RPL_TOPIC) and the list of users who are on the channel (using
-	   RPL_NAMREPLY), which must include the user joining.
-*/
-
-/*
-	4.2.2 Invite Only Flag
-   When the channel flag 'i' is set, new members are only accepted if
-   their mask matches Invite-list (See section 4.3.2) or they have been
-   invited by a channel operator.  This flag also restricts the usage of
-   the INVITE command (See "IRC Client Protocol" [IRC-CLIENT]) to
-   channel operators.
-*/
 void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 {
 	Logger::log(INFO,  parsed_msg.command + " received.");
@@ -78,43 +58,50 @@ void	CommandHandler::_joinFp(parsed_message& parsed_msg)
 
 			new_channel = true;
 		}
-		
-		channelName = _srvAPI.getChannelName(channelId);
-		std::cout << "Name given: " << *chIt << ", ChannelName: " << channelName << ", channelId: " << channelId << std::endl;
-		if (_srvAPI.doesChannelHaveLimit(channelId) && _srvAPI.isChannelFull(channelId))
-		{
-			replyMessage = build_reply(SERVER_NAME, ERR_CHANNELISFULL, userNickname, channelName, "Cannot join channel (+l)");
-			_srvAPI.send_reply(replyMessage);
-			continue ;
-		}
 
-		if (_srvAPI.isChannelPasswordProtected(channelId))
+		channelName = _srvAPI.getChannelName(channelId);
+
+		if (!new_channel)
 		{
-			bool password = false;
-			if (keyIt != keyNames.end())
+			if (_srvAPI.isChannelUser(channelId))
+			{	
+				std::cout << "The user is already member of this channel!" << std::endl;
+				continue ;}
+			
+			if (_srvAPI.doesChannelHaveLimit(channelId) && _srvAPI.isChannelFull(channelId))
 			{
-				password = _srvAPI.isChannelPasswordValid(channelId, *keyIt);
-				keyIt++;
-			}
-			if (!password)
-			{
-				replyMessage = build_reply(SERVER_NAME, ERR_BADCHANNELKEY, userNickname, channelName, "Cannot join channel (+k)");
+				replyMessage = build_reply(SERVER_NAME, ERR_CHANNELISFULL, userNickname, channelName, "Cannot join channel (+l)");
 				_srvAPI.send_reply(replyMessage);
 				continue ;
 			}
-		}
-	
-		if (_srvAPI.isChannelInviteOnly(channelId) && !_srvAPI.isUserInvited(channelId))
-		{
-			replyMessage = build_reply(SERVER_NAME, ERR_INVITEONLYCHAN, userNickname, channelName, "Cannot join channel (+i)");
-			_srvAPI.send_reply(replyMessage);
-			continue ;				
-		} else if (_srvAPI.isUserInvited(channelId))
-		{
-			_srvAPI.promoteChannelInvitee(channelId);
+
+			if (_srvAPI.isChannelPasswordProtected(channelId))
+			{
+				bool password = false;
+				if (keyIt != keyNames.end())
+				{
+					password = _srvAPI.isChannelPasswordValid(channelId, *keyIt);
+					keyIt++;
+				}
+				if (!password)
+				{
+					replyMessage = build_reply(SERVER_NAME, ERR_BADCHANNELKEY, userNickname, channelName, "Cannot join channel (+k)");
+					_srvAPI.send_reply(replyMessage);
+					continue ;
+				}
+			}
+
+			if (_srvAPI.isChannelInviteOnly(channelId) && !_srvAPI.isUserInvited(channelId))
+			{
+				replyMessage = build_reply(SERVER_NAME, ERR_INVITEONLYCHAN, userNickname, channelName, "Cannot join channel (+i)");
+				_srvAPI.send_reply(replyMessage);
+				continue ;				
+			}
 		}
 
-		if (!_srvAPI.isChannelUser(channelId))
+		if (_srvAPI.isUserInvited(channelId))
+			_srvAPI.promoteChannelInvitee(channelId);
+		else
 		{
 			_srvAPI.addUserToChannel(channelId);
 			if (new_channel)
