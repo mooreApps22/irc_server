@@ -34,14 +34,13 @@ void	Server::addChannel(const std::string& channelName)
 {
 	std::string channelId = Parser::toLower(channelName);
 	_channels[channelId] = new Channel(channelName);
+	Logger::log(DEBUG, "Added a new channel", channelName);
 }
 
 void	Server::removeChannel(const std::string& channelId)
 {
 	delete _channels[channelId];
 	_channels.erase(channelId);
-	if (!_channels[channelId])
-		std::cout << "The channel was deleted!!!" << std::endl;
 }
 
 void	Server::addUserToChannel(const std::string& channelId)
@@ -149,6 +148,9 @@ void	Server::removeUserFromChannel(const std::string& channelId)
 {
 	_users[_client_fd]->removeChannel(channelId);
 	_channels[channelId]->removeUser(_client_fd);
+	
+	if (_channels[channelId]->isEmpty())
+		removeChannel(channelId);			// TODO remove from api and make it private
 }
 
 void	Server::removeUserFromChannel(const std::string& channelId, const std::string& nick)

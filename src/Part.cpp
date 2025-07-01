@@ -91,9 +91,6 @@ void	CommandHandler::_partFp(parsed_message& parsed_msg)
 		_srvAPI.send_reply(replyMessage);
 		_srvAPI.sendMessageToChannel(channelId, replyMessage);
 		_srvAPI.removeUserFromChannel(channelId);
-		std::cout << _srvAPI.getChannelUsersList(channelId) << std::endl;
-		if (_srvAPI.isChannelEmpty(channelId))
-			_srvAPI.removeChannel(channelId);
 	}
 	
 }
