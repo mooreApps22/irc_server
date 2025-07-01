@@ -1,12 +1,9 @@
-#ifndef SIGNAL_HPP
-#define SIGNAL_HPP
+#pragma once
 
 #include <csignal>
 
 namespace sig {
 	extern bool stop;
-	void signal_handler(int signal);
-	void set_signals();
+	void signalHandler(int signal);
+	void setSignals();
 }
-
-#endif
