@@ -2,3 +2,4 @@
 obj
 *.txt
 ircserv
+logs/
