@@ -20,15 +20,11 @@ void	CommandHandler::_passFp(const parsedMessage& parsedMsg) const
 	if(parsedMsg.params.size() != 1)
 	{
 		_srvAPI.sendReply(ERR_PASSWDMISMATCH(userNickname));
-		// _srvAPI.disconnectUser();
 		return ;
 	}
 
 	if(_srvAPI.isPasswordValid(parsedMsg.params.at(0)))
 		_srvAPI.setUserPasswordState(true);
 	else
-	{
 		_srvAPI.sendReply(ERR_PASSWDMISMATCH(userNickname));
-		// _srvAPI.disconnectUser();
-	}
 }
