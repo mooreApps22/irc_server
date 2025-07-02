@@ -1,86 +1,249 @@
 #include "Parser.hpp"
 #include "Logger.hpp"
-#include <iostream>
+#include "macros.hpp"
+#include <string>
+// #include <iostream>
 
 Parser::Parser()
 {
-	Logger::log(INFO, "Parser Constructor called.");
+	// Logger::log(INFO, "Parser Constructor called.");
 }
 
 Parser::~Parser()
 {
-	Logger::log(INFO, "Parser Destructor called.");
+	// Logger::log(INFO, "Parser Destructor called.");
 }
 
-bool Parser::is_partial(std::string& message)
-{
-	return message.find(CRLF) == std::string::npos;
-}
-
-int Parser::get_message_length(std::string& message)
-{
-	return message.find(CRLF) + 2;
-}
-
-bool Parser::parse_message(std::string& message, parsed_message& parsed_msg)
+bool Parser::parseMessage(std::string& message, parsedMessage& parsedMsg)
 {
 	std::string::iterator begin = message.begin();
 	_it = begin;
 
-	Logger::log(DEBUG, "Parsing", message);
-	return is_message(parsed_msg);
+	std::string messageSrippedCRLF(message.begin(), message.end() - 2);
+	Logger::log(INFO, ">>>>>>>", messageSrippedCRLF);
+	return isMessage(parsedMsg);
 }
 
-// message    =  [ ":" prefix SPACE ] command [ params ] crlf
-bool Parser::is_message(parsed_message& parsed_msg)
+/*
+	Message grammar
+*/
+
+// message	=  [ ":" prefix SPACE ] command [ params ] crlf
+bool Parser::isMessage(parsedMessage& parsedMsg)
 {
 	std::string::iterator begin = _it;
-	
 
-	Logger::log(DEBUG, "In is_message().");
-	if (is_colon())
+	if (isColon())
 	{
-		Logger::log(DEBUG, "About to enter is_prefix().");
-		if (!is_prefix(parsed_msg))
+		if (!isPrefix(parsedMsg))
 		 	return false;
-		if (!is_space())
+		if (!isSpace())
 			return false;
 	}
 	else
 		_it = begin;
 
-	if (!is_command(parsed_msg))
+	if (!isCommand(parsedMsg))
 		return false;
 
 	begin = _it;
-	if (!is_params(parsed_msg))
+	if (!isParams(parsedMsg))
 		_it = begin;
 	
-	if (!is_crlf())
-		return false;
+// 	if (!isCRLF())
+// 		return false;
 	return true;
 }
 
-bool Parser::is_colon()
+bool Parser::isColon()
 {
 	return *_it++ == ':';
 }
 
-// prefix     =  servername / ( nickname [ [ "!" user ] "@" host ] )
-bool Parser::is_prefix(parsed_message& parsed_msg)
+// prefix	 =  servername / ( nickname [ [ "!" user ] "@" host ] )
+bool Parser::isPrefix(parsedMessage& parsedMsg)
 {
-	(void)parsed_msg;
+	(void)parsedMsg;
 	return (false);
 }
 
-// SPACE      =  %x20        ; space character
-bool Parser::is_space()
+// SPACE	  =  %x20		; space character
+bool Parser::isSpace()
 {
 	return *_it++ == ' ';
 }
 
-// command    =  1*letter / 3digit ; 1 or more letter OR eactly 3 digit
-bool Parser::is_command(parsed_message& parsed_msg)
+// params	 =  *14( SPACE middle ) [ SPACE ":" trailing ]
+//			=/ 14( SPACE middle ) [ SPACE [ ":" ] trailing ]
+bool Parser::isParams(parsedMessage& parsedMsg)
+{
+	std::string::iterator begin;
+	std::string::iterator backtrack;
+	int i;
+	
+	for(i = 0; i < 14; i++)
+	{
+		begin = _it;
+		if (!isSpace())
+		{
+			_it = begin;
+			break;
+		}
+		if (!isMiddle(parsedMsg))
+		{
+			_it = begin;
+			break;
+		}
+	}
+
+	begin = _it;
+	if (!isSpace())
+	{
+		_it = begin;
+		return true;
+	}
+	if ( parsedMsg.params.size() < 14)
+	{
+		if (!isColon())
+		{
+			_it = begin;
+			return true;
+		}
+	}
+	else
+	{
+		backtrack = _it;
+		if (!isColon())
+			_it = backtrack;
+	}
+
+	backtrack = _it;
+	if (!isTrailing(parsedMsg))
+		_it = begin;
+
+	return true;
+}
+
+// middle	 =  nospcrlfcl *( ":" / nospcrlfcl )
+bool Parser::isMiddle(parsedMessage& parsedMsg)
+{
+	std::string::iterator begin = _it;
+	std::string::iterator checkpoint;
+
+	if (!isNospcrlfcl())
+		return false;
+
+	while (true)
+	{
+		checkpoint = _it;
+		if (!isColon())
+		{
+			_it = checkpoint;
+			if (!isNospcrlfcl())
+			{
+				_it = checkpoint;
+				break;
+			}
+		}
+	}
+	std::string param(begin, _it);
+	parsedMsg.params.push_back(param);
+	// Logger::log(DEBUG, "Param", param);
+	return true;
+}
+
+// nospcrlfcl =  %x01-09 / %x0B-0C / %x0E-1F / %x21-39 / %x3B-FF ; any octet except NUL, CR, LF, " " and ":"
+bool Parser::isNospcrlfcl()
+{
+	std::string::iterator begin = _it;
+	if (isNull())
+		return false;
+	_it = begin;
+
+	if (isCR())
+		return false;
+	_it = begin;
+
+	if (isLF())
+		return false;
+	_it = begin;
+
+	if (isSpace())
+		return false;
+	_it = begin;
+
+	return (!isColon());
+}
+
+bool Parser::isNull()
+{
+	return *_it++ == '\0';
+}
+
+bool Parser::isCR()
+{
+	return *_it++ == '\r';
+}
+
+bool Parser::isLF()
+{
+	return *_it++ == '\n';
+}
+
+// crlf	   =  %x0D %x0A   ; "carriage return" "linefeed"
+bool Parser::isCRLF()
+{
+	return isCR() && isLF();
+}
+
+// trailing   =  *( ":" / " " / nospcrlfcl ) ; 0 or more
+bool Parser::isTrailing(parsedMessage& parsedMsg)
+{
+	std::string::iterator begin = _it;
+	std::string::iterator backtrack;
+
+	while(true)
+	{
+		backtrack = _it;
+		if (!isColon())
+			_it= backtrack;
+		else
+			continue;
+		if (!isSpace())
+			_it = backtrack;
+		else
+			continue;
+		if (!isNospcrlfcl())
+		{
+			_it = backtrack;
+			break;
+		}
+	}
+
+	std::string trailing(begin, _it);
+	//  parsedMsg.trailing = trailing;
+	 parsedMsg.params.push_back(trailing);
+	// Logger::log(DEBUG, "Trailing", trailing);
+	return true;
+}
+
+
+/*
+	Helpers
+*/
+
+bool Parser::isPartial(std::string& message)
+{
+	return message.find(CRLF) == std::string::npos;
+}
+
+int Parser::getMessageLength(std::string& message)
+{
+	return message.find(CRLF) + 2;
+}
+
+// command	=  1*letter / 3digit ; 1 or more letter OR eactly 3 digit
+bool Parser::isCommand(parsedMessage& parsedMsg)
 {
 	std::string::iterator begin = _it;
 
@@ -92,8 +255,8 @@ bool Parser::is_command(parsed_message& parsed_msg)
 	if (_it > begin)
 	{
 		std::string command(begin, _it);
-		parsed_msg.command = command;
-		// Logger::log(DEBUG, "Command",  parsed_msg.command);
+		parsedMsg.command = command;
+		// Logger::log(DEBUG, "Command",  parsedMsg.command);
 		return true;
 	}
 	
@@ -103,211 +266,66 @@ bool Parser::is_command(parsed_message& parsed_msg)
 	if (_it > begin)
 	{
 		std::string command(begin, _it++);
-		 parsed_msg.command = command;
-		// Logger::log(DEBUG, "Command",  parsed_msg.command);
-		if ( parsed_msg.command.length() == 3)
-		{
+		 parsedMsg.command = command;
+		// Logger::log(DEBUG, "Command",  parsedMsg.command);
+		if ( parsedMsg.command.length() == 3)
 			return true;
-		}
 		else
 			return false;
 	}
 	return false;
 }
 
-// params     =  *14( SPACE middle ) [ SPACE ":" trailing ]
-//            =/ 14( SPACE middle ) [ SPACE [ ":" ] trailing ]
-bool Parser::is_params(parsed_message& parsed_msg)
-{
-	std::string::iterator begin;
-	std::string::iterator backtrack;
-	int i;
-	
-	for(i = 0; i < 14; i++)
-	{
-		begin = _it;
-		if (!is_space())
-		{
-			_it = begin;
-			break;
-		}
-		if (!is_middle(parsed_msg))
-		{
-			_it = begin;
-			break;
-		}
-	}
-
-	begin = _it;
-	if (!is_space())
-	{
-		_it = begin;
-		return true;
-	}
-	if ( parsed_msg.params.size() < 14)
-	{
-		if (!is_colon())
-		{
-			_it = begin;
-			return true;
-		}
-	}
-	else
-	{
-		backtrack = _it;
-		if (!is_colon())
-			_it = backtrack;
-	}
-
-	backtrack = _it;
-	if (!is_trailing(parsed_msg))
-		_it = begin;
-
-	return true;
-}
-
-// middle     =  nospcrlfcl *( ":" / nospcrlfcl )
-bool Parser::is_middle(parsed_message& parsed_msg)
-{
-	std::string::iterator begin = _it;
-	std::string::iterator checkpoint;
-
-	if (!is_nospcrlfcl())
-		return false;
-
-	while (true)
-	{
-		checkpoint = _it;
-		if (!is_colon())
-		{
-			_it = checkpoint;
-			if (!is_nospcrlfcl())
-			{
-				_it = checkpoint;
-				break;
-			}
-		}
-	}
-	std::string param(begin, _it);
-	 parsed_msg.params.push_back(param);
-	// Logger::log(DEBUG, "Param", param);
-	return true;
-}
-
-// nospcrlfcl =  %x01-09 / %x0B-0C / %x0E-1F / %x21-39 / %x3B-FF ; any octet except NUL, CR, LF, " " and ":"
-bool Parser::is_nospcrlfcl()
-{
-	std::string::iterator begin = _it;
-	if (is_null())
-		return false;
-	_it = begin;
-
-	if (is_cr())
-		return false;
-	_it = begin;
-
-	if (is_lf())
-		return false;
-	_it = begin;
-
-	if (is_space())
-		return false;
-	_it = begin;
-
-	return (!is_colon());
-}
-
-bool Parser::is_null()
-{
-	return *_it++ == '\0';
-}
-
-bool Parser::is_cr()
-{
-	return *_it++ == '\r';
-}
-
-bool Parser::is_lf()
-{
-	return *_it++ == '\n';
-}
-
-// crlf       =  %x0D %x0A   ; "carriage return" "linefeed"
-bool Parser::is_crlf()
-{
-	return is_cr() && is_lf();
-}
-
-bool Parser::is_servername()
-{
-	return false;
-}
-
-bool Parser::is_nickname()
-{
-	return false;
-}
-
-// trailing   =  *( ":" / " " / nospcrlfcl ) ; 0 or more
-bool Parser::is_trailing(parsed_message& parsed_msg)
-{
-	std::string::iterator begin = _it;
-	std::string::iterator backtrack;
-
-	while(true)
-	{
-		backtrack = _it;
-		if (!is_colon())
-			_it= backtrack;
-		else
-			continue;
-		if (!is_space())
-			_it = backtrack;
-		else
-			continue;
-		if (!is_nospcrlfcl())
-		{
-			_it = backtrack;
-			break;
-		}
-	}
-
-	std::string trailing(begin, _it);
-
-//	 parsed_msg.trailing = trailing;
-	 parsed_msg.params.push_back(trailing);
-	// Logger::log(DEBUG, "Trailing", trailing);
-	return true;
-}
-
 // nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
-// letter     =  %x41-5A / %x61-7A       ; A-Z / a-z
-// digit      =  %x30-39                 ; 0-9
-// special    =  %x5B-60 / %x7B-7D		 ; "[", "]", "\", "`", "_", "^", "{", "|", "}"
-bool	Parser::is_nickname(std::string& nickname)
+// letter	 =  %x41-5A / %x61-7A	   ; A-Z / a-z
+// digit	  =  %x30-39				 ; 0-9
+// special	=  %x5B-60 / %x7B-7D		 ; "[", "]", "\", "`", "_", "^", "{", "|", "}"
+bool	Parser::isNickname(std::string& nickname)
 {
 	std::string::iterator it = nickname.begin();
-	if (!std::isalpha(*it) && !Parser::is_special(it))
+	if (!std::isalpha(*it) && !Parser::isSpecial(it))
 		return false;
 	it++;
 	for(int i = 0; it != nickname.end(); i++, it++)
 	{
 		if (i == 8)
 			return false;
-		if(!std::isalnum(*it) && !Parser::is_special(it) && *it != '-')
+		if(!std::isalnum(*it) && !Parser::isSpecial(it) && *it != '-')
 			return false;
 	}	
 	return true;
 }
 
-bool	Parser::is_special(std::string::iterator it)
+bool	Parser::isSpecial(std::string::iterator it)
 {
 	return *it == '[' || *it == ']' || *it == '\\' || *it == '`' || *it == '_' || *it == '^' || *it == '{' || *it == '|' || *it == '}';
 }
 
-// <channel>    ::= ('#' | '&') <chstring>
+
+
+
+
+
+
+// bool Parser::is_servername()
+// {
+// 	return false;
+// }
+
+// bool Parser::isNickname()
+// {
+// 	return false;
+// }
+
+
+
+
+
+
+
+// <channel>	::= ('#' | '&') <chstring>
 // <chstring>   ::= <any 8bit code except SPACE, BELL, NUL, CR, LF and comma (',')>
-bool	Parser::is_channel(std::string& channel)
+bool	Parser::isChannel(std::string& channel)
 {
 	std::string::iterator it = channel.begin();
 
@@ -316,21 +334,21 @@ bool	Parser::is_channel(std::string& channel)
 	it++;
 	for(; it != channel.end(); it++)
 	{
-		if (!is_chstring(it))
+		if (!isChstring(it))
 			return false;
 	}
 	return true;
 }
 
-bool	Parser::is_chstring(std::string::iterator it)
+bool	Parser::isChstring(std::string::iterator it)
 {
 	return *it != ' ' && *it != 7 && *it != '\0' && *it != '\r' && *it != '\n' && *it != ',';
 }
 
 // msgtarget  =  msgto *( "," msgto )
-// msgto      =  channel / ( user [ "%" host ] "@" servername )
-// msgto      =/ ( user "%" host ) / targetmask
-// msgto      =/ nickname / ( nickname "!" user "@" host )
+// msgto	  =  channel / ( user [ "%" host ] "@" servername )
+// msgto	  =/ ( user "%" host ) / targetmask
+// msgto	  =/ nickname / ( nickname "!" user "@" host )
 std::vector<std::string> Parser::splitParam(const std::string& msgtarget, char delimiter)
 {
 	std::vector<std::string>	splitted;
