@@ -58,23 +58,23 @@
 - [x] The reference client must be able to connect to your server w/o error
 - [x] Use the TCP/IP protocol (v4 or v6)
 - Your server has to be similar to using an official IRC server, but you only have to implement:
-  - [ ] Must be able to authenticate
-  - [ ] Set a nickname
-  - [ ] Set a username
+  - [x] Must be able to authenticate
+  - [x] Set a nickname
+  - [x] Set a username
   - [ ] Join a channel
   - [ ] Send and receive private messages using your reference client
   - [ ] All the messages sent from one client to a channel have to be forwarded to every other client that joined the channel
   - [ ] You must have **operators** and regualr users
   - Command specific **channel operators**:
-    - [ ] KICK	- Eject a client from the channel
-    - [ ] INVITE	- Invite a client to a channel
-    - [ ] TOPIC	- Change or view the channel topic
-    - MODE	- Change the channels's Mode
-      - [ ] * i: Set/remove Invite-only channel
-      - [ ] * t: Set/remove the restrictins of the TOPIC command to channel operators
-      - [ ] * k: Set/remove the channel key (password)
-      - [ ] * o: Give/take channel operator privilege
-      - [ ] * l: Set/remove the user limit to channel
+	- [ ] KICK	- Eject a client from the channel
+	- [ ] INVITE	- Invite a client to a channel
+	- [ ] TOPIC	- Change or view the channel topic
+	- MODE	- Change the channels's Mode
+	  - [ ] * i: Set/remove Invite-only channel
+	  - [ ] * t: Set/remove the restrictins of the TOPIC command to channel operators
+	  - [ ] * k: Set/remove the channel key (password)
+	  - [ ] * o: Give/take channel operator privilege
+	  - [ ] * l: Set/remove the user limit to channel
 
 	  NOTE:
 		Channel Operator (aka chop) Powers
