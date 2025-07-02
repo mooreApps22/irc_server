@@ -13,15 +13,14 @@ void	CommandHandler::_passFp(const parsedMessage& parsedMsg) const
 
 	if(_srvAPI.isUserRegistered())
 	{
-		
-		_srvAPI.sendReply(ERR_ALREADYREGISTRED(userNickname)); // TODO test message!
+		_srvAPI.sendReply(ERR_ALREADYREGISTRED(userNickname));
 		return ;
 	}
 	
 	if(parsedMsg.params.size() != 1)
 	{
-		_srvAPI.sendReply(ERR_PASSWDMISMATCH(userNickname));  // TODO test
-		_srvAPI.disconnectUser();
+		_srvAPI.sendReply(ERR_PASSWDMISMATCH(userNickname));
+		// _srvAPI.disconnectUser();
 		return ;
 	}
 
@@ -29,7 +28,7 @@ void	CommandHandler::_passFp(const parsedMessage& parsedMsg) const
 		_srvAPI.setUserPasswordState(true);
 	else
 	{
-		_srvAPI.sendReply(ERR_PASSWDMISMATCH(userNickname)); // TODO test
-		_srvAPI.disconnectUser();	// TODO To finish disconnect user
+		_srvAPI.sendReply(ERR_PASSWDMISMATCH(userNickname));
+		// _srvAPI.disconnectUser();
 	}
 }
