@@ -1,17 +1,16 @@
 #include "CommandHandler.hpp"
+#include "IServerAPI.hpp"
 #include "macros.hpp"
 #include "Logger.hpp"
 #include <string>
 
 void	CommandHandler::_userFp(const parsedMessage& parsedMsg) const
 {
-// 	Logger::log(INFO,  parsedMsg.command + " received.");
-	
 	std::string	userNickname = _srvAPI.getUserNickname();
 	std::string	command = parsedMsg.command;
 	std::string username;
 	
-	if(userNickname == "*")
+	if(!_srvAPI.hasUserGivenNickname())
 	{
 		_srvAPI.sendReply(ERR_NONICKNAMEGIVEN(userNickname, command));
 		return ;
@@ -31,7 +30,7 @@ void	CommandHandler::_userFp(const parsedMessage& parsedMsg) const
 
 	username = parsedMsg.params.at(0);
 	_srvAPI.setUserUsername(username);
-	_srvAPI.setUserRegisteredStatus(true);
+	_srvAPI.setUserRegisteredStatus();
 
  	_srvAPI.sendReply(RPL_WELCOME(userNickname));
 	_srvAPI.sendReply(RPL_YOURHOST(userNickname));

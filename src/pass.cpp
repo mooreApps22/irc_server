@@ -1,4 +1,5 @@
 #include "CommandHandler.hpp"
+#include "IServerAPI.hpp"
 #include "Logger.hpp"
 #include "macros.hpp"
 #include <string>
@@ -6,8 +7,6 @@
 
 void	CommandHandler::_passFp(const parsedMessage& parsedMsg) const
 {
-	// Logger::log(INFO,  parsedMsg.command + " received.");
-	
 	std::string	userNickname = _srvAPI.getUserNickname();
 	std::string	command = parsedMsg.command;
 
@@ -24,7 +23,7 @@ void	CommandHandler::_passFp(const parsedMessage& parsedMsg) const
 	}
 
 	if(_srvAPI.isPasswordValid(parsedMsg.params.at(0)))
-		_srvAPI.setUserPasswordState(true);
+		_srvAPI.setUserPasswordGivenStatus();
 	else
 		_srvAPI.sendReply(ERR_PASSWDMISMATCH(userNickname));
 }

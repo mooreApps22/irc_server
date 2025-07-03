@@ -8,10 +8,10 @@ void	CommandHandler::_nickFp(const parsedMessage& parsedMsg) const
 {
 	std::string	userNickname = _srvAPI.getUserNickname();
 	std::string	command = parsedMsg.command;
-	std::string	new_nickname;
+	std::string	newNickname;
 	std::string user_identifier;
 
-	if (!_srvAPI.getUserPasswordState())
+	if (!_srvAPI.hasUserGivenPassword())
 	{
 		_srvAPI.sendReply(ERR_PASSWDMISMATCH(userNickname));
 		return ;
@@ -22,28 +22,27 @@ void	CommandHandler::_nickFp(const parsedMessage& parsedMsg) const
 		_srvAPI.sendReply(ERR_NONICKNAMEGIVEN(userNickname, command));
 		return ;
 	}
-	new_nickname = parsedMsg.params.at(0);
-// 	Logger::log(DEBUG, "Checking nickname correctness");
+	newNickname = parsedMsg.params.at(0);
 
-	if (!Parser::isNickname(new_nickname))
+	if (!Parser::isNickname(newNickname))
 	{
-		_srvAPI.sendReply(ERR_ERRONEUSNICKNAME(userNickname, new_nickname));
+		_srvAPI.sendReply(ERR_ERRONEUSNICKNAME(userNickname, newNickname));
 		return ;
 	}
 
-// 	Logger::log(DEBUG, "Checking nick uniqueness");
-	if (!_srvAPI.isNicknameUnique(new_nickname))
+	if (!_srvAPI.isNicknameUnique(newNickname))
 	{
-		if (new_nickname != userNickname)
-			_srvAPI.sendReply(ERR_NICKNAMEINUSE(userNickname, new_nickname));
-
+		if (newNickname != userNickname)
+			_srvAPI.sendReply(ERR_NICKNAMEINUSE(userNickname, newNickname));
 		return ;
 	}
 
 	if(_srvAPI.isUserRegistered())
 	{
 		user_identifier = _srvAPI.getUserIdentifier();
-		_srvAPI.sendToAll(NICK_RPL(user_identifier, new_nickname)); // TODO test only registered users!!!
+		_srvAPI.sendToAll(NICK_RPL(user_identifier, newNickname)); // TODO send only registered users
 	}
-	_srvAPI.setUserNickname(new_nickname);
+	_srvAPI.setUserNickname(newNickname);
+	if (!_srvAPI.hasUserGivenNickname())
+		_srvAPI.setUserNicknameGivenStatus();
 }
