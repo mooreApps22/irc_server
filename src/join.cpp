@@ -29,6 +29,7 @@ void	CommandHandler::_joinFp(const parsedMessage& parsedMsg) const
 	std::vector<std::string> channelNames = Parser::splitParam(channelParam, ',');
 	std::vector<std::string> keyNames = Parser::splitParam(keyParam, ',');
 
+
 	if (keyParam.empty())
 		keyNames.clear();
 
@@ -77,14 +78,14 @@ void	CommandHandler::_joinFp(const parsedMessage& parsedMsg) const
 				}
 			}
 
-			if (_srvAPI.isChannelInviteOnly(channelId) && !_srvAPI.isUserInvited(channelId))
+			if (_srvAPI.isChannelInviteOnly(channelId) && !_srvAPI.isUserInvitee(channelId))
 			{
 				_srvAPI.sendReply(ERR_INVITEONLYCHAN(userNickname, channelName));	// TODO test when mode +i
 				continue ;				
 			}
 		}
 
-		if (_srvAPI.isUserInvited(channelId))
+		if (_srvAPI.isUserInvitee(channelId))
 			_srvAPI.promoteChannelInvitee(channelId);
 		else
 		{
