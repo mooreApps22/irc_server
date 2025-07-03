@@ -31,7 +31,7 @@ class Parser
 		bool		isMessage(parsedMessage& parsedMsg);
 		bool		isColon();
 		bool		isPrefix(parsedMessage& parsedMsg);
-		// bool		is_servername();
+		// bool		isServername();
 		// bool		isNickname();
 		bool		isSpace();
 		bool		isCommand(parsedMessage& parsedMsg);
@@ -52,7 +52,7 @@ class Parser
 		Parser();
 		~Parser();
 
-		bool							parseMessage(std::string& message, parsedMessage& parsedMsg);
+		bool								parseMessage(std::string& message, parsedMessage& parsedMsg);
 
 		// Helpers
 		static bool							isPartial(std::string& message);
@@ -61,5 +61,4 @@ class Parser
 		static bool							isChannel(std::string& channel);
 		static std::vector<std::string>		splitParam(const std::string& msgtarget, char c);
 		static const std::string 			toLower(const std::string& string);
-
 };

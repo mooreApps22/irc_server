@@ -2,7 +2,6 @@
 #include "Logger.hpp"
 #include "macros.hpp"
 #include <string>
-// #include <iostream>
 
 Parser::Parser()
 {
@@ -67,10 +66,54 @@ bool Parser::isPrefix(parsedMessage& parsedMsg)
 	return (false);
 }
 
+// bool Parser::is_servername()
+// {
+// 	return false;
+// }
+
+// bool Parser::isNickname()
+// {
+// 	return false;
+// }
+
 // SPACE	  =  %x20		; space character
 bool Parser::isSpace()
 {
 	return *_it++ == ' ';
+}
+
+// command	=  1*letter / 3digit ; 1 or more letter OR eactly 3 digit
+bool Parser::isCommand(parsedMessage& parsedMsg)
+{
+	std::string::iterator begin = _it;
+
+	while(std::isalpha(*_it))
+	{
+		*_it = std::toupper(*_it);
+		_it++;
+	}
+	if (_it > begin)
+	{
+		std::string command(begin, _it);
+		parsedMsg.command = command;
+		// Logger::log(DEBUG, "Command",  parsedMsg.command);
+		return true;
+	}
+	
+	while(std::isdigit(*_it))
+		_it++;
+
+	if (_it > begin)
+	{
+		std::string command(begin, _it++);
+		 parsedMsg.command = command;
+		// Logger::log(DEBUG, "Command",  parsedMsg.command);
+		if ( parsedMsg.command.length() == 3)
+			return true;
+		else
+			return false;
+	}
+	return false;
 }
 
 // params	 =  *14( SPACE middle ) [ SPACE ":" trailing ]
@@ -232,6 +275,16 @@ bool Parser::isTrailing(parsedMessage& parsedMsg)
 	Helpers
 */
 
+bool	Parser::isSpecial(std::string::iterator it)
+{
+	return *it == '[' || *it == ']' || *it == '\\' || *it == '`' || *it == '_' || *it == '^' || *it == '{' || *it == '|' || *it == '}';
+}
+
+bool	Parser::isChstring(std::string::iterator it)
+{
+	return *it != ' ' && *it != 7 && *it != '\0' && *it != '\r' && *it != '\n' && *it != ',';
+}
+
 bool Parser::isPartial(std::string& message)
 {
 	return message.find(CRLF) == std::string::npos;
@@ -240,40 +293,6 @@ bool Parser::isPartial(std::string& message)
 int Parser::getMessageLength(std::string& message)
 {
 	return message.find(CRLF) + 2;
-}
-
-// command	=  1*letter / 3digit ; 1 or more letter OR eactly 3 digit
-bool Parser::isCommand(parsedMessage& parsedMsg)
-{
-	std::string::iterator begin = _it;
-
-	while(std::isalpha(*_it))
-	{
-		*_it = std::toupper(*_it);
-		_it++;
-	}
-	if (_it > begin)
-	{
-		std::string command(begin, _it);
-		parsedMsg.command = command;
-		// Logger::log(DEBUG, "Command",  parsedMsg.command);
-		return true;
-	}
-	
-	while(std::isdigit(*_it))
-		_it++;
-
-	if (_it > begin)
-	{
-		std::string command(begin, _it++);
-		 parsedMsg.command = command;
-		// Logger::log(DEBUG, "Command",  parsedMsg.command);
-		if ( parsedMsg.command.length() == 3)
-			return true;
-		else
-			return false;
-	}
-	return false;
 }
 
 // nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
@@ -296,33 +315,6 @@ bool	Parser::isNickname(std::string& nickname)
 	return true;
 }
 
-bool	Parser::isSpecial(std::string::iterator it)
-{
-	return *it == '[' || *it == ']' || *it == '\\' || *it == '`' || *it == '_' || *it == '^' || *it == '{' || *it == '|' || *it == '}';
-}
-
-
-
-
-
-
-
-// bool Parser::is_servername()
-// {
-// 	return false;
-// }
-
-// bool Parser::isNickname()
-// {
-// 	return false;
-// }
-
-
-
-
-
-
-
 // <channel>	::= ('#' | '&') <chstring>
 // <chstring>   ::= <any 8bit code except SPACE, BELL, NUL, CR, LF and comma (',')>
 bool	Parser::isChannel(std::string& channel)
@@ -338,11 +330,6 @@ bool	Parser::isChannel(std::string& channel)
 			return false;
 	}
 	return true;
-}
-
-bool	Parser::isChstring(std::string::iterator it)
-{
-	return *it != ' ' && *it != 7 && *it != '\0' && *it != '\r' && *it != '\n' && *it != ',';
 }
 
 // msgtarget  =  msgto *( "," msgto )
