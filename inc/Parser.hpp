@@ -2,7 +2,7 @@
 # include <string>
 # include <vector>
 
-typedef std::vector<std::string>::const_iterator paramsIt;
+// typedef std::vector<std::string>::const_iterator paramsIt;
 
 typedef struct parsedMessage
 {
