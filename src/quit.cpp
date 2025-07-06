@@ -22,7 +22,7 @@ void	CommandHandler::_quitFp(const parsedMessage& parsedMsg) const
 	{
 		if (_srvAPI.isChannelUser(*it))
 		{
-			_srvAPI.sendMessageToChannel(*it, QUIT_RPL(userID, userNickname,quitMessage));
+			_srvAPI.sendMessageToChannel(QUIT_RPL(userID, userNickname,quitMessage), *it);
 		}
 	}
 	_srvAPI.disconnectClientFromServer();
