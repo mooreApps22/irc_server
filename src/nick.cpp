@@ -1,5 +1,5 @@
 #include "CommandHandler.hpp"
-#include "IServerAPI.hpp"
+#include "Parser.hpp"
 #include "macros.hpp"
 #include "Logger.hpp"
 #include <string>
@@ -9,7 +9,7 @@ void	CommandHandler::_nickFp(const parsedMessage& parsedMsg) const
 	std::string	userNickname = _srvAPI.getUserNickname();
 	std::string	command = parsedMsg.command;
 	std::string	newNickname;
-	std::string user_identifier;
+	std::string userID;
 
 	if (!_srvAPI.hasUserGivenPassword())
 	{
@@ -30,7 +30,7 @@ void	CommandHandler::_nickFp(const parsedMessage& parsedMsg) const
 		return ;
 	}
 
-	if (!_srvAPI.isNicknameUnique(newNickname))
+	if (_srvAPI.doesNicknameExist(newNickname))
 	{
 		if (newNickname != userNickname)
 			_srvAPI.sendReply(ERR_NICKNAMEINUSE(userNickname, newNickname));
@@ -39,8 +39,8 @@ void	CommandHandler::_nickFp(const parsedMessage& parsedMsg) const
 
 	if(_srvAPI.isUserRegistered())
 	{
-		user_identifier = _srvAPI.getUserIdentifier();
-		_srvAPI.sendToAll(NICK_RPL(user_identifier, newNickname)); // TODO send only registered users
+		userID = _srvAPI.getUserIdentifier();
+		_srvAPI.sendToAll(NICK_RPL(userID, newNickname)); // TODO send only to channels
 	}
 	_srvAPI.setUserNickname(newNickname);
 	if (!_srvAPI.hasUserGivenNickname())
