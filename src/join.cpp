@@ -1,5 +1,5 @@
 #include "CommandHandler.hpp"
-#include "IServerAPI.hpp"
+#include "Parser.hpp"
 #include "macros.hpp"
 #include "Logger.hpp"
 #include <vector>
@@ -94,7 +94,7 @@ void	CommandHandler::_joinFp(const parsedMessage& parsedMsg) const
 				_srvAPI.promoteChannelMember(channelId);
 		}
 		_srvAPI.sendReply(JOIN_RPL(userID, channelName));
-		_srvAPI.sendMessageToChannel(channelId, JOIN_RPL(userID, channelName));
+		_srvAPI.sendMessageToChannel(JOIN_RPL(userID, channelName), channelId);
 
 		if (!_srvAPI.isChannelTopicSet(channelId))
 			_srvAPI.sendReply(RPL_NOTOPIC(userNickname, channelName));
