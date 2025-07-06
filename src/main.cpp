@@ -8,18 +8,17 @@
 
 /*
 	Server Terminal: ./ircserv 6667 password
-	
 	Client Terminal: nc -C 127.0.0.1 6667
 */
 
 int	main(int ac, char **av)
 {
-	Logger::log(INFO, "ircserv compiled.");
+	// Logger::log(INFO, "ircserv compiled.");
 	if (ac != 3) {
 		std::cerr << "Usage: ./ircserv <port> <password>" << std::endl;
 		return (1);
 	}
-	Logger::log(INFO, "port and password validated.");
+	// Logger::log(INFO, "port and password validated.");
 	const std::string	port(av[1]);
 	const std::string	password(av[2]);
 	Server server(port, password);
@@ -32,6 +31,7 @@ int	main(int ac, char **av)
 	{
 		std::cerr << "Exception catched: ";
 		std::cerr << e.what() << std::endl;
+		server.cleanUp();
 		return (1);
 	}
 	return (0);
