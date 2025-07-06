@@ -12,18 +12,11 @@ void	CommandHandler::_quitFp(const parsedMessage& parsedMsg) const
 	std::string	userID = _srvAPI.getUserIdentifier();
 	std::string	quitMessage;
 
-	User::channels clientChannels = _srvAPI.getUserChannels();
 
 	if (parsedMsg.params.size() == 1)
 		quitMessage = parsedMsg.params[0];
 
 	_srvAPI.sendReply(ERROR_RPL(userNickname, userHost));
-	for (User::channels::const_iterator it = clientChannels.begin(); it != clientChannels.end(); it++)
-	{
-		if (_srvAPI.isChannelUser(*it))
-		{
-			_srvAPI.sendMessageToChannel(QUIT_RPL(userID, userNickname,quitMessage), *it);
-		}
-	}
+	_srvAPI.sendMessageToChannelsWhereUser(QUIT_RPL(userID, userNickname,quitMessage));
 	_srvAPI.disconnectClientFromServer();
 }
