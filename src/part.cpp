@@ -1,5 +1,5 @@
 #include "CommandHandler.hpp"
-#include "IServerAPI.hpp"
+#include "Parser.hpp"
 #include "macros.hpp"
 #include "Logger.hpp"
 #include <vector>
@@ -76,7 +76,7 @@ void	CommandHandler::_partFp(const parsedMessage& parsedMsg) const
 		// Perform PART for this channel
 		//<userID> PART <channelName>
 		_srvAPI.sendReply(PART_RPL(userID, channelName, partMessage));
-		_srvAPI.sendMessageToChannel(channelId, PART_RPL(userID, channelName, partMessage));
+		_srvAPI.sendMessageToChannel(PART_RPL(userID, channelName, partMessage), channelId);
 		_srvAPI.removeUserFromChannel(channelId);
 	}
 }
