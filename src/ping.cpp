@@ -1,4 +1,5 @@
 #include "CommandHandler.hpp"
+#include "IServerAPI.hpp"
 #include "macros.hpp"
 #include <string>
 
