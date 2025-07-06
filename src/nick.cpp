@@ -40,7 +40,8 @@ void	CommandHandler::_nickFp(const parsedMessage& parsedMsg) const
 	if(_srvAPI.isUserRegistered())
 	{
 		userID = _srvAPI.getUserIdentifier();
-		_srvAPI.sendToAll(NICK_RPL(userID, newNickname)); // TODO send only to channels
+		_srvAPI.sendReply(NICK_RPL(userID, newNickname));
+		_srvAPI.sendMessageToChannelsWhereUser(NICK_RPL(userID, newNickname));
 	}
 	_srvAPI.setUserNickname(newNickname);
 	if (!_srvAPI.hasUserGivenNickname())
