@@ -68,10 +68,9 @@ void	CommandHandler::_privMsgFp(const parsedMessage& parsedMsg) const
 			}
 
 			channelName = _srvAPI.getChannelName(channelId);
-
-			_srvAPI.sendMessageToChannel(channelId, PRIVMSG_RPL(userID, channelName, message));
+			_srvAPI.sendMessageToChannel(PRIVMSG_RPL(userID, channelName, message), channelId);
 			// if (_srvAPI.isChannelUser(channelId))
-			// 	_srvAPI.sendMessageToChannel(channelId, PRIVMSG_RPL(userID, channelName, message));
+			// 	_srvAPI.sendMessageToChannel(PRIVMSG_RPL(userID, channelName, message), channelId);
 			// else
 			// {
 			// 	replyMessage = buildReply(SERVER_NAME,
