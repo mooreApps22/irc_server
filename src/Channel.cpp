@@ -1,88 +1,69 @@
-#include "../inc/Channel.hpp"
-#include "../inc/User.hpp"
+#include "Channel.hpp"
+#include "Logger.hpp"
 #include <string>
-#include <iostream>
-#include <map>
+
 
 Channel::Channel(const std::string& name)
 	:	_name(name),
-		_topic(""),
 		_key(""),
-		_user_limit(0),
-		_mode_invite_only(false),
-		_mode_topic_restricted(false),
-		_mode_has_key(false),
-		_mode_has_limit(false)
+		_userLimit(0),
+		_topic(""),
+		_inviteMode(false),
+		_topicMode(false)
 {
-	Logger::log(INFO, "Channel has been created.)", _name);
-	if (_name[0] != '#')
-		throw hashSymbolException();
+	// Logger::log(INFO, "Channel has been created.)", _name);
 }
 
-Channel::Channel(const Channel& other) : _name(other._name)
-{
-	*this = other;
-}
+// Channel::Channel(const Channel& other) : _name(other._name)
+// {
+// 	*this = other;
+// }
 
-Channel& Channel::operator=(const Channel& other)
-{
-	if (this != &other)
-	{
-		_topic = other._topic;
-		_key = other._key;
-		_user_limit = other._user_limit;
-		_mode_invite_only = other._mode_invite_only;
-		_mode_topic_restricted = other._mode_topic_restricted;
-		_mode_has_key = other._mode_has_key;
-		_mode_has_limit = other._mode_has_limit;
-	}
-	return (*this);
-}
+// Channel& Channel::operator=(const Channel& other)
+// {
+// 	if (this != &other)
+// 	{
+// 		_topic = other._topic;
+// 		_key = other._key;
+// 		_userLimit = other._userLimit;
+// 		_inviteMode = other._inviteMode;
+// 		_topicMode = other._topicMode;
+// 		_keyMode = other._keyMode;
+// 		_limitMode = other._limitMode;
+// 	}
+// 	return (*this);
+// }
 
-// Getters
-const std::string&	Channel::getName() const
+Channel::~Channel()
 {
-	return(_name);	
-}
 
-const std::string&	Channel::getTopic() const
-{
-	return(_topic);	
 }
-
-const std::string&	Channel::getKey() const
-{
-	return(_key);	
-}
-
-bool	Channel::isTopicSet() const
-{
-	return (_topic.size() > 0);
-}
-
 /*
-std::string	Channel::getKey() const
-{
-	return(_key);	
-}
+	Getters
 */
 
-bool	Channel::isKeyValid(const std::string& key) const
+const std::string&	Channel::getName() const
 {
-	return (_key == key);
+	return (_name);	
 }
 
-size_t	Channel::getUserLimit() const
+const std::vector<int>	Channel::getMembersIdList() const
 {
-	return(_user_limit);	
+	std::vector<int>	users;
+	for(usersIt it = _users.begin(); it != _users.end(); it++)
+	{
+		if(it->second.second > INVITEE)
+			users.push_back(it->first);
+	}
+	return (users);
 }
 
-const std::string	Channel::getUsersList(int fd) const
+const std::string	Channel::getMembersNicknamesList(int fd) const
 {
 	std::string	list = "";
 	std::string	user = "";
 
-	for(std::map<int, std::pair<User*, Membership> >::const_iterator it = _users.begin(); it != _users.end(); it++)
+	for(usersIt it = _users.begin(); it != _users.end(); it++)
 	{
 		if (it->first != fd && it->second.second > INVITEE)
 		{
@@ -97,45 +78,76 @@ const std::string	Channel::getUsersList(int fd) const
 				user+= "@";
 			user += it->second.first->getNickname();
 		}
-	}	
-	return user + list;
-}
-
-const std::vector<int>	Channel::getUsers() const
-{
-	std::vector<int>	users;
-	for(std::map<int, std::pair<User*, Membership> >::const_iterator it = _users.begin(); it != _users.end(); it++)
-	{
-		if(it->second.second > INVITEE)
-			users.push_back(it->first);
 	}
-	return (users);
+	return (user + list);
 }
 
-bool	Channel::isInviteOnly() const
+const std::string&	Channel::getKey() const
 {
-	return (_mode_invite_only);	
+	return (_key);	
 }
 
-bool	Channel::isTopicRestricted() const
+size_t	Channel::getUserLimit() const
 {
-	return (_mode_topic_restricted);	
+	return (_userLimit);	
 }
 
-bool	Channel::needsChannelKey() const
+const std::string&	Channel::getTopic() const
 {
-	return (_mode_has_key);	
+	return (_topic);
 }
 
-bool	Channel::hasUserLimit() const
+bool	Channel::isInviteMode() const
 {
-	return (_mode_has_limit);	
+	return (_inviteMode);	
 }
 
-size_t	Channel::getNumberUsers() const
+bool	Channel::isKeyMode() const
+{
+	return (!_key.empty());
+	// return (_keyMode);	
+}
+
+bool	Channel::isLimitMode() const
+{
+	return (_userLimit > 0);	
+}
+
+bool	Channel::isTopicMode() const
+{
+	return (_topicMode);	
+}
+
+bool	Channel::isKeyValid(const std::string& key) const
+{
+	return (_key == key);
+}
+
+bool	Channel::isMembersFull() const
+{
+	size_t count = getNumberMembers();
+	return (count > 0 && count >= _userLimit);
+}
+
+bool	Channel::isMembersEmpty() const
+{
+	return (getNumberMembers() == 0);
+}
+
+bool	Channel::isEmpty() const
+{
+	return (_users.empty());
+}
+
+bool	Channel::isTopicSet() const
+{
+	return (!_topic.empty());
+}
+
+size_t	Channel::getNumberMembers() const
 {
 	size_t count = 0;
-	for(std::map<int, std::pair<User*, Membership> >::const_iterator it = _users.begin(); it != _users.end(); it++)
+	for(usersIt it = _users.begin(); it != _users.end(); it++)
 	{
 		if (it->second.second > INVITEE)
 			count++;
@@ -143,67 +155,57 @@ size_t	Channel::getNumberUsers() const
 	return (count);
 }
 
-bool	Channel::isFull() const
-{
-	size_t count = getNumberUsers();
-	return (count > 0 && count >= _user_limit);
-}
 
-bool	Channel::isEmpty() const
-{
-	return (getNumberUsers() == 0);
-}
-
-// Setters
-void	Channel::setTopic(const std::string& topic)
-{
-	Logger::log(DEBUG, "is setTopic() being called?");
-	_topic = topic;
-}
-
-void	Channel::setInviteOnly(bool state)
-{
-	_mode_invite_only = state;
-}
-
-void	Channel::setTopicRestricted(bool state)
-{
-	_mode_topic_restricted = state;
-}
+/*
+	Setters
+*/
 
 void	Channel::setKey(const std::string& key)
 {
-	_mode_has_key = true;
+	// _keyMode = true;
 	_key = key;
-}
-
-void	Channel::clearKey()
-{
-	_mode_has_key = false;
-	_key.clear();
 }
 
 void	Channel::setUserLimit(size_t limit)
 {
-	_mode_has_limit = true;	
-	_user_limit = limit;
+	// _limitMode = true;	
+	_userLimit = limit;
 }
 
-void	Channel::clearUserLimit()
+void	Channel::setTopic(const std::string& topic)
 {
-	_mode_has_limit = false;	
-	_user_limit = 0;
+	// Logger::log(DEBUG, "is setTopic() being called?");
+	_topic = topic;
 }
 
-// Membership
-void	Channel::addMember(int user_fd, User* user)
+void	Channel::clearKey()
 {
-	_users[user_fd] = std::pair<User*, Membership>(user, MEMBER);
+	// _keyMode = false;
+	_key.clear();
 }
 
-bool	Channel::isMember(int userFd)
+void	Channel::setInviteMode(bool state)
 {
-	std::map<int, std::pair<User*, Membership> >::iterator it = _users.find(userFd);
+	_inviteMode = state;
+}
+
+void	Channel::setTopicMode(bool state)
+{
+	_topicMode = state;
+}
+
+/*
+	Membership
+*/
+
+void	Channel::addMember(int userFd, User* user)
+{
+	_users[userFd] = std::pair<User*, Membership>(user, MEMBER);
+}
+
+bool	Channel::isUserMember(int userFd) const
+{
+	usersIt	it = _users.find(userFd);
 	
 	if (it == _users.end())
 		return (false);
@@ -211,20 +213,19 @@ bool	Channel::isMember(int userFd)
 		return (it->second.second == MEMBER);
 }
 
-// Operators
+
+/*
+	Operators
+*/
+
 void	Channel::promoteMember(int userFd)
 {
-	_users[userFd].second = OPERATOR;
+	_users.at(userFd).second = OPERATOR;
 }
 
-void	Channel::demoteOperator(int userFd)
+bool	Channel::isUserOperator(int userFd) const
 {
-	_users[userFd].second = MEMBER;
-}
-
-bool	Channel::isOperator(int userFd)
-{
-	std::map<int, std::pair<User*, Membership> >::iterator it = _users.find(userFd);
+	usersIt	it = _users.find(userFd);
 	
 	if (it == _users.end())
 		return (false);
@@ -232,38 +233,46 @@ bool	Channel::isOperator(int userFd)
 		return (it->second.second == OPERATOR);
 }
 
-// Invitations
+void	Channel::demoteOperator(int userFd)
+{
+	_users.at(userFd).second = MEMBER;
+}
+
+/*
+	Invitations
+*/
+
 void	Channel::addInvitee(int userFd, User* user)
 {
 	_users[userFd] = std::pair<User*, Membership>(user, INVITEE);
 }
 
-void	Channel::promoteInvitee(int userFd)
+bool	Channel::isChannelInvitee(int userFd) const
 {
-	_users[userFd].second = MEMBER;
-}
+	usersIt it = _users.find(userFd);
 
-bool	Channel::isInvitee(int userFd)
-{
-	std::map<int, std::pair<User*, Membership> >::iterator it = _users.find(userFd);
-	
 	if (it == _users.end())
 		return (false);
 	else
 		return (it->second.second == INVITEE);
 }
 
+void	Channel::promoteInvitee(int userFd)
+{
+	_users.at(userFd).second = MEMBER;
+}
+
 void	Channel::removeUser(int userFd)
 {
+	_users.at(userFd).first->removeChannel(_name);
 	_users.erase(userFd);
 }
 
-const char*	Channel::hashSymbolException::what() const throw()
+void	Channel::removeAllUsers()
 {
-	return ("Channel names have to begin with a '#'!");
+	for(usersIt it = _users.begin(); it != _users.end(); it++)
+	{
+		removeUser(it->first);
+	}
 }
 
-void	Channel::setHasLimit(bool state)
-{
-	_mode_has_limit = state;
-}
