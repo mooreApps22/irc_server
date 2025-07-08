@@ -2,24 +2,26 @@
 # include <string>
 # include <vector>
 
-// typedef std::vector<std::string>::const_iterator paramsIt;
+
 
 typedef struct parsedMessage
 {
+	typedef std::vector<std::string>::const_iterator paramsIt;
 	// std::string					prefix;
 	std::string					command;
 	std::vector<std::string>	params;
 	//	std::string					trailing;
 	
-	// paramsIt getParamsBegin() const
-	// {
-	// 	return params.begin();
-	// }
+	paramsIt getParamsBegin() const
+	{
+		return (params.begin());
+	}
 
-	// paramsIt getParamsEnd()
-	// {
-	// 	return params.end();
-	// }
+	paramsIt getParamsEnd() const
+	{
+		return (params.end());
+	}
+
 }	parsedMessage;
 
 class Parser
