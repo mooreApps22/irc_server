@@ -20,7 +20,7 @@ bool Parser::parseMessage(std::string& message, parsedMessage& parsedMsg)
 
 	std::string messageSrippedCRLF(message.begin(), message.end() - 2);
 	Logger::log(INFO, ">>>>>>>", messageSrippedCRLF);
-	return isMessage(parsedMsg);
+	return (isMessage(parsedMsg));
 }
 
 /*
@@ -35,28 +35,28 @@ bool Parser::isMessage(parsedMessage& parsedMsg)
 	if (isColon())
 	{
 		if (!isPrefix(parsedMsg))
-		 	return false;
+		 	return (false);
 		if (!isSpace())
-			return false;
+			return (false);
 	}
 	else
 		_it = begin;
 
 	if (!isCommand(parsedMsg))
-		return false;
+		return (false);
 
 	begin = _it;
 	if (!isParams(parsedMsg))
 		_it = begin;
 	
 // 	if (!isCRLF())
-// 		return false;
-	return true;
+// 		return (false);
+	return (true);
 }
 
 bool Parser::isColon()
 {
-	return *_it++ == ':';
+	return (*_it++ == ':');
 }
 
 // prefix	 =  servername / ( nickname [ [ "!" user ] "@" host ] )
@@ -68,18 +68,18 @@ bool Parser::isPrefix(parsedMessage& parsedMsg)
 
 // bool Parser::is_servername()
 // {
-// 	return false;
+// 	return (false);
 // }
 
 // bool Parser::isNickname()
 // {
-// 	return false;
+// 	return (false);
 // }
 
 // SPACE	  =  %x20		; space character
 bool Parser::isSpace()
 {
-	return *_it++ == ' ';
+	return (*_it++ == ' ');
 }
 
 // command	=  1*letter / 3digit ; 1 or more letter OR eactly 3 digit
@@ -97,7 +97,7 @@ bool Parser::isCommand(parsedMessage& parsedMsg)
 		std::string command(begin, _it);
 		parsedMsg.command = command;
 		// Logger::log(DEBUG, "Command",  parsedMsg.command);
-		return true;
+		return (true);
 	}
 	
 	while(std::isdigit(*_it))
@@ -109,11 +109,11 @@ bool Parser::isCommand(parsedMessage& parsedMsg)
 		 parsedMsg.command = command;
 		// Logger::log(DEBUG, "Command",  parsedMsg.command);
 		if ( parsedMsg.command.length() == 3)
-			return true;
+			return (true);
 		else
-			return false;
+			return (false);
 	}
-	return false;
+	return (false);
 }
 
 // params	 =  *14( SPACE middle ) [ SPACE ":" trailing ]
@@ -143,14 +143,14 @@ bool Parser::isParams(parsedMessage& parsedMsg)
 	if (!isSpace())
 	{
 		_it = begin;
-		return true;
+		return (true);
 	}
 	if ( parsedMsg.params.size() < 14)
 	{
 		if (!isColon())
 		{
 			_it = begin;
-			return true;
+			return (true);
 		}
 	}
 	else
@@ -164,7 +164,7 @@ bool Parser::isParams(parsedMessage& parsedMsg)
 	if (!isTrailing(parsedMsg))
 		_it = begin;
 
-	return true;
+	return (true);
 }
 
 // middle	 =  nospcrlfcl *( ":" / nospcrlfcl )
@@ -174,7 +174,7 @@ bool Parser::isMiddle(parsedMessage& parsedMsg)
 	std::string::iterator checkpoint;
 
 	if (!isNospcrlfcl())
-		return false;
+		return (false);
 
 	while (true)
 	{
@@ -192,7 +192,7 @@ bool Parser::isMiddle(parsedMessage& parsedMsg)
 	std::string param(begin, _it);
 	parsedMsg.params.push_back(param);
 	// Logger::log(DEBUG, "Param", param);
-	return true;
+	return (true);
 }
 
 // nospcrlfcl =  %x01-09 / %x0B-0C / %x0E-1F / %x21-39 / %x3B-FF ; any octet except NUL, CR, LF, " " and ":"
@@ -200,19 +200,19 @@ bool Parser::isNospcrlfcl()
 {
 	std::string::iterator begin = _it;
 	if (isNull())
-		return false;
+		return (false);
 	_it = begin;
 
 	if (isCR())
-		return false;
+		return (false);
 	_it = begin;
 
 	if (isLF())
-		return false;
+		return (false);
 	_it = begin;
 
 	if (isSpace())
-		return false;
+		return (false);
 	_it = begin;
 
 	return (!isColon());
@@ -220,23 +220,23 @@ bool Parser::isNospcrlfcl()
 
 bool Parser::isNull()
 {
-	return *_it++ == '\0';
+	return (*_it++ == '\0');
 }
 
 bool Parser::isCR()
 {
-	return *_it++ == '\r';
+	return (*_it++ == '\r');
 }
 
 bool Parser::isLF()
 {
-	return *_it++ == '\n';
+	return (*_it++ == '\n');
 }
 
 // crlf	   =  %x0D %x0A   ; "carriage return" "linefeed"
 bool Parser::isCRLF()
 {
-	return isCR() && isLF();
+	return (isCR() && isLF());
 }
 
 // trailing   =  *( ":" / " " / nospcrlfcl ) ; 0 or more
@@ -267,7 +267,7 @@ bool Parser::isTrailing(parsedMessage& parsedMsg)
 	//  parsedMsg.trailing = trailing;
 	 parsedMsg.params.push_back(trailing);
 	// Logger::log(DEBUG, "Trailing", trailing);
-	return true;
+	return (true);
 }
 
 
@@ -277,22 +277,22 @@ bool Parser::isTrailing(parsedMessage& parsedMsg)
 
 bool	Parser::isSpecial(std::string::iterator it)
 {
-	return *it == '[' || *it == ']' || *it == '\\' || *it == '`' || *it == '_' || *it == '^' || *it == '{' || *it == '|' || *it == '}';
+	return (*it == '[' || *it == ']' || *it == '\\' || *it == '`' || *it == '_' || *it == '^' || *it == '{' || *it == '|' || *it == '}');
 }
 
 bool	Parser::isChstring(std::string::iterator it)
 {
-	return *it != ' ' && *it != 7 && *it != '\0' && *it != '\r' && *it != '\n' && *it != ',';
+	return (*it != ' ' && *it != 7 && *it != '\0' && *it != '\r' && *it != '\n' && *it != ',');
 }
 
 bool Parser::isPartial(std::string& message)
 {
-	return message.find(CRLF) == std::string::npos;
+	return (message.find(CRLF) == std::string::npos);
 }
 
 int Parser::getMessageLength(std::string& message)
 {
-	return message.find(CRLF) + 2;
+	return (message.find(CRLF) + 2);
 }
 
 // nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
@@ -303,16 +303,16 @@ bool	Parser::isNickname(std::string& nickname)
 {
 	std::string::iterator it = nickname.begin();
 	if (!std::isalpha(*it) && !Parser::isSpecial(it))
-		return false;
+		return (false);
 	it++;
 	for(int i = 0; it != nickname.end(); i++, it++)
 	{
 		if (i == 8)
-			return false;
+			return (false);
 		if(!std::isalnum(*it) && !Parser::isSpecial(it) && *it != '-')
-			return false;
+			return (false);
 	}	
-	return true;
+	return (true);
 }
 
 // <channel>	::= ('#' | '&') <chstring>
@@ -322,14 +322,14 @@ bool	Parser::isChannel(std::string& channel)
 	std::string::iterator it = channel.begin();
 
 	if (*it != '#' && *it != '&')
-		return false;
+		return (false);
 	it++;
 	for(; it != channel.end(); it++)
 	{
 		if (!isChstring(it))
-			return false;
+			return (false);
 	}
-	return true;
+	return (true);
 }
 
 // msgtarget  =  msgto *( "," msgto )
@@ -351,7 +351,7 @@ std::vector<std::string> Parser::splitParam(const std::string& msgtarget, char d
 	}
 	element = msgtarget.substr(start, end - start);
 	splitted.push_back(element);
-	return (splitted);
+	return ((splitted));
 }
 
 const std::string Parser::toLower(const std::string& string)
@@ -361,5 +361,5 @@ const std::string Parser::toLower(const std::string& string)
 
 	for (std::string::const_iterator it = string.begin(); it != string.end(); it++)
 		toLower.push_back(std::tolower(*it));
-	return (toLower);
+	return ((toLower));
 }
