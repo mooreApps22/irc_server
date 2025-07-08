@@ -19,15 +19,15 @@ std::string Logger::_levelToString(LogLevel level)
 	switch (level)
 	{
 		case INFO:
-			return "INFO";
+			return ("INFO");
 		case WARN:
-			return "WARN";
+			return ("WARN");
 		case ERROR:
-			return "ERROR";
+			return ("ERROR");
 		case DEBUG:
-			return "DEBUG";
+			return ("DEBUG");
 		default:
-			return "UNKNOWN";
+			return ("UNKNOWN");
 	}
 }
 
