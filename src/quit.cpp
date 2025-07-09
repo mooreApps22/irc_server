@@ -2,6 +2,7 @@
 #include "Parser.hpp"
 #include "macros.hpp"
 #include "User.hpp"
+#include "Logger.hpp"
 #include <string>
 
 
@@ -11,7 +12,6 @@ void	CommandHandler::_quitFp(const parsedMessage& parsedMsg) const
 	std::string	userHost = _srvAPI.getUserHost();
 	std::string	userID = _srvAPI.getUserIdentifier();
 	std::string	quitMessage;
-
 
 	if (parsedMsg.params.size() == 1)
 		quitMessage = parsedMsg.params[0];

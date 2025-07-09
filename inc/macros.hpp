@@ -6,7 +6,7 @@
 
 // Server data
 #define SRV				"marvin@serverirc.42.fr"	// Server name
-#define VER				"v0.0"
+#define VER				"v0.0"						// Version
 #define DATE			"21/06/2025"				// Creation date
 #define UMOD			"o"							// User modes
 #define	CMOD			"iklot"						// Channel modes

@@ -24,8 +24,6 @@ class CommandHandler
 		void	_partFp(const parsedMessage& parsedMsg) const;
 		void	_quitFp(const parsedMessage& parsedMsg) const;
 
-		// Utils
-		// const std::string 	buildReply(const std::string& arg1, const std::string& arg2, const std::string& arg3 = "", const std::string arg4 = "", const std::string arg5 = "", const std::string arg6 = "") const;
 
 	public:
 		CommandHandler(IServerAPI& srvAPI);

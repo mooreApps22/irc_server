@@ -57,39 +57,42 @@ void	CommandHandler::_joinFp(const parsedMessage& parsedMsg) const
 			if (_srvAPI.isChannelUser(channelId))
 				continue ;
 			
-			if (_srvAPI.doesChannelHaveLimit(channelId) && _srvAPI.isChannelFull(channelId))
+			if (!_srvAPI.isChannelInviteMode(channelId) || !_srvAPI.isChannelInvitee(channelId))
 			{
-				_srvAPI.sendReply(ERR_CHANNELISFULL(userNickname, channelName));	// TODO test when mode +l
-				continue ;
-			}
-
-			if (_srvAPI.isChannelKeyProtected(channelId))
-			{
-				bool password = false;
-				if (keyIt != keyNames.end())
+				if (_srvAPI.isChannelKeyMode(channelId))
 				{
-					password = _srvAPI.isChannelKeyValid(channelId, *keyIt);
-					keyIt++;
+					bool password = false;
+					if (keyIt != keyNames.end())
+					{
+						password = _srvAPI.isChannelKeyValid(channelId, *keyIt);
+						keyIt++;
+					}
+					if (!password)
+					{
+						_srvAPI.sendReply(ERR_BADCHANNELKEY(userNickname, channelName));
+						continue ;
+					}
 				}
-				if (!password)
+
+				if (_srvAPI.isChannelInviteMode(channelId) && !_srvAPI.isChannelInvitee(channelId))
 				{
-					_srvAPI.sendReply(ERR_BADCHANNELKEY(userNickname, channelName));	// TODO test when mode +k
+					_srvAPI.sendReply(ERR_INVITEONLYCHAN(userNickname, channelName));
+					continue ;				
+				}
+
+				if (_srvAPI.isChannelLimitMode(channelId) && _srvAPI.isChannelFull(channelId))
+				{
+					_srvAPI.sendReply(ERR_CHANNELISFULL(userNickname, channelName));
 					continue ;
 				}
 			}
-
-			if (_srvAPI.isChannelInviteOnly(channelId) && !_srvAPI.isUserInvitee(channelId))
-			{
-				_srvAPI.sendReply(ERR_INVITEONLYCHAN(userNickname, channelName));	// TODO test when mode +i
-				continue ;				
-			}
 		}
 
-		if (_srvAPI.isUserInvitee(channelId))
+		if (_srvAPI.isChannelInvitee(channelId))
 			_srvAPI.promoteChannelInvitee(channelId);
 		else
 		{
-			_srvAPI.addUserToChannel(channelId);
+			_srvAPI.addMemberToChannel(channelId);
 			if (newChannel)
 				_srvAPI.promoteChannelMember(channelId);
 		}
@@ -99,11 +102,9 @@ void	CommandHandler::_joinFp(const parsedMessage& parsedMsg) const
 		if (!_srvAPI.isChannelTopicSet(channelId))
 			_srvAPI.sendReply(RPL_NOTOPIC(userNickname, channelName));
 		else
-			_srvAPI.sendReply(RPL_TOPIC(userNickname, channelName, _srvAPI.getChannelTopic(channelId)));	// TODO test when TOPIC is done
+			_srvAPI.sendReply(RPL_TOPIC(userNickname, channelName, _srvAPI.getChannelTopic(channelId)));
 
 		_srvAPI.sendReply(RPL_NAMREPLY(userNickname, channelName, _srvAPI.getChannelUsersList(channelId)));
-
-		
 		_srvAPI.sendReply(RPL_ENDOFNAMES(userNickname, channelName));
 	}
 }

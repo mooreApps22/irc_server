@@ -39,7 +39,7 @@ void	CommandHandler::_privMsgFp(const parsedMessage& parsedMsg) const
 		return ;
 	}
 
-// 	Logger::log(DEBUG, parsedMsg.command + " Parsing targets: ", parsedMsg.params.at(0));
+	// Logger::log(DEBUG, parsedMsg.command + " Parsing targets: ", parsedMsg.params.at(0));
 	targets = Parser::splitParam(parsedMsg.params.at(0), ',');
 	message = parsedMsg.params.at(1);
 
@@ -60,13 +60,14 @@ void	CommandHandler::_privMsgFp(const parsedMessage& parsedMsg) const
 		}
 		else if (Parser::isChannel(*msgto))
 		{
-			channelId = Parser::toLower(*msgto);
-			if (!_srvAPI.doesChannelExist(channelId))
+			
+			if (!_srvAPI.doesChannelExist(*msgto))
 			{
 				_srvAPI.sendReply(ERR_NOSUCHCHANNEL(userNickname, *msgto));
 				continue ;
 			}
 
+			channelId = Parser::toLower(*msgto);
 			channelName = _srvAPI.getChannelName(channelId);
 			_srvAPI.sendMessageToChannel(PRIVMSG_RPL(userID, channelName, message), channelId);
 			// if (_srvAPI.isChannelUser(channelId))

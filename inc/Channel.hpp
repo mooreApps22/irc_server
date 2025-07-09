@@ -24,7 +24,7 @@ class Channel
 		std::string			_topic;
 		bool				_inviteMode;	// i: set/remove Invite-only channel
 		bool				_topicMode;		// t: set/remove the restrictions of the topic command to ch-ops
-		// 									// o: give/take chop privilege
+		 									// o: give/take chop privilege
 
 		size_t					getNumberMembers() const;
 	

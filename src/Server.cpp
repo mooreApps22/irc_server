@@ -1,37 +1,76 @@
 #include "Server.hpp"
 #include "Logger.hpp"
 #include "signal.hpp"
-#include <iostream>
+#include "macros.hpp"
+#include "User.hpp"
+#include <sys/epoll.h>
 #include <netdb.h>
 #include <cstring>
-#include <errno.h>
-#include <sys/socket.h>
-#include <sys/epoll.h>
-#include <unistd.h>
-#include <string>
-
+#include <iostream>
 #include <arpa/inet.h>
-
-#define BACKLOG		10
-#define BUFFER_SIZE	1024
-#define MAX_EVENTS	10
+#include <vector>
+#include <string>
+#include <iostream>
 
 Server::Server(const std::string& port, const std::string& password)
 	:	_port(port),
 		_password(password),
-		_server_fd(-1),
-		_client_fd(-1),
-		_epoll_fd(-1),
+		_serverFd(-1),
+		_clientFd(-1),
+		_epollFd(-1),
 		_ch(*this)
 {
-	Logger::log(INFO, "Server Constructor called.");
-	sig::set_signals();
+	// Logger::log(INFO, "Server Constructor called.");
+	sig::setSignals();
 }
 
 Server::~Server()
 {
-	Logger::log(INFO, "Server Destructor called.");
-	clean_up();
+	// Logger::log(INFO, "Server Destructor called.");
+	cleanUp();
+}
+
+
+void Server::run(void)
+{
+	struct epoll_event	events[MAX_EVENTS];
+	int					nEvents;
+	std::string			message;
+
+	setup();
+
+	// Logger::log(DEBUG, "run() called.");
+	while (!sig::stop)	
+	{
+		nEvents = epoll_wait(_epollFd, events, MAX_EVENTS, 0);
+		if (nEvents == -1)
+			throw std::runtime_error("Events poll error.");
+
+		for (int i = 0; i < nEvents; i++)
+		{
+			if (events[i].data.fd == _serverFd)
+				acceptConnection();
+			else
+			{	
+				_clientFd = events[i].data.fd;
+				message = getMessage();
+				if (!message.empty())
+				{
+					parsedMessage	parsedMsg;
+
+					if (_parser.parseMessage(message, parsedMsg))
+					{
+						// 	Logger::log(DEBUG, "execute() called with the command: ", parsedMsg.command);
+						_ch.execute(parsedMsg);
+					}
+					else
+						Logger::log(INFO, "Command Syntax Error.", message);	
+				}
+			}
+		}
+	}
+	_ch.disconnectServer();
+	std::cout << "Server disconnected." << std::endl;
 }
 
 void Server::setup(void)
@@ -39,7 +78,7 @@ void Server::setup(void)
 	struct addrinfo hints;
 	struct addrinfo *res;
 
-	Logger::log(INFO, "Server Setup called.");
+	Logger::log(INFO, "setup() called.");
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
@@ -48,86 +87,80 @@ void Server::setup(void)
 
 	getaddrinfo(NULL, _port.c_str(), &hints, &res);
 
-	Logger::log(INFO, "TCP/IP data stored.");
-	_server_fd = socket(res->ai_family, res->ai_socktype | SOCK_NONBLOCK, res->ai_protocol);
-	if (_server_fd == -1)
+	// Logger::log(INFO, "TCP/IP data stored.");
+	_serverFd = socket(res->ai_family, res->ai_socktype | SOCK_NONBLOCK, res->ai_protocol);
+	if (_serverFd == -1)
+	{
+		freeaddrinfo(res);
 		throw std::runtime_error("Socket creation failed");
-	Logger::log(INFO, "_server_fd assigned.");
+	}
+	// Logger::log(INFO, "_serverFd assigned.");
 
-	if (bind(_server_fd, res->ai_addr, res->ai_addrlen) == -1)
+	if (bind(_serverFd, res->ai_addr, res->ai_addrlen) == -1)
+	{
+		freeaddrinfo(res);
 		throw std::runtime_error("Bind failed");
-	Logger::log(INFO, "_server_fd bind()ed to port.");
+	}
+	// Logger::log(INFO, "_serverFd bind()ed to port.");
 	freeaddrinfo(res);
 	
-	if (listen(_server_fd, BACKLOG) == -1)
+	if (listen(_serverFd, BACKLOG) == -1)
 		throw std::runtime_error("Listen failed");
-	Logger::log(INFO, "Server is listening to port.");
+	Logger::log(INFO, "Server is listening to port.", _port);
 	
-	_epoll_fd = epoll_create1(0);
-	if (_epoll_fd == -1)
-		throw std::runtime_error("The eevent poll could not be created.");
-	Logger::log(INFO, "Event poll created.");
-	if (register_fd(_server_fd) == -1)
+	_epollFd = epoll_create1(0);
+	if (_epollFd == -1)
+		throw std::runtime_error("The event poll could not be created.");
+	// Logger::log(INFO, "Event poll created.");
+	if (registerFd(_serverFd) == -1)
 		throw std::runtime_error("The listener could not be registered to the event poll.");
-	Logger::log(INFO, "Listener registered to the event poll.");
-	std::cout << "Server listening on port... " << std::endl;
+	// Logger::log(INFO, "Listener registered to the event poll.");
+	std::cout << "Server listening on port " << _port << std::endl;
 }
 
-void Server::run(void)
+void	Server::cleanUp(void)
 {
-	struct epoll_event	events[MAX_EVENTS];
-	int					n_events;
-	std::string			message;
-
-	setup();
-
-	Logger::log(DEBUG, "run() called.");
-	while (!sig::stop)	
+	if (_serverFd != -1)
 	{
-		n_events = epoll_wait(_epoll_fd, events, MAX_EVENTS, 0);
-		if (n_events == -1)
-			throw std::runtime_error("Events poll error.");
-
-		for (int i = 0; i < n_events; i++)
-		{
-			if (events[i].data.fd == _server_fd)
-				accept_connection();
-			else
-			{	
-				_client_fd = events[i].data.fd;
-				message = get_message();
-				if (!message.empty())
-				{
-					parsed_message	parsed_msg;
-
-					if (_parser.parse_message(message, parsed_msg))
-					{
-						Logger::log(DEBUG, "execute() called with the command: ", parsed_msg.command);
-						_ch.execute(parsed_msg);
-					}
-					else
-						Logger::log(INFO, "Command Syntax Error.", message);	
-				}
-			}
-		}
+		unregisterFd(_serverFd);
+		close(_serverFd);
 	}
+	if (_epollFd != -1)
+		close(_epollFd);
 }
 
-int	Server::register_fd(int fd)
+
+/*
+	Polling
+*/
+int	Server::registerFd(int fd) const
 {
 	struct epoll_event ev;
 	ev.events = EPOLLIN;
 	ev.data.fd = fd;
-	return epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, fd, &ev);
+	return (epoll_ctl(_epollFd, EPOLL_CTL_ADD, fd, &ev));
 }
 
-void Server::accept_connection()
+int	Server::unregisterFd(int fd) const
 {
-	struct sockaddr_storage	client_addr;
-	socklen_t				client_len = sizeof(client_addr);
+	struct epoll_event ev;
+	ev.events = EPOLLIN;
+	ev.data.fd = fd;
+	return (epoll_ctl(_epollFd, EPOLL_CTL_DEL, fd, &ev));
+}
 
-	_client_fd = accept(_server_fd, (struct sockaddr*)&client_addr, &client_len);
-	if (_client_fd == -1)
+
+/*
+	Clients
+*/
+
+void Server::acceptConnection()
+{
+	struct sockaddr_storage	clientAddr;
+	socklen_t				clientLen = sizeof(clientAddr);
+
+	_clientFd = accept(_serverFd, (struct sockaddr*)&clientAddr, &clientLen);
+	if (_clientFd == -1)
 	{
 		if (errno != EAGAIN && errno != EWOULDBLOCK)
 			throw std::runtime_error("Accept failed");
@@ -135,44 +168,47 @@ void Server::accept_connection()
 	else
 	{
 		char host[INET6_ADDRSTRLEN];
-		
 	
-		std::cout << "Client connected! fd: " << _client_fd << std::endl;
-		Logger::log(INFO, "Client connected! fd", _client_fd);
+		Logger::log(INFO, "Client connected! fd", _clientFd);
 
-		if (client_addr.ss_family == AF_INET) // IPv4
-			inet_ntop(AF_INET, &((struct sockaddr_in *)&client_addr)->sin_addr, host, sizeof host);
-		else	 // IPv6
-			inet_ntop(AF_INET6, &((struct sockaddr_in6 *)&client_addr)->sin6_addr, host, sizeof host);
+		if (clientAddr.ss_family == AF_INET) // IPv4
+			inet_ntop(AF_INET, &((struct sockaddr_in *)&clientAddr)->sin_addr, host, sizeof host);
+		else	 							// IPv6
+			inet_ntop(AF_INET6, &((struct sockaddr_in6 *)&clientAddr)->sin6_addr, host, sizeof host);
 
-		send(_client_fd, "Connection stablished!\n", 23, 0);
-		if (register_fd(_client_fd) == -1)
+		sendToClient("Connection stablished!", _clientFd);
+		if (registerFd(_clientFd) == -1)
 		{
-			send(_client_fd, "ERROR: error processing your request, please try again!\r\n", 51, 0);
-			close(_client_fd);
+			sendToClient("ERROR: error processing your request, please try again!", _clientFd);
+			close(_clientFd);
 		}
 		else
-			add_new_user(host);
+			addNewClient(host);
 	}
 }
 
-void Server::add_new_user(const std::string& host)
+void Server::addNewClient(const std::string& host)
 {
-	_users[_client_fd] = new User(host);	
+	_users[_clientFd] = new User(host);
 }
 
-std::string	Server::get_message()
+
+/*
+	Receiving data
+*/
+
+std::string	Server::getMessage() const
 {
 	User*		user;
 	std::string	message;
 	int			length;
 
-	user = _users[_client_fd];
+	user = _users.at(_clientFd);
 	message = peek();
 
 	if (!message.empty())
 	{			
-		if (_parser.is_partial(message))
+		if (Parser::isPartial(message))
 		{
 			message = receive(message.length());
 			user->buffer(message);
@@ -180,170 +216,196 @@ std::string	Server::get_message()
 		}
 		else
 		{
-			length = _parser.get_message_length(message);
-			message = user->get_partial_message();
+			length = Parser::getMessageLength(message);
+			message = user->getPartialMessage();
 			message.append(receive(length));
 		}
 	}
 	else
 	{
-		Logger::log(INFO, "Client disconnected!", _client_fd);
-		disconnectUser();
+		Logger::log(INFO, "Client disconnected!", _clientFd);
+		_ch.disconnectClient();
 	}
-	return message;
+
+	return (message);
 }
 
-std::string Server::peek()
+std::string Server::peek() const
 {
 	char	buffer[BUFFER_SIZE];
-	int		bytes_read;
+	int		bytesRead;
 
-	bytes_read = recv(_client_fd, buffer, sizeof(buffer) - 1, MSG_PEEK);
-	buffer[bytes_read] = '\0';
+	bytesRead = recv(_clientFd, buffer, sizeof(buffer) - 1, MSG_PEEK);
+	buffer[bytesRead] = '\0';
 
-	return buffer;
+	return (buffer);
 }
 
-std::string Server::receive(int length)
+std::string Server::receive(int length) const
 {
 	char	buffer[length + 1];
-	int		bytes_read;
+	int		bytesRead;
 
-	bytes_read = recv(_client_fd, buffer, length, 0);
-	buffer[bytes_read] = '\0';
+	bytesRead = recv(_clientFd, buffer, length, 0);
+	buffer[bytesRead] = '\0';
 
-	return buffer;
+	return (buffer);
 }
 
-int		Server::getUserFd(std::string nickname)
+
+/*
+	Sending data
+*/
+
+void	Server::sendToClient(const std::string& message, int userFd) const
 {
-	for (usrsIt it = _users.begin(); it != _users.end(); it++)
+	Logger::log(INFO, "<<<<<<<", message);
+
+	send(userFd, message.c_str(), message.length(), 0);
+	send(userFd, CRLF, 2, 0);
+}
+
+/*
+	Users and channels
+*/
+int		Server::getUserFd(std::string nickname) const
+{
+	for (clientsIt it = _users.begin(); it != _users.end(); it++)
 	{
-		if (it->second->getNickname() == nickname)
-			return it->first;
+		if (Parser::toLower(it->second->getNickname()) == Parser::toLower(nickname))
+			return (it->first);
 	}
-	return 0;
+	return (0);
 }
 
-void	Server::clean_up(void)
+void	Server::removeUserFromChannel(const std::string& channelId, int userFd)
 {
-	if (_server_fd != -1)
-		close(_server_fd);
-	if (_epoll_fd != -1)
-		close(_epoll_fd);
+	Channel* channel = _channels.at(channelId);
+	channel->removeUser(userFd);
+	if (channel->isMembersEmpty())
+		removeChannelFromServer(channelId);
 }
 
-/*
-	API methods related to server actions
-*/
-
-void	Server::send_reply(const std::string& reply)
+void	Server::removeUserFromServer(int clientFd)
 {
-	Logger::log(DEBUG, "Sending reply", reply);
-	send(_client_fd, reply.c_str(), reply.length(), 0);
-	send(_client_fd, CRLF, 2, 0);
+	if (clientFd == -1)
+		clientFd = _clientFd;
+
+	std::string channelId;
+	User* user = _users.at(clientFd);
+	for (User::channelsIt it = user->getChannelsBegin(); it != user->getChannelsEnd(); it = user->getChannelsBegin())
+	{
+		channelId = *it;
+		removeUserFromChannel(channelId, clientFd);
+	}
+	Logger::log(DEBUG, "Deleting user", user->getNickname());
+	delete user;
+	_users.erase(clientFd);
 }
 
-void	Server::sendToAll(const std::string& message)
+void	Server::removeChannelFromServer(const std::string& channelId)
 {
-	Logger::log(DEBUG, "Sending message to all users", message);
-	for (usrsIt it = getUsersBegin(); it != getUsersEnd(); it++)
-		sendToUser(message, it->first);
-}
-
-void	Server::sendToUser(const std::string& message, int user_fd)
-{
-	Logger::log(DEBUG, "Sending message to user", message);
-	send(user_fd, message.c_str(), message.length(), 0);
-	send(user_fd, CRLF, 2, 0);
-}
-
-void	Server::sendToUser(const std::string& message, std::string& nickname)
-{
-	Logger::log(DEBUG, "Sending message to user", message);
-	int user_fd = getUserFd(nickname);
-	sendToUser(message, user_fd);
-}
-
-void	Server::disconnectUser(void)
-{
-	close(_client_fd);
-	// TODO delete user from all channels (membership and invites)
-	delete _users[_client_fd];
-	_users.erase(_client_fd);
-}
-
-bool 	Server::isPasswordValid(const std::string& password)
-{
-	return _password == password;
-}
-
-/*
-	API methods related to user actions
-*/
-
-void	Server::setUserNick(const std::string& nickname)
-{
-	_users[_client_fd]->setNickname(nickname);
-}
-
-const std::string&	Server::getUserNick()
-{
-	return _users[_client_fd]->getNickname();
-}
-
-void	Server::setUserUsername(const std::string& username)
-{
-	_users[_client_fd]->setUsername(username);
-}
-
-const std::string	Server::getUserIdentifier()
-{
-	return _users[_client_fd]->getIdentifier();
-}
-
-void	Server::setUserRegisteredStatus(bool status)
-{
-	_users[_client_fd]->setRegisteredStatus(status);
-}
-
-bool 	Server::isUserRegistered()
-{
-	return _users[_client_fd]->isRegistered();
-}
-
-void 	Server::setUserPasswordState(bool state)
-{
-	_users[_client_fd]->setPasswordStatus(state);
-}
-
-bool 	Server::getUserPasswordState(void)
-{
-	return _users[_client_fd]->getPasswordStatus();
-}
-
-void	Server::setUserInvisibleMode(bool status)
-{
-	_users[_client_fd]->setInvisibleStatus(status);
-}
-
-bool	Server::isUserInvisible()
-{
-	return _users[_client_fd]->isInvisible();
-}
-
-usrsIt	Server::getUsersBegin(void)
-{
-	return _users.begin();
-}
-
-usrsIt	Server::getUsersEnd(void)
-{
-	return _users.end();
-}
-
-User*	Server::getUser()
-{
-	return (_users[_client_fd]);
-}
+	Channel*	channel = _channels.at(channelId);
 	
+	if (!channel->isEmpty())
+		channel->removeAllUsers();
+	
+	Logger::log(DEBUG, "Deleting channel", channelId);
+	delete channel;
+	_channels.erase(channelId);
+}
+
+
+/*
+	Server API
+*/
+
+void	Server::sendReply(const std::string& replyMessage) const
+{
+	sendToClient(replyMessage, _clientFd);
+}
+
+void	Server::sendToAll(const std::string& message) const
+{
+	for (clientsIt it = _users.begin(); it != _users.end(); it++)	// TODO only already registerd users!
+		sendToClient(message, it->first);
+}
+
+bool 	Server::isPasswordValid(const std::string& password) const
+{
+	return (_password == password);
+}
+
+bool	Server::doesNicknameExist(const std::string& nickname) const
+{
+	for (clientsIt it = _users.begin(); it != _users.end(); it++)
+	{
+		if(Parser::toLower(it->second->getNickname()) == Parser::toLower(nickname))
+			return (true);
+	}
+	return (false);
+}
+
+bool	Server::doesChannelExist(const std::string& channelName) const
+{
+	std::string	channelId = Parser::toLower(channelName);
+
+	for (channelsIt it = _channels.begin(); it != _channels.end(); it++)
+	{
+		if (it->first == channelId)
+			return (true);
+	}
+	return (false);
+}
+
+void	Server::addChannel(const std::string& channelName)
+{
+	std::string channelId = Parser::toLower(channelName);
+	_channels[channelId] = new Channel(channelName);
+}
+
+void	Server::disconnectClientFromServer(int clientFd)
+{
+	if (clientFd == -1)
+		clientFd = _clientFd;
+
+	unregisterFd(clientFd);
+	close(clientFd);
+	removeUserFromServer(clientFd);
+}
+
+void	Server::disconnectAllClientsFromServer()
+{
+	for(clientsIt it = _users.begin(); it != _users.end(); it = _users.begin())
+		disconnectClientFromServer(it->first);
+}
+
+
+void	Server::sendToTarget(const std::string& message, std::string& nickname) const
+{
+	// Logger::log(DEBUG, "Sending message to user", message);
+	int userFd = getUserFd(nickname);
+	sendToClient(message, userFd);
+}
+
+void	Server::sendMessageToChannel(const std::string& message, const std::string& channelId) const
+{
+	std::vector<int> users = _channels.at(channelId)->getMembersIdList();
+	for (std::vector<int>::const_iterator it = users.begin(); it != users.end(); it++)
+	{
+		if (*it != _clientFd)
+			sendToClient(message, *it);
+	}
+}
+
+void	Server::sendMessageToChannelsWhereUser(const std::string& message) const
+{
+	// User::channels clientChannels = getUserChannels(); // TODO
+	User* user = _users.at(_clientFd);
+	for (User::channelsIt it = user->getChannelsBegin(); it != user->getChannelsEnd(); it++)
+	// for (User::channels::const_iterator it = clientChannels.begin(); it != clientChannels.end(); it++)
+	{
+		if (isChannelUser(*it))
+			sendMessageToChannel(message, *it);
+	}
+}

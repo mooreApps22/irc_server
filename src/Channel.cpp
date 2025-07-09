@@ -1,5 +1,6 @@
 #include "Channel.hpp"
 #include "Logger.hpp"
+#include "Parser.hpp"
 #include <string>
 
 
@@ -14,30 +15,12 @@ Channel::Channel(const std::string& name)
 	// Logger::log(INFO, "Channel has been created.)", _name);
 }
 
-// Channel::Channel(const Channel& other) : _name(other._name)
-// {
-// 	*this = other;
-// }
-
-// Channel& Channel::operator=(const Channel& other)
-// {
-// 	if (this != &other)
-// 	{
-// 		_topic = other._topic;
-// 		_key = other._key;
-// 		_userLimit = other._userLimit;
-// 		_inviteMode = other._inviteMode;
-// 		_topicMode = other._topicMode;
-// 		_keyMode = other._keyMode;
-// 		_limitMode = other._limitMode;
-// 	}
-// 	return (*this);
-// }
-
 Channel::~Channel()
 {
 
 }
+
+
 /*
 	Getters
 */
@@ -105,7 +88,6 @@ bool	Channel::isInviteMode() const
 bool	Channel::isKeyMode() const
 {
 	return (!_key.empty());
-	// return (_keyMode);	
 }
 
 bool	Channel::isLimitMode() const
@@ -162,13 +144,11 @@ size_t	Channel::getNumberMembers() const
 
 void	Channel::setKey(const std::string& key)
 {
-	// _keyMode = true;
 	_key = key;
 }
 
 void	Channel::setUserLimit(size_t limit)
 {
-	// _limitMode = true;	
 	_userLimit = limit;
 }
 
@@ -180,7 +160,6 @@ void	Channel::setTopic(const std::string& topic)
 
 void	Channel::clearKey()
 {
-	// _keyMode = false;
 	_key.clear();
 }
 
@@ -201,6 +180,7 @@ void	Channel::setTopicMode(bool state)
 void	Channel::addMember(int userFd, User* user)
 {
 	_users[userFd] = std::pair<User*, Membership>(user, MEMBER);
+	user->addChannel(Parser::toLower(_name));
 }
 
 bool	Channel::isUserMember(int userFd) const
@@ -245,6 +225,7 @@ void	Channel::demoteOperator(int userFd)
 void	Channel::addInvitee(int userFd, User* user)
 {
 	_users[userFd] = std::pair<User*, Membership>(user, INVITEE);
+	user->addChannel(Parser::toLower(_name));
 }
 
 bool	Channel::isChannelInvitee(int userFd) const
@@ -264,13 +245,13 @@ void	Channel::promoteInvitee(int userFd)
 
 void	Channel::removeUser(int userFd)
 {
-	_users.at(userFd).first->removeChannel(_name);
+	_users.at(userFd).first->removeChannel(Parser::toLower(_name));
 	_users.erase(userFd);
 }
 
 void	Channel::removeAllUsers()
 {
-	for(usersIt it = _users.begin(); it != _users.end(); it++)
+	for(usersIt it = _users.begin(); it != _users.end(); it = _users.begin())
 	{
 		removeUser(it->first);
 	}

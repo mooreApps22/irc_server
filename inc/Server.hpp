@@ -1,110 +1,144 @@
 #pragma once
 #include "IServerAPI.hpp"
 #include "User.hpp"
+#include "Channel.hpp"
 #include "Parser.hpp"
 #include "CommandHandler.hpp"
-# include <string>
 #include <map>
+#include <string>
 
 
 class Server: public IServerAPI
 {
-    private:
-		const std::string				_port;
-		const std::string				_password;
-		int								_server_fd;
-		int								_client_fd;
-		int								_epoll_fd;
-		std::map<int, User*>			_users;
-		std::map<std::string, Channel*>	_channels;
-		Parser							_parser;
-		CommandHandler					_ch;
+	typedef std::map<int, User*> 			serverClients;
+	typedef serverClients::const_iterator	clientsIt;
+	typedef	std::map<std::string, Channel*>	serverChannels;
+	typedef serverChannels::const_iterator	channelsIt;
 
-		void		setup();
-		int			register_fd(int fd);
-		void		accept_connection();
-		void		add_new_user(const std::string& host);
-		std::string	get_message();
-		std::string peek();
-		std::string receive(int length);
-		void		sendToUser(const std::string& message, int user_fd);
-		int			getUserFd(std::string nickname);
-		void		clean_up();
+	private:
+		const std::string	_port;
+		const std::string	_password;
+		int					_serverFd;
+		int					_clientFd;
+		int					_epollFd;
+		serverClients		_users;
+		serverChannels		_channels;
+		Parser				_parser;
+		CommandHandler		_ch;
 
-    public:
-        Server(const std::string& port, const std::string& password);
-        ~Server();
-		void	run(void);
+		void	setup();
 
-		// Server API
-		// Server actions related
-		void	send_reply(const std::string& reply);
-		void	sendToAll(const std::string& message);
-		void	sendToUser(const std::string& message, std::string& nick);
-		void	sendMessageToChannel(const std::string& channelId, const std::string& message);
-		chanIt	getChannelsBegin(void);
-		chanIt	getChannelsEnd(void);
-		bool 	isPasswordValid(const std::string& password);
-		void	disconnectUser(void);
+		// Polling
+		int		registerFd(int fd) const;
+		int		unregisterFd(int fd) const;
 
-		// User actions related
-		void				setUserNick(const std::string& nickname);
-		const std::string&	getUserNick();
-		void				setUserUsername(const std::string& username);
-		const std::string	getUserIdentifier();
-		void				setUserRegisteredStatus(bool status);
-		bool 				isUserRegistered();
-		void				setUserInvisibleMode(bool status);
-		bool				isUserInvisible();
-		void 				setUserPasswordState(bool state);
-		bool 				getUserPasswordState(void);
-		usrsIt				getUsersBegin(void);
-		usrsIt				getUsersEnd(void);
+		// Clients
+		void	acceptConnection();
+		void	addNewClient(const std::string& host);
 
-		User*				getUser(void);
+		// Receiving data
+		std::string	getMessage() const;
+		std::string peek() const;
+		std::string receive(int length) const;
+
+		// Sending data
+		void	sendToClient(const std::string& message, int userFd) const;
 		
-		//Channel
-		const std::string&	getChannelName(const std::string& channelId);
-		void				addChannel(const std::string& channelName);
-		void				removeChannel(const std::string& channelId);
-		virtual int			getChannelLimit(const std::string& channelId); //
-		void				setChannelPassword(const std::string& channelId, const std::string&  key); //
-		void				clearChannelPassword(const std::string& channelId); //
-		const std::string&	getChannelPassword(const std::string& channelId); //
-		bool				doesChannelExist(const std::string& channelId);
-		void				addUserToChannel(const std::string& channelId);
-		bool				isChannelFull(const std::string& channelId);
-		bool				isChannelEmpty(const std::string& channelId);
-		bool				doesChannelHaveLimit(const std::string& channelId);
-		void				promoteChannelMember(const std::string& channelId);
-		void				promoteChannelMember(const std::string& channelId, const std::string& nickname);
+		// Users and channels
+		int		getUserFd(std::string nickname) const;
+		void	removeUserFromChannel(const std::string& channelId, int userFd);
+		void	removeUserFromServer(int clientFd = -1);
+		void	removeChannelFromServer(const std::string& channelId);
+
+	public:
+		Server(const std::string& port, const std::string& password);
+		~Server();
+		void	run(void);
+		void	cleanUp();
+
+		/*
+			Server API
+		*/
+		void	sendReply(const std::string& reply) const;
+		void	sendToAll(const std::string& message) const;
+		void	sendToTarget(const std::string& message, std::string& nickname) const;
+		void	sendMessageToChannel(const std::string& message, const std::string& channelId) const;
+		void	sendMessageToChannelsWhereUser(const std::string& message) const;
+
+		bool 	isPasswordValid(const std::string& password) const;
+		bool	doesNicknameExist(const std::string& nickname) const;
+		bool	doesChannelExist(const std::string& channelName) const;
+		void	addChannel(const std::string& channelName);
+		void	disconnectClientFromServer(int clientFd = -1);
+		void	disconnectAllClientsFromServer();
+
+		/*
+			User API
+		*/
+		// Setters
+		void	setUserNickname(const std::string& nickname);
+		void	setUserUsername(const std::string& username);
+		void 	setUserPasswordGivenStatus();
+		void 	setUserNicknameGivenStatus();
+		void	setUserRegisteredStatus();
+		// void	setUserInvisibleMode(bool status);
+		
+		// Getters
+		const std::string&		getUserNickname() const;
+		const std::string&		getUserHost() const;
+		const std::string		getUserIdentifier() const;
+		bool 					hasUserGivenPassword(void) const;
+		bool 					hasUserGivenNickname(void) const;
+		bool 					isUserRegistered() const;
+		// bool					isUserInvisibleMode() const;
+
+
+		/*
+			Channel API
+		*/
+		// Getters
+		const std::string&	getChannelName(const std::string& channelId) const;
+		const std::string	getChannelUsersList(const std::string& channelId) const;
+		const std::string&	getChannelKey(const std::string& channelId) const;
+		size_t				getChannelLimit(const std::string& channelId) const;
+		const std::string&	getChannelTopic(const std::string& channelId) const;
+		
+
+		bool				isChannelInviteMode(const std::string& channelId) const;
+		bool				isChannelKeyMode(const std::string& channelId) const;
+		bool				isChannelLimitMode(const std::string& channelId) const;
+		bool				isChannelTopicMode(const std::string& channelId) const;
+
+		bool				isChannelKeyValid(const std::string& channelId, const std::string& key) const;
+		bool				isChannelFull(const std::string& channelId) const;
+		bool				isChannelTopicSet(const std::string& channelId) const;
+
+
+		// Setters
+		void				setChannelKey(const std::string& channelId, const std::string&  key);
+		void				setChannelLimit(const std::string& channelId, size_t limit);
+		void				setChannelTopic(const std::string& channelId, const std::string& topic);
+		void				setChannelInviteMode(const std::string& channelId, bool status);
+		void 				setChannelTopicMode(const std::string& channelId, bool status);
+		void				clearChannelKey(const std::string& channelId);
+
+
+		// Membership
+		// Users
+		bool				isChannelUser(const std::string& channelId, std::string nickname = "") const;
+		void				removeUserFromChannel(const std::string& channelId, std::string nickname = "");
+
+		// Members
+		void				addMemberToChannel(const std::string& channelId);
+		bool				isChannelMember(const std::string& channelId, std::string nickname = "") const;
+
+		// Operators
+		void				promoteChannelMember(const std::string& channelId, std::string nickname = "");
+		bool				isChannelOperator(const std::string& channelId, std::string nickname = "") const;
 		void				demoteChannelOperator(const std::string& channelId, const std::string& nickname);
-		void				promoteChannelInvitee(const std::string& channelId);
-		bool				isChannelPasswordProtected(const std::string& channelId);
-		bool				isChannelPasswordValid(const std::string& channelId, const std::string& key);
-		bool				isChannelInviteOnly(const std::string& channelId);
-		bool				isChannelTopicSet(const std::string& channelId);
-		bool				isUserInvited(const std::string& channelId);
-		const std::string&	getChannelTopic(const std::string& channelId);
-		const std::string	getChannelUsersList(const std::string& channelId);
-		bool				isChannelUser(const std::string& channelId);
-		bool				isTargetInChannel(const std::string& channelId, const std::string& nick);
 
-		//Kick
-		void				removeUserFromChannel(const std::string& channelId);
-		void				removeUserFromChannel(const std::string& channelId, const std::string& nick);
-		bool				isChannelTopicProtected(const std::string& channelId); //
-		bool				isUserChannelOperator(const std::string& channelId); //
-		void				setChannelInviteOnly(const std::string& channelId, bool status); //
-
-		void 				setChannelTopicRestricted(const std::string& channelId, bool status); //
+		// Invitatees
 		void				addInviteeToChannel(const std::string& channelId, const std::string& nickname);
-		void				setNewTopic(const std::string& channelId, const std::string& topic);
-
-
-		void				setChannelHasLimit(const std::string& channelId, bool status);
-		void				setChannelLimit(const std::string& channelId, int limit);
-		bool				isTargetChannelMember(const std::string& channelId, std::string& userNickname);
-		bool				isTargetChannelOperator(const std::string& channelId, std::string& userNickname);
-
+		bool				isChannelInvitee(const std::string& channelId) const;
+		void				promoteChannelInvitee(const std::string& channelId);
 };

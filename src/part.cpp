@@ -5,26 +5,22 @@
 #include <vector>
 #include <string>
 
-// 	/*
-// 		PART <channel>,<channel> [Part Message]
-
-		
-// 	   The PART command causes the user sending the message to be removed
-// 	   from the list of active members for all given channels listed in the
-// 	   parameter string.  If a "Part Message" is given, this will be sent
-// 	   instead of the default message, the nickname.  This request is always
-// 	   granted by the server.
-
-// 	   Servers MUST be able to parse arguments in the form of a list of
-// 	   target, but SHOULD NOT use lists when sending PART messages to
-// 	   clients.
-
-// 	   Numeric Replies:
-
-// 			   ERR_NEEDMOREPARAMS 
-// 			   ERR_NOSUCHCHANNEL
-// 			   ERR_NOTONCHANNEL
-// 	*/
+/*
+	PART <channel>,<channel> [Part Message]
+	
+   The PART command causes the user sending the message to be removed
+   from the list of active members for all given channels listed in the
+   parameter string.  If a "Part Message" is given, this will be sent
+   instead of the default message, the nickname.  This request is always
+   granted by the server.
+   Servers MUST be able to parse arguments in the form of a list of
+   target, but SHOULD NOT use lists when sending PART messages to
+   clients.
+   Numeric Replies:
+		   ERR_NEEDMOREPARAMS 
+		   ERR_NOSUCHCHANNEL
+		   ERR_NOTONCHANNEL
+*/
 
 void	CommandHandler::_partFp(const parsedMessage& parsedMsg) const
 {
@@ -54,7 +50,7 @@ void	CommandHandler::_partFp(const parsedMessage& parsedMsg) const
 	if (parsedMsg.params.size() == 2)
 		partMessage = parsedMsg.params[1];
 
-// 	//Channel Loop
+	//Channel Loop
 	for (std::vector<std::string>::iterator chIt = channelNames.begin(); chIt != channelNames.end(); ++chIt)
 	{
 		// Logger::log(DEBUG, "PART: Made it to the outer loop.");

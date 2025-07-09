@@ -83,8 +83,8 @@ void	CommandHandler::_modeFp(const parsedMessage& parsedMsg) const
 			if (Parser::toLower(nickname) != Parser::toLower(userNickname))
 				return ;
 			mode ="+";
-			if (_srvAPI.isUserInvisibleMode())
-				mode += "i";
+			// if (_srvAPI.isUserInvisibleMode())
+			// 	mode += "i";
 			_srvAPI.sendReply(RPL_UMODEIS(userNickname, mode));
 			return ;
 		}
@@ -95,28 +95,28 @@ void	CommandHandler::_modeFp(const parsedMessage& parsedMsg) const
 			_srvAPI.sendReply(ERR_USERSDONTMATCH(userNickname));
 			return ;
 		}
-		bool iMode = _srvAPI.isUserInvisibleMode();
-		for (std::string::iterator it = param.begin(); it != param.end(); it++)	// TODO struct iterator
+		// bool iMode = _srvAPI.isUserInvisibleMode();
+		for (std::string::iterator it = param.begin(); it != param.end(); it++)
 		{
 			if (*it == '+')
 				status = true;
 			else if (*it == '-')
 				status = false;
-			else if (*it == 'i')
-				iMode = status;
+			// else if (*it == 'i')
+			// 	iMode = status;
 			else
 				_srvAPI.sendReply(ERR_UMODEUNKNOWNFLAG(userNickname));
 		}
 
-		if (iMode != _srvAPI.isUserInvisibleMode())
-		{
-			_srvAPI.setUserInvisibleMode(iMode);
-			if (iMode == true)
-				mode = "+i";
-			else
-				mode = "-i";
-			_srvAPI.sendReply(UMODE_RPL(userNickname, mode));
-		}		
+		// if (iMode != _srvAPI.isUserInvisibleMode())
+		// {
+			// _srvAPI.setUserInvisibleMode(iMode);
+			// if (iMode == true)
+			// 	mode = "+i";
+			// else
+			// 	mode = "-i";
+			// _srvAPI.sendReply(UMODE_RPL(userNickname, mode));
+		// }		
 	}
 	else if (Parser::isChannel(param))
 	{
@@ -133,22 +133,27 @@ void	CommandHandler::_modeFp(const parsedMessage& parsedMsg) const
 		if (parsedMsg.params.size() == 1)
 		{
 			mode = "+";
-			if (_srvAPI.isChannelLimitMode(channelId))
-				mode += "l";
 			if (_srvAPI.isChannelInviteMode(channelId))
 				mode += "i";
+			if (_srvAPI.isChannelKeyMode(channelId))
+				mode += "k";
+			if (_srvAPI.isChannelLimitMode(channelId))
+				mode += "l";
 			if (_srvAPI.isChannelTopicMode(channelId))
 				mode += "t";
 			if (_srvAPI.isChannelKeyMode(channelId))
-				mode += "k";
+			{
+				if(_srvAPI.isChannelUser(channelId))
+					mode += " " + _srvAPI.getChannelKey(channelId);
+				else
+					mode += " <key>";
+			}
 			if (_srvAPI.isChannelLimitMode(channelId))
 			{
 				std::stringstream ss;
     			ss << _srvAPI.getChannelLimit(channelId);
 				mode += " " + ss.str();
 			}
-			if (_srvAPI.isChannelKeyMode(channelId))
-				mode += " " + _srvAPI.getChannelKey(channelId);
 			_srvAPI.sendReply(RPL_CHANNELMODEIS(userNickname, channelName, mode));
 			return ;
 		}
@@ -177,10 +182,7 @@ void	CommandHandler::_modeFp(const parsedMessage& parsedMsg) const
 			else if (*it == 'l')
 			{
 				if (!status)
-				{
 					_srvAPI.setChannelLimit(channelId, 0);
-// 					_srvAPI.setChannelHasLimit(channelId, false);
-				}
 				else
 				{
 					if (modesParamsIt == parsedMsg.getParamsEnd())
@@ -192,7 +194,6 @@ void	CommandHandler::_modeFp(const parsedMessage& parsedMsg) const
 					if (modes.limit == 0)
 					{
 						_srvAPI.setChannelLimit(channelId, 0);
-						// _srvAPI.setChannelHasLimit(channelId, false);
 						continue;
 					}
 					_srvAPI.setChannelLimit(channelId, modes.limit);
@@ -219,6 +220,13 @@ void	CommandHandler::_modeFp(const parsedMessage& parsedMsg) const
 					modes.opSigns.push_back("-o");
 					modes.targetNicknames.push_back(targetNickname);
 				}
+				else
+				{
+					if (!_srvAPI.doesNicknameExist(targetNickname))
+						_srvAPI.sendReply(ERR_NOSUCHNICK(userNickname, targetNickname));
+					else
+						_srvAPI.sendReply(ERR_USERNOTINCHANNEL(targetNickname, channelName));
+				}
 			}
 			else if (*it == 'k')
 			{
@@ -242,9 +250,7 @@ void	CommandHandler::_modeFp(const parsedMessage& parsedMsg) const
 			else if (*it == 't')
 				_srvAPI.setChannelTopicMode(channelId, status);
 			else
-			{
-				_srvAPI.sendReply(ERR_UMODEUNKNOWNFLAG(userNickname));	// TODO only show pass value and limit value to channel members
-			}
+				_srvAPI.sendReply(ERR_UMODEUNKNOWNFLAG(userNickname));
 		}
 		std::string pluses = "+";
 		std::string minuses = "-";

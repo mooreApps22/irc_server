@@ -16,4 +16,5 @@ void sig::setSignals()
 	std::memset(&act, 0, sizeof act);
 	act.sa_handler = sig::signalHandler;
 	sigaction(SIGINT, &act, NULL);
+	signal(SIGPIPE, SIG_IGN);
 }

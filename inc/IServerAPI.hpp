@@ -35,7 +35,7 @@ public:
 	virtual void	setUserPasswordGivenStatus() = 0;
 	virtual void	setUserNicknameGivenStatus() = 0;
 	virtual void	setUserRegisteredStatus() = 0;
-	virtual void	setUserInvisibleMode(bool state) = 0;
+	// virtual void	setUserInvisibleMode(bool state) = 0;
 
 	// Getters
 	virtual const std::string&		getUserNickname() const = 0;
@@ -44,7 +44,7 @@ public:
 	virtual bool					hasUserGivenPassword(void) const = 0;
 	virtual bool					hasUserGivenNickname(void) const = 0;
 	virtual bool					isUserRegistered() const = 0;
-	virtual bool					isUserInvisibleMode() const = 0;
+	// virtual bool					isUserInvisibleMode() const = 0;
 
 
 	/*
