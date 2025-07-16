@@ -68,4 +68,13 @@ valgrind:
 gdb:
 	@gdb --args ./$(NAME) 6667 password
 
+al:
+	irssi --config=irssi_config/al.conf
+
+bob:
+	irssi --config=irssi_config/bob.conf
+
+carl:
+	irssi --config=irssi_config/carl.conf
+
 .PHONY: all clean fclean re
