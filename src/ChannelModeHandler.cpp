@@ -33,51 +33,6 @@ ChannelModeHandler::ChannelModeHandler(IServerAPI& srvAPI, parsed_message& msg)
 
 ChannelModeHandler::~ChannelModeHandler() {};
 
-static const std::string 	build_reply(const std::string& arg1, const std::string& arg2, const std::string& arg3 = "", const std::string arg4 = "", const std::string arg5 = "", const std::string arg6 = "")
-{
-	std::string reply_message = COLON;
-	reply_message += arg1;
-
-	reply_message += SPACE;
-	if (arg2.size() == 0)
-		reply_message += COLON;
-	reply_message += arg2;
-
-	if (arg3.size() > 0)
-	{
-		reply_message += SPACE;
-		if (arg4.size() == 0)
-			reply_message += COLON;
-		reply_message += arg3;
-	}
-
-	if (arg4.size() > 0)
-	{
-		reply_message += SPACE;
-		if (arg5.size() == 0)
-			reply_message += COLON;
-		reply_message += arg4;
-	}
-
-	if (arg5.size() > 0)
-	{
-		reply_message += SPACE;
-		if (arg6.size() == 0)
-			reply_message += COLON;
-		reply_message += arg5;
-	}
-	
-	if (arg6.size() > 0)
-	{
-		reply_message += SPACE;
-		reply_message += COLON;
-		reply_message += arg6;
-	}
-	if (arg2 != "PONG")
-		std::cout << "Built message: " << reply_message << std::endl;
-	return reply_message;
-}
-
 std::string join_strings(const std::vector<std::string>& elements, const std::string& separator = " ")
 {
     std::ostringstream os;
@@ -105,7 +60,7 @@ std::string join_strings(std::string start, const std::vector<std::string>& elem
 void ChannelModeHandler::handle(){ 
     if (!api.doesChannelExist(channelId))
     {
-        reply_message = build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, user_nickname, channelName, "No such channel");
+        reply_message = CommandHandler::build_reply(SERVER_NAME, ERR_NOSUCHCHANNEL, user_nickname, channelName, "No such channel");
         api.send_reply(reply_message);
         return ;
     }
@@ -131,13 +86,13 @@ void ChannelModeHandler::handle(){
         }
         if (api.isChannelPasswordProtected(channelId))
             mode += " " + api.getChannelPassword(channelId);
-        reply_message = build_reply(SERVER_NAME, RPL_CHANNELMODEIS, user_nickname, channelName, mode);
+        reply_message = CommandHandler::build_reply(SERVER_NAME, RPL_CHANNELMODEIS, user_nickname, channelName, mode);
         api.send_reply(reply_message);
         return ;
     }
     if (!api.isUserChannelOperator(channelId))
     {
-        reply_message = build_reply(SERVER_NAME, ERR_CHANOPRIVSNEEDED, user_nickname, channelName, "You're not channel operator");
+        reply_message = CommandHandler::build_reply(SERVER_NAME, ERR_CHANOPRIVSNEEDED, user_nickname, channelName, "You're not channel operator");
         api.send_reply(reply_message);
         return ;
     }
@@ -224,7 +179,7 @@ void ChannelModeHandler::handle(){
         }
         else
         {
-            reply_message = build_reply(SERVER_NAME, ERR_UMODEUNKNOWNFLAG, user_nickname, "Unknown MODE flag");
+            reply_message = CommandHandler::build_reply(SERVER_NAME, ERR_UMODEUNKNOWNFLAG, user_nickname, "Unknown MODE flag");
             api.send_reply(reply_message);
         }
         (void) paramIt;
@@ -301,7 +256,7 @@ void ChannelModeHandler::handle(){
     if (params.size() > 0)
         message = join_strings(message, params, " ");
     std::cout << message << std::endl;
-    reply_message = build_reply(user_identifier, command, channelName, message);
+    reply_message = CommandHandler::build_reply(user_identifier, command, channelName, message);
     if (message.size() > 0)
     {
         api.sendMessageToChannel(channelId, reply_message);

@@ -28,9 +28,9 @@ class CommandHandler
 
 		// Utils
 		bool				isNickUnique(const std::string nick);
-		const std::string 	build_reply(const std::string& arg1, const std::string& arg2, const std::string& arg3 = "", const std::string arg4 = "", const std::string arg5 = "", const std::string arg6 = "");
 
     public:
+		static const std::string 	build_reply(const std::string& arg1, const std::string& arg2, const std::string& arg3 = "", const std::string arg4 = "", const std::string arg5 = "", const std::string arg6 = "");
 		CommandHandler(IServerAPI& srvAPI);
         ~CommandHandler();
 		void				execute(parsed_message& parsed_msg);

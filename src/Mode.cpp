@@ -81,8 +81,7 @@ void	CommandHandler::_modeFp(parsed_message& parsed_msg)
 	}
 	else if (Parser::is_channel(param))
 	{
-		ChannelModeHandler channelModeHandler(_srvAPI, parsed_msg);
-		channelModeHandler.handle();
+		ChannelModeHandler(_srvAPI, parsed_msg).handle();
 	}
 	else
 	{
