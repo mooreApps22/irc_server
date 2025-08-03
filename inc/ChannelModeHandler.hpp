@@ -15,14 +15,30 @@ class ChannelModeHandler
 
     private:
         std::string                 channelModeString();
-        struct                      ChannelMode;
-        void                        handleLimitChange();
-        void                        handleOperatorChange();
-        void                        handleKeyChange();
+        struct ChannelMode {
+            bool                    isActive;
+            char                    flag;
+            std::string             param;
+                                    ChannelMode(bool, char, const std::string&);
+        };
+        struct                      ResultStrings {
+            std::map<std::string, bool>     opChanges;
+            std::vector<std::string>        params;
+            std::string             minuses;
+            std::string             pluses;
+                                    ResultStrings();
+            std::string&            operator[](int);
+            const std::string&      operator[](int) const;
+        };
+        ResultStrings               resultStrings;
         std::string                 itoa(int);
         void                        parseInput();
+        void                        updateStatuses();
         void                        getResultParams();
+        void                        handleKeyChange();
         std::string                 buildResultString();
+        void                        handleLimitChange();
+        void                        handleOperatorChange();
         
         IServerAPI&                 api;    
         std::string                 param;
@@ -43,7 +59,4 @@ class ChannelModeHandler
         bool                        status;
         std::string                 mode;
         parsedMessage::paramsIt     paramIt;
-        std::vector<std::string>    outputParams;
-        std::string                 pluses;
-        std::string                 minuses;
 };

@@ -60,7 +60,7 @@ void Server::run(void)
 
 					if (_parser.parseMessage(message, parsedMsg))
 					{
-						// 	Logger::log(DEBUG, "execute() called with the command: ", parsedMsg.command);
+							Logger::log(DEBUG, "execute() called with the command: ", parsedMsg.command);
 						_ch.execute(parsedMsg);
 					}
 					else

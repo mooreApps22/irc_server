@@ -9,7 +9,6 @@
 #include <cstdlib>
 #include <sstream>
 
-
 ChannelModeHandler::ChannelModeHandler(IServerAPI& srvAPI, const parsedMessage& msg) 
     :   api(srvAPI),
         parsedMsg(msg),
@@ -21,6 +20,7 @@ ChannelModeHandler::ChannelModeHandler(IServerAPI& srvAPI, const parsedMessage& 
         operatorMode(false),
         topicMode(api.isChannelTopicMode(channelId)),
         passChanged(false),
+        password(api.getChannelKey(channelId)),
         userNickname(api.getUserNickname()),
         userID(api.getUserIdentifier()),   
         status(true)
@@ -30,21 +30,25 @@ ChannelModeHandler::ChannelModeHandler(IServerAPI& srvAPI, const parsedMessage& 
 }
 
 ChannelModeHandler::~ChannelModeHandler() {};
+ 
+ChannelModeHandler::ChannelMode::ChannelMode(bool active, char f, const std::string& p = "") 
+        : isActive(active), flag(f), param(p) {};
+
+ChannelModeHandler::ResultStrings::ResultStrings() : minuses("-"), pluses("+") {}
+
+std::string&    ChannelModeHandler::ResultStrings::operator[](int index) {
+    return (index == 0) ? minuses : pluses;
+}
+
+const std::string&  ChannelModeHandler::ResultStrings::operator[](int index) const {
+    return (index == 0) ? minuses : pluses;
+}
 
 std::string ChannelModeHandler::itoa(int value) {
     std::ostringstream oss;
     oss << value;
     return oss.str();
 }
-
-struct ChannelModeHandler::ChannelMode {
-    bool                isActive;
-    char                flag;
-    std::string         param;
-        
-    ChannelMode(bool active, char f, const std::string& p = "") 
-        : isActive(active), flag(f), param(p) {}
-};
 
 std::string joinStrings(const std::vector<std::string>& elements, 
                         const std::string& separator = " ", 
@@ -67,12 +71,13 @@ std::string joinStrings(const std::vector<std::string>& elements,
 }
 
 void    ChannelModeHandler::handleLimitChange() {
+    if (limit != (size_t)(api.getChannelLimit(channelId)))
+        return;
     if (!status)
         limit = 0;
     else if (paramIt != parsedMsg.getParamsEnd()) {
-            const char *num = (*paramIt).c_str();
+            limit = (size_t)atoi((*paramIt).c_str());
             paramIt++;					
-            limit = (size_t)atoi(num);
         }
 }
 
@@ -84,35 +89,48 @@ void    ChannelModeHandler::handleOperatorChange() {
     paramIt++;
     
     if (!api.doesNicknameExist(targetNickname) 
-    || (status && !api.isChannelUser(channelId, targetNickname))
-    || (status == api.isChannelOperator(channelId, targetNickname)))
+    || (status && !api.isChannelUser(channelId, targetNickname)))
         return ;
     
-    if (!api.isChannelOperator(channelId, targetNickname)) {
+    if (resultStrings.opChanges.find(targetNickname) == resultStrings.opChanges.end())
+        resultStrings.opChanges[targetNickname] = api.isChannelOperator(channelId, targetNickname);
+    
+    if (resultStrings.opChanges[targetNickname] == status)
+        return;
+
+    if (status)
         opSigns.push_back("+o");
-        targetNicknames.push_back(targetNickname);
-    }else {
+    else
         opSigns.push_back("-o");
-        targetNicknames.push_back(targetNickname);
-    }
+
+    resultStrings.opChanges[targetNickname] = status;
+
+    targetNicknames.push_back(targetNickname);
 }
 
 void    ChannelModeHandler::handleKeyChange() {
-    if (status == api.isChannelKeyMode(channelId) || passChanged)
-        return;
+    std::string passParam = "";
 
-    passChanged = true;
+    if (passChanged)
+        return ;
+
     if (paramIt == parsedMsg.getParamsEnd() && status)
         return;
 
-    if (status) {
-        keyMode = true;
-        password = *paramIt;
+    if (paramIt != parsedMsg.getParamsEnd()) {
+        passParam = *paramIt;
         paramIt++;
-    } else {
-        password = api.getChannelKey(channelId);
-        keyMode = false;
     }
+
+    if (status && api.isChannelKeyMode(channelId) &&
+        passParam != "" &&
+        passParam == api.getChannelKey(channelId))
+        return;
+
+    passChanged = true;
+
+    keyMode = status;
+    password = status ? passParam : api.getChannelKey(channelId);
 }
 
 std::string ChannelModeHandler::channelModeString() {
@@ -128,7 +146,7 @@ std::string ChannelModeHandler::channelModeString() {
     
     for (std::vector<ChannelMode>::const_iterator it = modes.begin(); 
                 it != modes.end(); 
-                ++it) {
+                it++) {
         if (it->isActive) {
             result += it->flag;
             if (!it->param.empty())
@@ -160,69 +178,72 @@ void    ChannelModeHandler::parseInput() {
     }
 }
 
-void    ChannelModeHandler::getResultParams() {
-    pluses = "+";
-    minuses = "-";
-    
-    if (inviteMode != api.isChannelInviteMode(channelId)) {
-        if (api.isChannelInviteMode(channelId))
-            pluses += "i";
-        else
-            minuses += "i";
-    }
-    if (topicMode != api.isChannelTopicMode(channelId)) {
-        if (api.isChannelTopicMode(channelId))
-            pluses += "t";
-        else
-            minuses += "t";
-    }
-    if (limit != api.getChannelLimit(channelId)) {
-        if (limit > 0){
-            pluses += "l";
-            outputParams.push_back(itoa(limit));
-        }
-        else
-            minuses += "l";
-        api.setChannelLimit(channelId, limit);
-    }
-}
-
 std::string ChannelModeHandler::buildResultString() {
     bool    plus = true;
-
     std::string message = "";
-    if (pluses.size() > 1)
-        message += pluses;
-    if (minuses.size() > 1) {
-        message += minuses;
+
+    if (inviteMode != api.isChannelInviteMode(channelId))
+        resultStrings[inviteMode] += "i";
+    if (topicMode != api.isChannelTopicMode(channelId))
+        resultStrings[topicMode] += "t";
+    if (limit != api.getChannelLimit(channelId)) {
+        resultStrings[limit > 0] += "l";
+        if (limit > 0)
+            resultStrings.params.push_back(itoa(limit));
+        api.setChannelLimit(channelId, limit);
+    }
+    if (resultStrings.pluses.size() > 1)
+        message += resultStrings.pluses;
+    if (resultStrings.minuses.size() > 1) {
+        message += resultStrings.minuses;
         plus = false;
     }
-    if (opSigns.size() > 0 && opSigns[opSigns.size() - 1].at(0) == '-')
-        plus = false;
     if (message.size() > 0 && opSigns.size() > 0 && ((plus && opSigns.at(0).at(0) == '+')
-    || (!plus && opSigns.at(0).at(0) == '-')))
+        || (!plus && opSigns.at(0).at(0) == '-')))
         opSigns.at(0).erase(0, 1);
     message = joinStrings(opSigns, "", message);
     if (opSigns.size() > 0)
-        outputParams.push_back(joinStrings(targetNicknames, " "));
-    if (passChanged)
-        if (keyMode != api.isChannelKeyMode(channelId)) {
-            if (keyMode == true){
-                if (plus)
-                    message += "-";
-                message += "k";
-                outputParams.push_back(password);
-            } else {
-                if (!plus || message.size() == 0)
-                    message += "+";
-                message += "k";
-                outputParams.push_back(api.getChannelKey(channelId));
-            }
+        resultStrings.params.push_back(joinStrings(targetNicknames, " "));
+    if (keyMode != api.isChannelKeyMode(channelId)
+        || (password != api.getChannelKey(channelId))) {
+        if (!keyMode){
+            if (plus)
+                message += "-";
+            message += "k";
+        } else {
+            if (!plus || message.size() == 0)
+                message += "+";
+            message += "k";
         }
+        resultStrings.params.push_back(password);
+    }
     return message;
 }
 
-void ChannelModeHandler::handle() { 
+void    ChannelModeHandler::updateStatuses() {
+    if (inviteMode != api.isChannelInviteMode(channelId))
+        api.setChannelInviteMode(channelId, inviteMode);
+    if (topicMode != api.isChannelTopicMode(channelId))
+        api.setChannelTopicMode(channelId, topicMode);
+    if (limit != api.getChannelLimit(channelId))
+        api.setChannelLimit(channelId, limit);
+    if (keyMode != api.isChannelKeyMode(channelId)
+        || (password != api.getChannelKey(channelId))) {
+        if (keyMode)
+            api.setChannelKey(channelId, password);
+        else
+            api.clearChannelKey(channelId);
+    }
+    for (std::map<std::string, bool>::const_iterator it = resultStrings.opChanges.begin();
+            it != resultStrings.opChanges.end(); it++) {
+        if (it->second)
+            api.promoteChannelMember(channelId, it->first);
+        else
+            api.demoteChannelOperator(channelId, it->first);
+    }
+}
+
+void    ChannelModeHandler::handle() { 
     if (!api.doesChannelExist(channelId))
         return (api.sendReply(
             ERR_NOSUCHCHANNEL(userNickname, channelName)));
@@ -236,11 +257,11 @@ void ChannelModeHandler::handle() {
             ERR_CHANOPRIVSNEEDED(userNickname, channelName)));
 
     parseInput();
-    getResultParams();
     std::string resultString = buildResultString();
+    updateStatuses();
    
-    if (outputParams.size() > 0)
-        resultString = joinStrings(outputParams, " ", resultString);
+    if (resultStrings.params.size() > 0)
+        resultString = joinStrings(resultStrings.params, " ", resultString);
     if (resultString.size() > 0)
     {
         api.sendMessageToChannel(

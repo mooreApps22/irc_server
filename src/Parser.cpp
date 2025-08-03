@@ -19,7 +19,7 @@ bool Parser::parseMessage(std::string& message, parsedMessage& parsedMsg)
 	_it = begin;
 
 	std::string messageSrippedCRLF(message.begin(), message.end() - 2);
-	Logger::log(INFO, ">>>>>>>", messageSrippedCRLF);
+	Logger::log(INFO, ">>>>>>> message >>>> ", messageSrippedCRLF);
 	return (isMessage(parsedMsg));
 }
 
