@@ -71,8 +71,8 @@ std::string joinStrings(const std::vector<std::string>& elements,
 }
 
 void    ChannelModeHandler::handleLimitChange() {
-    if (limit != (size_t)(api.getChannelLimit(channelId)))
-        return;
+    // if (limit != (size_t)(api.getChannelLimit(channelId)))
+    //     return;
     if (!status)
         limit = 0;
     else if (paramIt != parsedMsg.getParamsEnd()) {
